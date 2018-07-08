@@ -1,0 +1,49 @@
+{
+  "name": "PocketTools",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.49",
+    "@babel/plugin-syntax-decorators": "^7.0.0-beta.49",
+    "@babel/plugin-syntax-jsx": "^7.0.0-beta.49",
+    "@babel/plugin-syntax-typescript": "^7.0.0-beta.49",
+    "awesome-typescript-loader": "^5.0.0",
+    "babel-loader": "^8.0.0-beta.3",
+    "clean-webpack-plugin": "^0.1.19",
+    "css-loader": "^0.28.11",
+    "html-webpack-plugin": "^3.2.0",
+    "node-sass": "^4.9.0",
+    "react-hot-loader": "^4.2.0",
+    "sass-loader": "^7.0.1",
+    "source-map-loader": "^0.2.3",
+    "style-loader": "^0.21.0",
+    "typescript": "^2.8.3",
+    "webpack": "^4.8.3",
+    "webpack-cli": "^2.1.4",
+    "webpack-dev-server": "^3.1.4"
+  },
+  "dependencies": {
+    "@babel/preset-env": "^7.0.0-beta.49",
+    "@fortawesome/fontawesome": "^1.1.8",
+    "@fortawesome/fontawesome-free-brands": "^5.0.13",
+    "@fortawesome/fontawesome-free-solid": "^5.0.13",
+    "@fortawesome/react-fontawesome": "^0.0.20",
+    "@material-ui/core": "^1.2.0",
+    "@types/react": "^16.3.14",
+    "@types/react-dom": "^16.0.5",
+    "popmotion-pose": "^2.0.6",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "react-mt-svg-lines": "^0.8.4",
+    "react-pose": "^2.1.2",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
+    "superagent": "^3.8.3"
+  },
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "start": "webpack-dev-server --open --hot"
+  }
+}

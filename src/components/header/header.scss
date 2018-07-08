@@ -1,0 +1,119 @@
+@import 'styles/colors.scss';
+@import 'styles/typography.scss';
+
+header {
+  background: $color3;
+  
+  // Grid
+  .container {
+    display: grid;
+    // height: 120px;
+    grid-template-columns: auto 120px;
+    grid-template-rows: 40px auto 40px;
+    width: 100%;
+
+    .logo-box {
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: end;
+      margin: 0;
+    }
+
+    .nav-box {
+      grid-column: 2;
+      grid-row: 3;
+      margin: 0;
+      align-self: end;
+      justify-self: right;
+    }
+
+    .delivery-box {
+      grid-column: 1;
+      grid-row: 1 / 4;
+      justify-self: start;
+      margin: 0;
+      padding: 1em;
+    }
+  }
+
+  .logo {
+    font-size: 9px;
+    margin: 2em;
+  }
+
+  .next-delivery {
+    color: $color4;
+
+    h1, h2, h3 {
+      margin: 0;
+    }
+
+    h3 {
+      color: rgba($color5, .1);
+      font-size: 13px;
+      font-weight: normal;
+      font-family: $body-font;
+    }
+
+    h2 {
+      color: $color1;
+      font-size: 16px;
+      font-weight: normal;
+      font-family: $body-font;
+    }
+
+    h1 {
+      color: $color5;
+      font-size: 20px;
+    }
+
+    h3, h2 {
+      color: $color1;
+    }
+  }
+
+  .navToggle {
+    display: block;
+    z-index: 100;
+    color: rgba(1, 1, 1, 0.4);
+    text-align: center;
+    font-size: 1em;
+    padding: 0 0.2em;
+    text-decoration: none;
+    vertical-align: middle;
+
+    &:hover {
+      background-color: $color1;
+    }
+
+    span {
+      font-size: 1.5em;
+      vertical-align: middle;
+    }
+  }
+
+  nav {
+    flex: 1 1 100%;
+    background-color: $color1;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      border-bottom: 1px $color3 solid;
+      padding: 1em;
+      font-size: 1em;
+    }
+
+    a {
+      display: block;
+      color: $color3;
+      text-decoration: none;
+      text-align: center;
+    }
+  }
+}

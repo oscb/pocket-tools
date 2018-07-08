@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 30 52" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.41421;">
+    <rect id="Phone" x="0" y="0" width="29.378" height="51.995" style="fill:none;"/>
+    <clipPath id="_clip1">
+        <rect x="0" y="0" width="29.378" height="51.995"/>
+    </clipPath>
+    <g clip-path="url(#_clip1)">
+        <path id="Screen" d="M26.626,45.409l-23.874,0c-0.427,0 -0.773,-0.492 -0.773,-1.099l0,-36.63c0,-0.607 0.346,-1.099 0.773,-1.099l23.874,0c0.427,0 0.773,0.492 0.773,1.099l0,36.63c0,0.607 -0.346,1.099 -0.773,1.099" style="fill:none;stroke:#b8eeea;stroke-width:1px;"/>
+        <path id="Border" d="M28.878,5.028c0,-2.501 -2.03,-4.531 -4.53,-4.531l-19.318,0c-2.5,0 -4.53,2.03 -4.53,4.531l0,41.934c0,2.501 2.03,4.531 4.53,4.531l19.318,0c2.5,0 4.53,-2.03 4.53,-4.531l0,-41.934Z" style="fill:none;stroke:#b8eeea;stroke-width:1px;stroke-miterlimit:1.5;"/>
+        <g id="Apps">
+            <path d="M9.417,11.124c0,-0.789 -0.642,-1.431 -1.431,-1.431l-2.862,0c-0.789,0 -1.431,0.642 -1.431,1.431l0,2.862c0,0.789 0.642,1.431 1.431,1.431l2.862,0c0.789,0 1.431,-0.642 1.431,-1.431l0,-2.862Z" style="fill:none;stroke:#b8eeea;stroke-width:1px;stroke-miterlimit:1.5;"/>
+            <path d="M9.417,19.764c0,-0.789 -0.642,-1.431 -1.431,-1.431l-2.862,0c-0.789,0 -1.431,0.642 -1.431,1.431l0,2.862c0,0.789 0.642,1.431 1.431,1.431l2.862,0c0.789,0 1.431,-0.642 1.431,-1.431l0,-2.862Z" style="fill:none;stroke:#b8eeea;stroke-width:1px;stroke-miterlimit:1.5;"/>
+            <path d="M9.417,28.644c0,-0.789 -0.642,-1.431 -1.431,-1.431l-2.862,0c-0.789,0 -1.431,0.642 -1.431,1.431l0,2.862c0,0.789 0.642,1.431 1.431,1.431l2.862,0c0.789,0 1.431,-0.642 1.431,-1.431l0,-2.862Z" style="fill:none;stroke:#b8eeea;stroke-width:1px;stroke-miterlimit:1.5;"/>
+            <path d="M9.417,38.004c0,-0.789 -0.642,-1.431 -1.431,-1.431l-2.862,0c-0.789,0 -1.431,0.642 -1.431,1.431l0,2.862c0,0.789 0.642,1.431 1.431,1.431l2.862,0c0.789,0 1.431,-0.642 1.431,-1.431l0,-2.862Z" style="fill:none;stroke:#b8eeea;stroke-width:1px;stroke-miterlimit:1.5;"/>
+            <path d="M17.467,11.124c0,-0.789 -0.641,-1.431 -1.431,-1.431l-2.861,0c-0.79,0 -1.431,0.642 -1.431,1.431l0,2.862c0,0.789 0.641,1.431 1.431,1.431l2.861,0c0.79,0 1.431,-0.642 1.431,-1.431l0,-2.862Z" style="fill:none;stroke:#b8eeea;stroke-width:1px;stroke-miterlimit:1.5;"/>
+            <path d="M17.467,19.764c0,-0.789 -0.641,-1.431 -1.431,-1.431l-2.861,0c-0.79,0 -1.431,0.642 -1.431,1.431l0,2.862c0,0.789 0.641,1.431 1.431,1.431l2.861,0c0.79,0 1.431,-0.642 1.431,-1.431l0,-2.862Z" style="fill:none;stroke:#b8eeea;stroke-width:1px;stroke-miterlimit:1.5;"/>
+            <path d="M17.467,38.004c0,-0.789 -0.641,-1.431 -1.431,-1.431l-2.861,0c-0.79,0 -1.431,0.642 -1.431,1.431l0,2.862c0,0.789 0.641,1.431 1.431,1.431l2.861,0c0.79,0 1.431,-0.642 1.431,-1.431l0,-2.862Z" style="fill:none;stroke:#b8eeea;stroke-width:1px;stroke-miterlimit:1.5;"/>
+            <path d="M25.685,11.124c0,-0.789 -0.641,-1.431 -1.431,-1.431l-2.861,0c-0.79,0 -1.431,0.642 -1.431,1.431l0,2.862c0,0.789 0.641,1.431 1.431,1.431l2.861,0c0.79,0 1.431,-0.642 1.431,-1.431l0,-2.862Z" style="fill:none;stroke:#b8eeea;stroke-width:1px;stroke-miterlimit:1.5;"/>
+            <path d="M25.685,19.764c0,-0.789 -0.641,-1.431 -1.431,-1.431l-2.861,0c-0.79,0 -1.431,0.642 -1.431,1.431l0,2.862c0,0.789 0.641,1.431 1.431,1.431l2.861,0c0.79,0 1.431,-0.642 1.431,-1.431l0,-2.862Z" style="fill:none;stroke:#b8eeea;stroke-width:1px;stroke-miterlimit:1.5;"/>
+            <path d="M25.685,28.644c0,-0.789 -0.641,-1.431 -1.431,-1.431l-2.861,0c-0.79,0 -1.431,0.642 -1.431,1.431l0,2.862c0,0.789 0.641,1.431 1.431,1.431l2.861,0c0.79,0 1.431,-0.642 1.431,-1.431l0,-2.862Z" style="fill:none;stroke:#b8eeea;stroke-width:1px;stroke-miterlimit:1.5;"/>
+            <path d="M25.685,38.004c0,-0.789 -0.641,-1.431 -1.431,-1.431l-2.861,0c-0.79,0 -1.431,0.642 -1.431,1.431l0,2.862c0,0.789 0.641,1.431 1.431,1.431l2.861,0c0.79,0 1.431,-0.642 1.431,-1.431l0,-2.862Z" style="fill:none;stroke:#b8eeea;stroke-width:1px;stroke-miterlimit:1.5;"/>
+            <g id="Pocket">
+                <path d="M17.467,28.644c0,-0.789 -0.641,-1.431 -1.431,-1.431l-2.861,0c-0.79,0 -1.431,0.642 -1.431,1.431l0,2.862c0,0.789 0.641,1.431 1.431,1.431l2.861,0c0.79,0 1.431,-0.642 1.431,-1.431l0,-2.862Z" style="fill:none;stroke:#ff7684;stroke-width:1px;stroke-miterlimit:1.5;"/>
+                <path d="M13.546,29.686l1.06,1.125l1.026,-1.125" style="fill:none;stroke:#ff7684;stroke-width:1px;stroke-miterlimit:1.5;"/>
+            </g>
+        </g>
+        <path id="Button" d="M14.739,50.055c-0.861,0.028 -1.582,-0.649 -1.61,-1.51c-0.028,-0.861 0.649,-1.582 1.51,-1.61c0.861,-0.028 1.582,0.649 1.61,1.51c0.028,0.861 -0.649,1.582 -1.51,1.61Z" style="fill:none;stroke:#b8eeea;stroke-width:1px;stroke-miterlimit:1.5;"/>
+        <path id="Speaker" d="M11.158,3.495l7.062,0" style="fill:none;stroke:#b8eeea;stroke-width:1px;stroke-miterlimit:1.5;"/>
+    </g>
+</svg>
