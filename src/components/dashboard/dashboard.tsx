@@ -24,7 +24,7 @@ export default class Dashboard extends React.PureComponent<
             Logout
           </a>
         </Header>
-        {/* <DeliveryEditor /> */}
+        <DeliveryEditor />
         {this.props.children}
       </div>
     );

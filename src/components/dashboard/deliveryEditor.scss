@@ -38,7 +38,6 @@
 
   .editor {
     padding: 1em;
-    padding-bottom: 3em;
   }
 
   .section {
@@ -101,22 +100,6 @@
     span {
       vertical-align: middle;
     }
-  }
-
-  button.submit {
-    border: none;
-    background: $color2;
-    color: $color5;
-    width: 100%;
-    font-size: 18px;
-    padding: 0.5em;
-    font-weight: bold;
-    position: fixed;
-    bottom: 0;
-    left: 3%;
-    right: 3%;
-    width: 94%;
-    z-index: 20;
   }
 
   .week {

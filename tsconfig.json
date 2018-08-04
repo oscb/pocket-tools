@@ -15,7 +15,8 @@
     "noImplicitAny": false,
     "strictNullChecks": false,
     "suppressImplicitAnyIndexErrors": true,
-    "noUnusedLocals": false
+    "noUnusedLocals": false,
+    "importHelpers": true,
   },
   "include": [
     "./src/**/*"
