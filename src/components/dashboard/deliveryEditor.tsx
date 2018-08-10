@@ -7,7 +7,7 @@ import CheckCircle from "./checkCircle";
 import { Checkbox, Divider, TextField } from "@material-ui/core";
 import Counter, { CounterProps } from "./counter";
 import Modal, { ModalProps } from "./modal";
-import { hot } from "react-hot-loader";
+// import { hot } from "react-hot-loader";
 import { Delivery } from '../../models/delivery';
 
 export interface DeliveryEditorProps {}
@@ -302,4 +302,5 @@ class DeliveryEditor extends React.Component<
   }
 }
 
-export default hot(module)(DeliveryEditor);
+export default DeliveryEditor;
+// export default hot(module)(DeliveryEditor);

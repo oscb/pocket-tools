@@ -21,9 +21,9 @@ export interface HomeProps {
 export type RouterHomeProps = HomeProps & RouteComponentProps<null>;
 
 export class Home extends React.Component<RouterHomeProps> {
-  handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
+  async handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
     e.preventDefault();
-    ApiHelper.login();
+    await ApiHelper.login();
   }
 
   async componentWillMount() {

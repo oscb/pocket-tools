@@ -1,5 +1,5 @@
 import * as React from "react";
-import { RouterProps } from "react-router";
+import { RouterProps, RouteComponentProps } from "react-router";
 import Header from "../header/header";
 import { Link } from "react-router-dom";
 import DeliveryEditor from "./deliveryEditor";
@@ -11,8 +11,8 @@ export interface DashboardProps {}
 
 interface DashboardState {}
 
-export default class Dashboard extends React.PureComponent<
-  DashboardProps & RouterProps,
+export default class Dashboard extends React.Component<
+  DashboardProps & RouteComponentProps<any>,
   DashboardState
 > {
   render() {

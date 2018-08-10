@@ -1,113 +1,119 @@
 const path = require('path');
 const webpack = require('webpack');
-const { CheckerPlugin } = require('awesome-typescript-loader');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HappyPack = require('happypack');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
+const sourcePath = path.join(__dirname, './src');
+const outPath = path.join(__dirname, './dist');
+
 module.exports = {
-  entry: ['./src/index.tsx'],
+  entry: [
+    './src/index.tsx'
+  ],
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: outPath,
     filename: '[name].bundle.js',
     chunkFilename: '[name].chunk.js',
-    publicPath: '/'
+    publicPath: '/',
   },
   devtool: 'source-map',
   devServer: {
-    contentBase: './dist',
+    contentBase: sourcePath,
     hot: true,
-    historyApiFallback: true
+    inline: true,
+    historyApiFallback: {
+      disableDotRule: true
+    },
+    stats: 'minimal',
+    clientLogLevel: 'warning'
   },
   
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
-    alias: {
-      react: path.resolve(path.join(__dirname, './node_modules/react')),
-      'babel-core': path.resolve(
-        path.join(__dirname, './node_modules/@babel/core'),
-      ),
-    },
   },
 
   plugins: [
-    new CheckerPlugin(),
     new CleanWebpackPlugin(['dist']),
-    new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin({ inject: true }),
+
     new webpack.NamedModulesPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new Dotenv(),
-    // TODO: Add DllPlugin for vendor stuff (react, lodash, office fabric, materalui,etc)
-    // TODO: HappyPack seems to be slightly faster for TS, but might need to tweakit to make it work fine 
-    // new HappyPack({
-    //   id: 'ts',
-    //   threads: 2,
-    //   loaders: [
-    //     {
-    //       loader: 'babel-loader',
-    //         options: {
-    //         babelrc: false,
-    //         plugins: ['react-hot-loader/babel'],
-    //       },
-    //     },
-    //     {
-    //       path: 'ts-loader',
-    //       query: { happyPackMode: true }
-    //     }
-    //   ]
-    // }),
-    // new ForkTsCheckerWebpackPlugin({ checkSyntacticErrors: true })
+    new webpack.HotModuleReplacementPlugin(),    new Dotenv(),
+    new ForkTsCheckerWebpackPlugin({
+      async: false,
+      watch: sourcePath,
+      tsconfig: "./tsconfig.json",
+      // tslint: "./tslint.json",
+    }),
   ],
   
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: 'awesome-typescript-loader',
-            options: {
-              useCache: true,
-              useBabel: true,
-              // babelOptions: {
-              //     babelrc: false,
-              //     plugins: ['react-hot-loader/babel'],
-              // },
-              babelCore: "@babel/core",
-            }
-          }
-        ],
+        test: /\.(js|jsx|mjs)$/,
+        loader: require.resolve('source-map-loader'),
+        enforce: 'pre',
+        include: sourcePath,
       },
-      { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
-      
-      // TODO: Remove Sass dependency eventually, maybe switch to aphrodite? or just css
       {
-        test: /\.scss$/,
-        use: [
+        oneOf: [
           {
-            loader: 'style-loader'
-          }, 
-          {
-            loader: 'css-loader', 
+            test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
+            loader: require.resolve('url-loader'),
             options: {
-              sourceMap: true
-            }
-          }, 
+              limit: 10000,
+              name: 'dist/media/[name].[hash:8].[ext]',
+            },
+          },
           {
-            loader: 'sass-loader', 
+            test: /\.(ts|tsx)$/,
+            include: sourcePath,
+            use: [
+              {
+                loader: require.resolve('ts-loader'),
+                options: {
+                  // disable type checker - we will use it in fork plugin
+                  transpileOnly: true,
+                },
+              },
+            ],
+          },
+          {
+            test: /\.(js|jsx|mjs)$/,
+            include: sourcePath,
+            loader: require.resolve('babel-loader'),
             options: {
-              sourceMap: true,
-              includePaths: [path.resolve(process.cwd(), 'src')]
-            }
-          }
+              compact: true,
+            },
+          },
+          // TODO: Remove Sass dependency eventually, maybe switch to aphrodite? or just css
+          {
+            test: /\.scss$/,
+            use: [
+              {
+                loader: 'style-loader'
+              }, 
+              {
+                loader: 'css-loader', 
+                options: {
+                  sourceMap: true
+                }
+              }, 
+              {
+                loader: 'sass-loader', 
+                options: {
+                  sourceMap: true,
+                  includePaths: [sourcePath]
+                }
+              }
+            ]
+          },
         ]
-      },
+      }
+      
     ]
   },
-
   optimization: {
     splitChunks : {
       chunks: 'all'
