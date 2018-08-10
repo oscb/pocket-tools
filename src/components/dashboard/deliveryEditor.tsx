@@ -8,6 +8,7 @@ import { Checkbox, Divider, TextField } from "@material-ui/core";
 import Counter, { CounterProps } from "./counter";
 import Modal, { ModalProps } from "./modal";
 import { hot } from "react-hot-loader";
+import { Delivery } from '../../models/delivery';
 
 export interface DeliveryEditorProps {}
 

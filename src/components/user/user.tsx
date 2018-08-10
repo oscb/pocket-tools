@@ -1,14 +1,9 @@
+import "./user.scss";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { api } from "../../App";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
 import Modal from "../dashboard/modal";
 import { TextField } from "@material-ui/core";
-import { User } from "../../models/interfaces";
-// import { UserAPI } from "./models/interfaces";
-
-import "./user.scss";
+import { User, UserApi } from '../../models/user';
 
 export interface UserProfileProps {
   newUser: boolean;
@@ -18,14 +13,7 @@ interface UrlParams {
   id: string;
 }
 
-interface UserProfileState {
-  username: string;
-  active: boolean;
-  email: string;
-  kindle_email: string;
-  token: string;
-  type: string;
-}
+interface UserProfileState extends User {}
 
 export default class UserProfile extends React.Component<
   UserProfileProps & RouteComponentProps<UrlParams>,
@@ -69,7 +57,7 @@ export default class UserProfile extends React.Component<
     // TODO: validate email
     // TODO: validate that kindle email is an actual kindle email
     // TODO: Send json to api
-    api.update_user({} as User);
+    UserApi.update(this.state as User);
   };
 
   render() {

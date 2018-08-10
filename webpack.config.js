@@ -1,6 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
+const { CheckerPlugin } = require('awesome-typescript-loader');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HappyPack = require('happypack');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
@@ -13,7 +15,7 @@ module.exports = {
     chunkFilename: '[name].chunk.js',
     publicPath: '/'
   },
-  devtool: false,
+  devtool: 'source-map',
   devServer: {
     contentBase: './dist',
     hot: true,
@@ -31,10 +33,12 @@ module.exports = {
   },
 
   plugins: [
+    new CheckerPlugin(),
     new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin(),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
+    new Dotenv(),
     // TODO: Add DllPlugin for vendor stuff (react, lodash, office fabric, materalui,etc)
     // TODO: HappyPack seems to be slightly faster for TS, but might need to tweakit to make it work fine 
     // new HappyPack({
@@ -62,16 +66,19 @@ module.exports = {
       {
         test: /\.tsx?$/,
         exclude: /node_modules/,
-        // loader: 'happypack/loader?id=ts'
         use: [
           {
-            loader: 'babel-loader',
+            loader: 'awesome-typescript-loader',
             options: {
-              babelrc: false,
-              plugins: ['react-hot-loader/babel'],
-            },
-          },
-          'awesome-typescript-loader'
+              useCache: true,
+              useBabel: true,
+              // babelOptions: {
+              //     babelrc: false,
+              //     plugins: ['react-hot-loader/babel'],
+              // },
+              babelCore: "@babel/core",
+            }
+          }
         ],
       },
       { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },

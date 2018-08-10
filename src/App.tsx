@@ -1,43 +1,27 @@
 // import * as path from 'path';
 import * as React from "react";
 import { hot } from "react-hot-loader";
-// import * as agent from 'superagent';
 import { Home, RouterHomeProps, HomeProps } from "./components/home/home";
-// import { BrowserRouter, Route, Link, match } from 'react-router-dom';
 import { BrowserRouter, Route, Redirect, RouteProps } from "react-router-dom";
 import Dashboard from "./components/dashboard/dashboard";
 import User from "./components/user/user";
-import { UserAPI } from "./models/interfaces";
 import { withRouter } from "react-router";
 import "./App.scss";
-
-// Font Awesome Library Initialization
-import fontawesome from "@fortawesome/fontawesome";
-import FontAwesomeIcon from "@fortawesome/react-fontawesome";
-import * as faCoffee from "@fortawesome/fontawesome-free-solid/faCoffee";
-import * as faAngleDoubleDown from "@fortawesome/fontawesome-free-solid/faAngleDoubleDown";
-import * as faBookmark from "@fortawesome/fontawesome-free-solid/faBookmark";
-import * as faGetPocket from "@fortawesome/fontawesome-free-brands/faGetPocket";
-
-fontawesome.library.add(faCoffee, faAngleDoubleDown, faBookmark, faGetPocket);
-
-export const api = new UserAPI(
-  localStorage.getItem("token"),
-  localStorage.getItem("req_token")
-);
-const RouterDashboard = withRouter(Dashboard);
-const RouterUser = withRouter(User);
-const RouterHome = withRouter(Home);
+import "./icons";
+import { ApiHelper } from './models/apiHelper';
 
 type PrivateRouteProps = { component: React.ComponentType<{}> } & RouteProps;
 
+const RouterDashboard = withRouter(Dashboard);
+const RouterUser = withRouter(User);
+const RouterHome = withRouter(Home);
 const PrivateRoute = (props: PrivateRouteProps) => {
   const { component: Component, ...rest } = props;
   return (
     <Route
       {...rest}
       render={p => {
-        if (api.isAuthenticated) {
+        if (ApiHelper.isAuthenticated) {
           return <Component {...props} />;
         } else {
           return <Redirect to={{ pathname: "/" }} />;

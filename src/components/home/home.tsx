@@ -1,17 +1,13 @@
+import "./home.scss";
 import * as React from "react";
 import FontAwesomeIcon from "@fortawesome/react-fontawesome";
-// import * as fetch from 'isomorphic-fetch';
-// import * as agent from 'superagent';
-// import * as pocket from 'node-pocket';
-// import { Login } from '../login/login';
 import MtSvgLines from "react-mt-svg-lines";
 import Logo from "../header/logo";
 import { Footer } from "../footer/footer";
-import "./home.scss";
-import { api } from "../../App";
 import { RouteComponentProps } from "react-router";
 import KindleSVG from "../graphics/kindle";
 import PhoneSVG from "../graphics/phone";
+import { ApiHelper } from '../../models/apiHelper';
 // import { Redirect } from 'react-router-dom';
 
 // const image = require('./kindle.svg');
@@ -27,21 +23,20 @@ export type RouterHomeProps = HomeProps & RouteComponentProps<null>;
 export class Home extends React.Component<RouterHomeProps> {
   handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
     e.preventDefault();
-    api.login();
-    // api.get_token();
+    ApiHelper.login();
   }
 
   async componentWillMount() {
-    if (api.isAuthenticated) {
+    if (ApiHelper.isAuthenticated) {
       this.props.history.push("/dashboard");
-    } else if (api.hasReqToken) {
-      let res = await api.get_token();
-      if (res.hasUserProfile) {
+    } else if (ApiHelper.hasCode) {
+      let user = await ApiHelper.authUser();
+      if (user.email !== null || user.kindle_email !== null) {
         this.props.history.push("/dashboard");
       } else {
-        let userId = res.user._id;
+        let userId = user.id;
         this.props.history.push(`/user/${userId}`, {
-          ...res.user,
+          ...user,
           newUser: true
         });
       }

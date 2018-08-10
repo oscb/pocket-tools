@@ -1,6 +1,5 @@
-import * as React from 'react';
-
 import "./checkCircle.scss";
+import * as React from 'react';
 
 export interface CheckCircleProps {
   label: string,
