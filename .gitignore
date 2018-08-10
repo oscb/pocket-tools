@@ -78,4 +78,8 @@ typings/
 # DS Store
 .DS_Store
 
+# Output
 dist/**
+
+# ATL Cache
+.awcache/**
