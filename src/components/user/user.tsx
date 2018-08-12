@@ -4,6 +4,9 @@ import { RouteComponentProps } from "react-router";
 import Modal from "../dashboard/modal";
 import { TextField } from "@material-ui/core";
 import { User, UserApi } from '../../models/user';
+import Loader from "../loader/loader";
+
+const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export interface UserProfileProps {
   newUser: boolean;
@@ -13,13 +16,17 @@ interface UrlParams {
   id: string;
 }
 
-interface UserProfileState extends User {}
+interface UserProfileState extends User {
+  isLoading: boolean;
+  errors: {[field: string]: boolean}
+}
 
 export default class UserProfile extends React.Component<
   UserProfileProps & RouteComponentProps<UrlParams>,
   UserProfileState
 > {
   user: string;
+  newUser: boolean = false;
 
   constructor(
     props: UserProfileProps & RouteComponentProps<UrlParams>,
@@ -27,7 +34,7 @@ export default class UserProfile extends React.Component<
   ) {
     super(props);
     if (props.history.location.state) {
-      props.newUser = props.history.location.state.newUser;
+      this.newUser = props.history.location.state.newUser;
     }
 
     let router_state: Partial<UserProfileState> = this.props.history.location
@@ -38,31 +45,79 @@ export default class UserProfile extends React.Component<
         ...state
       };
     }
+    this.loadUserData();
 
-    let id = props.match.params.id;
-
-    // this.props = props;
-    this.state = state;
+    this.state = {
+      isLoading: true,
+      errors: {},
+      ...state
+    };
   }
 
-  handleChange = event => {
+  async loadUserData() {
+    let user = await UserApi.me();
     this.setState({
       ...this.state,
-      [event.target.name]: event.target.value
+      isLoading: false,
+      username: user.username,
+      email: user.email,
+      kindle_email: user.kindle_email
+    });
+  }
+
+  validateEmail = (email: string): boolean => {
+    return emailRegex.test(email.toLowerCase());
+  }
+
+  validateKindleEmail = (email: string):boolean =>  {
+    return this.validateEmail(email) && email.toLowerCase().endsWith('@kindle.com');
+  }
+
+  validateForm(): boolean {
+    return this.state.kindle_email !== undefined && 
+      this.state.email !== undefined && 
+      this.validateKindleEmail(this.state.kindle_email) &&
+      this.validateEmail(this.state.email);
+  }
+  
+  handleChange(
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, 
+    validate?: (string) => boolean)
+  {
+    let errors: {[field: string]: boolean} = {};
+    if (validate !== undefined) {
+      errors[event.target.name] = !validate(event.target.value);
+    }
+
+    this.setState({
+      ...this.state,
+      [event.target.name]: event.target.value,
+      errors: {
+        ...this.state.errors,
+        ...errors
+      }
     });
   };
 
   save = event => {
     event.preventDefault();
-    // TODO: validate email
-    // TODO: validate that kindle email is an actual kindle email
-    // TODO: Send json to api
+    if (!this.validateForm()) {
+      // TODO: Error handling
+      return;
+    }
     UserApi.update(this.state as User);
   };
 
+  checkErrors(name: string): boolean {
+    return name in this.state.errors && this.state.errors[name];
+  }
+
   render() {
+    if (this.state.isLoading) {
+      return (<Loader message="Loading your user data" />);
+    } 
     return (
-      <Modal title={this.props.newUser ? "Setup your account!" : "Account"}>
+      <Modal title={this.newUser ? "Setup your account!" : "Account"}>
         <form className="user-editor">
           <TextField
             name="username"
@@ -72,11 +127,11 @@ export default class UserProfile extends React.Component<
             }}
             fullWidth
             value={this.state.username}
-            onChange={e => this.handleChange(e)}
             margin="normal"
             disabled
           />
           <TextField
+            error={this.checkErrors('email')}
             name="email"
             label="Email"
             InputLabelProps={{
@@ -85,10 +140,11 @@ export default class UserProfile extends React.Component<
             fullWidth
             placeholder="your_email@gmail.com"
             value={this.state.email}
-            onChange={e => this.handleChange(e)}
+            onChange={e => this.handleChange(e, this.validateEmail)}
             margin="normal"
           />
           <TextField
+            error={this.checkErrors('kindle_email')}
             name="kindle_email"
             label="Kindle Email"
             InputLabelProps={{
@@ -97,7 +153,7 @@ export default class UserProfile extends React.Component<
             fullWidth
             placeholder="your_kindle@kindle.com"
             value={this.state.kindle_email}
-            onChange={e => this.handleChange(e)}
+            onChange={e => this.handleChange(e, this.validateKindleEmail)}
             margin="normal"
           />
           <p>
@@ -111,7 +167,7 @@ export default class UserProfile extends React.Component<
             </i>
           </p>
         </form>
-        <button className="submit" onClick={e => this.save(e)}>
+        <button className="submit" disabled={!this.validateForm()} onClick={e => this.save(e)}>
           Save
         </button>
       </Modal>

@@ -19,6 +19,11 @@ export class UserAPI {
     this.authReq = authReqGenerator(token);
   }
 
+  public async me(): Promise<User> {
+    let resp = await this.authReq('GET', `/users/me`).send();
+    return this.toUser(resp.body);
+  }
+
   public async get(id: string): Promise<User> {
     let resp = await this.authReq('GET', `/users/${id}`).send();
     return this.toUser(resp.body);

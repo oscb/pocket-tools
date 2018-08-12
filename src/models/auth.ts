@@ -1,4 +1,4 @@
-import { publicReq } from './api';
+import { publicReq, authReq } from './api';
 import { User } from './user';
 
 interface LoginData {
@@ -9,8 +9,8 @@ interface LoginData {
 export class AuthAPI {
 
   public async getLoginUrl(): Promise<LoginData> {
-    const resp = await publicReq('GET', '/users/login').query({
-      redirect_uri: "http://localhost:8080" // TODO: Configurable
+    const resp = await publicReq('GET', '/auth').query({
+      redirect_uri: "http://localhost:3001" // TODO: Configurable
     });
     if (resp.error) {
       throw new Error('API Error: Retrieving Login URL');
@@ -19,10 +19,18 @@ export class AuthAPI {
   }
 
   public async authUser(code: string): Promise<User> {
-    const resp = await publicReq('POST', '/users/login').send({ code: code });
+    const resp = await publicReq('POST', '/auth').send({ code: code });
     if (resp.error) {
       throw new Error('API Error: Retrieving token');
     }
     return resp.body.user as User;
+  }
+
+  public async verify(token: string): Promise<boolean> {
+    const resp = await authReq('GET', '/auth/verify', token).send();
+    if (resp.error) {
+      return false;
+    }
+    return true;
   }
 }

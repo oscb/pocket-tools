@@ -1,7 +1,5 @@
-import fontawesome from "@fortawesome/fontawesome";
-import * as faCoffee from "@fortawesome/fontawesome-free-solid/faCoffee";
-import * as faAngleDoubleDown from "@fortawesome/fontawesome-free-solid/faAngleDoubleDown";
-import * as faBookmark from "@fortawesome/fontawesome-free-solid/faBookmark";
-import * as faGetPocket from "@fortawesome/fontawesome-free-brands/faGetPocket";
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faGetPocket } from '@fortawesome/free-brands-svg-icons'
+import { faCoffee, faAngleDoubleDown, faBookmark, faSpinner, faAsterisk, faSync } from '@fortawesome/free-solid-svg-icons'
 
-fontawesome.library.add(faCoffee, faAngleDoubleDown, faBookmark, faGetPocket);
+library.add(faCoffee, faAngleDoubleDown, faBookmark, faGetPocket, faSpinner, faAsterisk, faSync);

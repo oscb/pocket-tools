@@ -1,6 +1,6 @@
 import "./home.scss";
 import * as React from "react";
-import FontAwesomeIcon from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import MtSvgLines from "react-mt-svg-lines";
 import Logo from "../header/logo";
 import { Footer } from "../footer/footer";
@@ -8,6 +8,7 @@ import { RouteComponentProps } from "react-router";
 import KindleSVG from "../graphics/kindle";
 import PhoneSVG from "../graphics/phone";
 import { ApiHelper } from '../../models/apiHelper';
+import { UserApi, User } from "../../models/user";
 // import { Redirect } from 'react-router-dom';
 
 // const image = require('./kindle.svg');
@@ -27,19 +28,25 @@ export class Home extends React.Component<RouterHomeProps> {
   }
 
   async componentWillMount() {
-    if (ApiHelper.isAuthenticated) {
+    let user: User;
+    if (ApiHelper.hasCode) {
+      user = await ApiHelper.authUser();
+    } else {
+      user = await UserApi.me();
+    }
+    if (
+      user.email !== null && 
+      user.email !== undefined && 
+      user.kindle_email !== null && 
+      user.kindle_email !== undefined) 
+    {
       this.props.history.push("/dashboard");
-    } else if (ApiHelper.hasCode) {
-      let user = await ApiHelper.authUser();
-      if (user.email !== null || user.kindle_email !== null) {
-        this.props.history.push("/dashboard");
-      } else {
-        let userId = user.id;
-        this.props.history.push(`/user/${userId}`, {
-          ...user,
-          newUser: true
-        });
-      }
+    } else {
+      let userId = user.id;
+      this.props.history.push(`/user/${userId}`, {
+        ...user,
+        newUser: true
+      });
     }
   }
 
@@ -59,7 +66,7 @@ export class Home extends React.Component<RouterHomeProps> {
           </div>
         </div>
         <a href="#" onClick={e => this.handleClick(e)} className="login">
-          Login in Pocket <FontAwesomeIcon icon="getPocket" />
+          Login in Pocket <FontAwesomeIcon icon={['fab', 'get-pocket']} />
         </a>
         <Footer />
       </div>

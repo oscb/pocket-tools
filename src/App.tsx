@@ -1,6 +1,6 @@
 // import * as path from 'path';
 import * as React from "react";
-// import { hot } from "react-hot-loader";
+import { hot } from "react-hot-loader";
 import { Home, RouterHomeProps, HomeProps } from "./components/home/home";
 import { BrowserRouter, Route, Redirect, RouteProps } from "react-router-dom";
 import Dashboard from "./components/dashboard/dashboard";
@@ -58,5 +58,5 @@ class App extends React.Component {
   }
 }
 
-export default App;
-// export default hot(module)(App);
+// export default App;
+export default hot(module)(App);
