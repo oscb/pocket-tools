@@ -51,7 +51,7 @@ class App extends React.Component {
             }
           />
           <PrivateRoute path="/dashboard" component={RouterDashboard} />
-          <PrivateRoute path="/user/:id" component={RouterUser} />
+          <PrivateRoute path="/user" component={RouterUser} />
         </div>
       </BrowserRouter>
     );

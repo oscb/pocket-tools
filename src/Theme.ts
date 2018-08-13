@@ -7,6 +7,9 @@ const theme = createMuiTheme({
     },
     primary: {
       main: "rgba(39, 94, 132, 1)"
+    },
+    error: {
+      main: "rgba(255, 118, 132, 1)"
     }
   },
   overrides: {
@@ -26,6 +29,11 @@ const theme = createMuiTheme({
         "&:hover:not($disabled):not($focused):not($error):before": {
           // borderBottom: '2px solid rgba(255, 118, 132, 1)', // color2
         }
+      },
+    },
+    MuiFormHelperText: {
+      root: {
+        fontFamily: "Alegreya Sans, sans-serif",
       }
     },
     MuiCheckbox: {

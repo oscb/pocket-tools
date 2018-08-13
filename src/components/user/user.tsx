@@ -1,10 +1,12 @@
 import "./user.scss";
 import * as React from "react";
-import { RouteComponentProps } from "react-router";
+import { RouteComponentProps, Redirect } from "react-router";
 import Modal from "../dashboard/modal";
 import { TextField } from "@material-ui/core";
 import { User, UserApi } from '../../models/user';
 import Loader from "../loader/loader";
+import * as _ from "lodash";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -12,24 +14,29 @@ export interface UserProfileProps {
   newUser: boolean;
 }
 
-interface UrlParams {
-  id: string;
+enum FormState {
+  Loading,
+  Enabled,
+  Saving,
+  Saved
 }
 
 interface UserProfileState extends User {
-  isLoading: boolean;
-  errors: {[field: string]: boolean}
+  formState: FormState,
+  // TODO: Mix these 2 togheter
+  errors: {[field: string]: boolean};
+  saveError?: string;
 }
 
 export default class UserProfile extends React.Component<
-  UserProfileProps & RouteComponentProps<UrlParams>,
+  UserProfileProps & RouteComponentProps<any>,
   UserProfileState
 > {
   user: string;
   newUser: boolean = false;
 
   constructor(
-    props: UserProfileProps & RouteComponentProps<UrlParams>,
+    props: UserProfileProps & RouteComponentProps<any>,
     state: UserProfileState
   ) {
     super(props);
@@ -48,7 +55,7 @@ export default class UserProfile extends React.Component<
     this.loadUserData();
 
     this.state = {
-      isLoading: true,
+      formState: FormState.Loading,
       errors: {},
       ...state
     };
@@ -58,7 +65,8 @@ export default class UserProfile extends React.Component<
     let user = await UserApi.me();
     this.setState({
       ...this.state,
-      isLoading: false,
+      formState: FormState.Enabled,
+      id: user.id,
       username: user.username,
       email: user.email,
       kindle_email: user.kindle_email
@@ -79,33 +87,87 @@ export default class UserProfile extends React.Component<
       this.validateKindleEmail(this.state.kindle_email) &&
       this.validateEmail(this.state.email);
   }
+
+  debouncedValidation = (validator: (field: string) => boolean) =>  _.debounce((key: string, value: string) => {
+    let errors: {[field: string]: boolean} = {};
+    errors[key] = !validator(value);
+
+    this.setState({
+      ...this.state,
+      errors: {
+        ...this.state.errors,
+        ...errors
+      }
+    });
+  }, 500);
   
   handleChange(
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, 
-    validate?: (string) => boolean)
+    validate?: ((key: string, value: string) => void) & _.Cancelable)
   {
-    let errors: {[field: string]: boolean} = {};
-    if (validate !== undefined) {
-      errors[event.target.name] = !validate(event.target.value);
+    if(validate !== undefined) {
+      validate(event.target.name, event.target.value);
     }
 
     this.setState({
       ...this.state,
       [event.target.name]: event.target.value,
-      errors: {
-        ...this.state.errors,
-        ...errors
-      }
+      formState: this.state.formState !== FormState.Saving ? FormState.Enabled : this.state.formState
     });
   };
 
   save = event => {
     event.preventDefault();
     if (!this.validateForm()) {
-      // TODO: Error handling
+      this.setState({
+        ...this.state,
+        saveError: "There was an error saving your data, verify that all fields are correct and try again.",
+        errors: {
+          ...this.state.errors,
+          'save': true
+        }
+      });
       return;
     }
-    UserApi.update(this.state as User);
+    this.setState({
+      ...this.state,
+      formState: FormState.Saving,
+    });
+
+    let { 
+      // Only these fields are editable
+      id, 
+      kindle_email, 
+      email, 
+      ...other } = this.state;
+    const userData: Partial<User> = {
+      id: id, 
+      kindle_email: kindle_email,
+      email: email
+    };
+      
+
+    UserApi.update(userData).then(() => {
+      this.setState({
+        ...this.state,
+        formState: FormState.Saved,
+        errors: {}
+      });
+      setTimeout(() => {
+        this.props.history.push("/dashboard");
+      }, 1000);
+    }).catch((e) => {
+      let detail = e.response.body.error !== undefined ? e.response.body.error : '';
+      this.setState({
+        ...this.state,
+        formState: FormState.Enabled,
+        saveError: `There was an error saving your data. Status:${e.status} Message: ${e.message} ${detail}. Try again later. If you keep seeing this error send an email to support@pockettoolkit.com` ,
+        errors: {
+          ...this.state.errors,
+          'save': true
+        }
+      });
+    });
   };
 
   checkErrors(name: string): boolean {
@@ -113,11 +175,16 @@ export default class UserProfile extends React.Component<
   }
 
   render() {
-    if (this.state.isLoading) {
+    if (this.state.formState === FormState.Loading) {
       return (<Loader message="Loading your user data" />);
     } 
     return (
-      <Modal title={this.newUser ? "Setup your account!" : "Account"}>
+      <Modal 
+        title={this.newUser ? "Setup your account!" : "Account"} 
+        icon={this.state.formState === FormState.Saving ? 'sync' : this.state.formState === FormState.Saved ? 'check' : 'user'} 
+        spin={this.state.formState === FormState.Saving}
+        iconStyle={this.state.formState === FormState.Saved ? { background: 'rgba(39, 94, 132, 1)'} : {}}
+      >
         <form className="user-editor">
           <TextField
             name="username"
@@ -125,6 +192,7 @@ export default class UserProfile extends React.Component<
             InputLabelProps={{
               shrink: true
             }}
+            style={{marginTop: 0}}
             fullWidth
             value={this.state.username}
             margin="normal"
@@ -132,28 +200,32 @@ export default class UserProfile extends React.Component<
           />
           <TextField
             error={this.checkErrors('email')}
+            helperText={this.checkErrors('email') ? "Enter a valid email" : undefined}
             name="email"
             label="Email"
             InputLabelProps={{
               shrink: true
             }}
+            disabled={this.state.formState === FormState.Saving}
             fullWidth
             placeholder="your_email@gmail.com"
             value={this.state.email}
-            onChange={e => this.handleChange(e, this.validateEmail)}
+            onChange={e => this.handleChange(e, this.debouncedValidation(this.validateEmail))}
             margin="normal"
           />
           <TextField
             error={this.checkErrors('kindle_email')}
+            helperText={this.checkErrors('kindle_email') ? "Enter a valid email ending with @kindle.com" : undefined}
             name="kindle_email"
             label="Kindle Email"
             InputLabelProps={{
               shrink: true
             }}
+            disabled={this.state.formState === FormState.Saving}
             fullWidth
             placeholder="your_kindle@kindle.com"
             value={this.state.kindle_email}
-            onChange={e => this.handleChange(e, this.validateKindleEmail)}
+            onChange={e => this.handleChange(e, this.debouncedValidation(this.validateKindleEmail))}
             margin="normal"
           />
           <p>
@@ -166,10 +238,22 @@ export default class UserProfile extends React.Component<
               </a>
             </i>
           </p>
+          {
+          this.checkErrors('save') &&
+          <p className="form-error">
+            {this.state.saveError}
+          </p>
+          }
         </form>
+
+        {this.state.formState === FormState.Saving && <div className="user-saving">Saving...</div>}
+        {this.state.formState === FormState.Saved && <div className="user-saved">Saved!</div>}
+        {this.state.formState === FormState.Enabled && 
         <button className="submit" disabled={!this.validateForm()} onClick={e => this.save(e)}>
           Save
         </button>
+        }
+
       </Modal>
     );
   }

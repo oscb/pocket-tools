@@ -42,8 +42,7 @@ export class Home extends React.Component<RouterHomeProps> {
     {
       this.props.history.push("/dashboard");
     } else {
-      let userId = user.id;
-      this.props.history.push(`/user/${userId}`, {
+      this.props.history.push(`/user/`, {
         ...user,
         newUser: true
       });

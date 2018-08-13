@@ -34,7 +34,10 @@ export class UserAPI {
     return this.toUser(resp.body);
   }
 
-  public async update(user: User): Promise<User> {
+  public async update(user: Partial<User> | User): Promise<User> {
+    if (user.id === undefined) {
+      throw new Error('User must have an Id.');
+    }
     let resp = await this.authReq('PUT', `/users/${user.id}`).send(user);
     return this.toUser(resp.body);
   }

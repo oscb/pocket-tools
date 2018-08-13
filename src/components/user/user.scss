@@ -1,8 +1,11 @@
 @import "styles/colors.scss";
 
 .user-editor {
-  padding: 1em;
-  padding-bottom: 3em;
+  padding: 1rem;
+
+  div:first {
+    margin-top: 0;
+  }
 
   label {
     font-size: 11px;
@@ -18,4 +21,32 @@
     font-size: 0.8em;
     margin-top: 0;
   }
+
+  p.form-error {
+    color: $color2;
+  }
+}
+
+.user-saving {
+  box-sizing: border-box;
+  border: none;
+  background: $color1;
+  color: $color3;
+  width: 100%;
+  font-size: 18px;
+  padding: 0.5em;
+  font-weight: bold;
+  z-index: 20;
+}
+
+.user-saved {
+  box-sizing: border-box;
+  border: none;
+  background: $color3;
+  color: $color5;
+  width: 100%;
+  font-size: 18px;
+  padding: 0.5em;
+  font-weight: bold;
+  z-index: 20;
 }
