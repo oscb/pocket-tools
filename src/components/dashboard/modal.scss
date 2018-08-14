@@ -1,4 +1,5 @@
 @import "styles/colors.scss";
+@import "styles/animations.scss";
 
 .modal {
   position: absolute;
@@ -100,24 +101,5 @@
   
   .spin {
     animation: spin 1s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
-  }
-}
-
-@keyframes spin {
-  100% {
-    transform: scale(2, 2);
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 $color2;
-  }
-  70% {
-      box-shadow: 0 0 0 10px $color2;
-  }
-  100% {
-      box-shadow: 0 0 0 0 $color2;
   }
 }

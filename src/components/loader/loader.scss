@@ -1,4 +1,5 @@
 @import "styles/colors.scss";
+@import "styles/animations.scss";
 
 .loader {
   position: absolute;
@@ -65,11 +66,5 @@
     color: $color5;
     font-size: 2rem;
     animation: spin 2s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
-  }
-}
-
-@keyframes spin {
-  100% {
-    transform: rotate(360deg);
   }
 }

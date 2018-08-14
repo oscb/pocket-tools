@@ -1,5 +1,6 @@
 import { authReqGenerator } from './api';
 import * as agent from "superagent";
+import { ApiHelper } from './apiHelper';
 
 export interface Query {
   domain: string;
@@ -95,3 +96,5 @@ export class DeliveryAPI {
     return { ...other } as Article;
   }
 }
+
+export const DeliveryApi = new DeliveryAPI(ApiHelper.token);

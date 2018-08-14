@@ -4,13 +4,18 @@ import './loader.scss';
 
 export interface LoaderProps {
   message: string;
+  background: boolean;
 }
 
 export default class Loader extends React.Component<LoaderProps, any> {
+  static defaultProps = {
+    background: true
+  }
+
   public render() {
     return (
       <div className="loader">
-        <div className="loader-background" />
+        {this.props.background && <div className="loader-background" /> }
         <div className="loader-content">
           <div className="loader-icon">
             <FontAwesomeIcon icon='sync' className="spin"/>
