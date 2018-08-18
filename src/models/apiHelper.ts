@@ -4,18 +4,24 @@ import { User } from './user';
 class APIHelper {
   public token?: string;
   private code?: string;
+  private user?: User;
 
-  get isAuthenticated() {
+  get isAuthenticated(): boolean {
     return this.token !== null;
   }
 
-  get hasCode() {
+  get hasCode(): boolean {
     return this.code !== null;
+  }
+
+  get userData(): User {
+    return this.user;
   }
 
   constructor() {
     this.token = localStorage.getItem('token');
     this.code = localStorage.getItem('code');
+    this.user = JSON.parse(localStorage.getItem('user')) as User;
   }
 
   async login() {
@@ -39,6 +45,7 @@ class APIHelper {
     let user = await authApi.authUser(this.code);
     this.token = user.token;
     this.code = null;
+    this.user = user;
     localStorage.removeItem('code');
     localStorage.setItem('token', this.token);
     localStorage.setItem('user', JSON.stringify(user));

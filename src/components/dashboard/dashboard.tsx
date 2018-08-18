@@ -49,34 +49,35 @@ export default class Dashboard extends React.Component<
   }
 
   render() {
-    return (
-      <div className="dashboard">
-        <Header logo="Pocket Tools">
-          <Link to="/dashboard">Dashboard</Link>
-          <Link to="/user">Account</Link>
-          <a href="#" onClick={e => this.logout(e)}>
-            Logout
-          </a>
-        </Header>
-        <DeliveryEditor />
-        <div className="dashboard-content">
-        {/* Loading */}
-          {this.state.status === DashboardStatus.loading &&
-            <Loader message="Loading deliveries"/>
-          }
-        {/* Loaded Empty */}
-          {this.state.status === DashboardStatus.loaded && 
-          this.state.deliveries && 
-          <div className="empty">
-            <p className="empty-icon"><FontAwesomeIcon icon="truck"/></p>
-            <p>You don't have deliveries yet!</p>
-          </div>}
-        {/* TODO: Loaded show deliveries */}
-          {this.props.children}
-          <button className="add-new"><FontAwesomeIcon icon="plus-circle" /> Create delivery</button>
-        </div>
-      </div>
-    );
+    return (<DeliveryEditor history={this.props.history} location={this.props.location} match={this.props.match}/>)
+
+    // return (
+    //   <div className="dashboard">
+    //     <Header logo="Pocket Tools">
+    //       <Link to="/dashboard">Dashboard</Link>
+    //       <Link to="/user">Account</Link>
+    //       <a href="#" onClick={e => this.logout(e)}>
+    //         Logout
+    //       </a>
+    //     </Header>
+    //     <div className="dashboard-content">
+    //     {/* Loading */}
+    //       {this.state.status === DashboardStatus.loading &&
+    //         <Loader message="Loading deliveries"/>
+    //       }
+    //     {/* Loaded Empty */}
+    //       {this.state.status === DashboardStatus.loaded && 
+    //       this.state.deliveries && 
+    //       <div className="empty">
+    //         <p className="empty-icon"><FontAwesomeIcon icon="truck"/></p>
+    //         <p>You don't have deliveries yet!</p>
+    //       </div>}
+    //     {/* TODO: Loaded show deliveries */}
+    //       {this.props.children}
+    //       <button className="add-new"><FontAwesomeIcon icon="plus-circle" /> Create delivery</button>
+    //     </div>
+    //   </div>
+    // );
   }
 
   private logout(e: React.MouseEvent<HTMLAnchorElement>) {

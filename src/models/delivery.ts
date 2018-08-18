@@ -3,12 +3,12 @@ import * as agent from "superagent";
 import { ApiHelper } from './apiHelper';
 
 export interface Query {
-  domain: string;
+  domain?: string;
   countType: string;
   count: number;
   orderBy: string;
-  includedTags: string[];
-  excludedTags: string[];
+  includedTags?: string[];
+  excludedTags?: string[];
   longformOnly: boolean;
 }
 
@@ -30,8 +30,8 @@ export interface Delivery {
   query: Query;
   frequency: string;
   time: string;
-  day: string;
-  mailings: Mailing[];
+  day?: string;
+  mailings?: Mailing[];
 }
 
 export class DeliveryAPI {

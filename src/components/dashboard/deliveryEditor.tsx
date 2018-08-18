@@ -8,7 +8,11 @@ import { Checkbox, Divider, TextField } from "@material-ui/core";
 import Counter, { CounterProps } from "./counter";
 import Modal, { ModalProps } from "./modal";
 // import { hot } from "react-hot-loader";
-import { Delivery } from '../../models/delivery';
+import { Delivery, Query } from '../../models/delivery';
+import { RouteComponentProps } from "react-router";
+import { AuthAPI } from "../../models/auth";
+import { User } from "../../models/user";
+import { ApiHelper } from "../../models/apiHelper";
 
 export interface DeliveryEditorProps {}
 
@@ -44,18 +48,24 @@ interface DeliveryEditorState {
   count: number;
   showAdvanced: boolean;
   longformOnly: boolean;
-  included: string;
-  excluded: string;
-  domain: string;
+  included?: string;
+  excluded?: string;
+  domain?: string;
+  kindle_email: string;
 }
 
 class DeliveryEditor extends React.Component<
-  DeliveryEditorProps,
+  DeliveryEditorProps & RouteComponentProps<any>,
   DeliveryEditorState
 > {
-  constructor(props: DeliveryEditorProps, state: DeliveryEditorState) {
+  private User: User;
+
+  constructor(props: DeliveryEditorProps & RouteComponentProps<any>, state: DeliveryEditorState) {
     super(props);
     // Default form options
+    this.User = ApiHelper.userData;
+    // TODO: Data in localstorage might be bad, need to have a fallback
+
     this.state = {
       countType: CountType.Time,
       orderBy: OrderBy.Newest,
@@ -65,10 +75,32 @@ class DeliveryEditor extends React.Component<
       archive: true,
       showAdvanced: false,
       longformOnly: false,
-      included: "",
-      excluded: "",
-      domain: ""
+      kindle_email: this.User.kindle_email
     };
+  }
+
+  // apiToState(delivery: Delivery): DeliveryEditorState {
+
+  // }
+
+  stateToApi(state: DeliveryEditorState): Delivery {
+    return {
+      user: this.User.id,
+      kindle_email: this.state.kindle_email,
+      active: true,
+      query: {
+        domain: this.state.domain,
+        countType: CountType[this.state.countType],
+        count: this.state.count,
+        orderBy: OrderBy[this.state.orderBy],
+        includedTags: this.state.included.split(','),
+        excludedTags: this.state.excluded.split(','),
+        longformOnly: this.state.longformOnly
+      } as Query,
+      frequency: Frequency[this.state.frequency],
+      time: TimeOpts[this.state.time], // TODO: Revisit this when working on the scheduler
+      day: "", // TODO: How is this one going to show up?
+    } as Delivery;
   }
 
   handleChange = event => {
@@ -113,30 +145,33 @@ class DeliveryEditor extends React.Component<
         <form className="delivery-editor">
           <div className="editor">
             <div className="section">
-              <h3>
-                <span>Articles</span>
-              </h3>
-              <fieldset className="count">
-                <label>How many?</label>
-                <div className="count-selection">
-                  <Select
-                    value={this.state.countType}
-                    onChange={this.handleChange}
-                    inputProps={{
-                      name: "countType",
-                      id: "countType-value"
-                    }}
-                    // autoWidth={true}
-                  >
-                    <MenuItem value={CountType.Time}>By Time</MenuItem>
-                    <MenuItem value={CountType.Count}>By Count</MenuItem>
-                  </Select>
-                </div>
-                {/* Switch between input and selection */}
-                <Counter
-                  {...counterOpts as CounterProps}
-                  count={this.state.count}
-                />
+              <div className="main">
+                <h3>
+                  <span>Articles</span>
+                </h3>
+                <fieldset className="count">
+                  <label>How many?</label>
+                  <div className="row">
+                    <div className="count-selection">
+                      <Select
+                        value={this.state.countType}
+                        onChange={this.handleChange}
+                        inputProps={{
+                          name: "countType",
+                          id: "countType-value"
+                        }}
+                        // autoWidth={true}
+                      >
+                        <MenuItem value={CountType.Time}>By Time</MenuItem>
+                        <MenuItem value={CountType.Count}>By Count</MenuItem>
+                      </Select>
+                    </div>
+                    {/* Switch between input and selection */}
+                    <Counter
+                      {...counterOpts as CounterProps}
+                      count={this.state.count}
+                    />
+                  </div>
               </fieldset>
               <fieldset className="order">
                 <label>Order By</label>
@@ -153,6 +188,7 @@ class DeliveryEditor extends React.Component<
                   <MenuItem value={OrderBy.Oldest}>Oldest</MenuItem>
                 </Select>
               </fieldset>
+            </div>
               <a
                 href="#"
                 className="toggleAdvanced"
@@ -235,37 +271,39 @@ class DeliveryEditor extends React.Component<
 
               <fieldset className="delivery">
                 <label>When?</label>
-                <div className="frequency">
-                  <Select
-                    value={this.state.frequency}
-                    onChange={this.handleChange}
-                    inputProps={{
-                      name: "frequency",
-                      id: "frequency-value"
-                    }}
-                    // autoWidth={true}
-                  >
-                    <MenuItem value={Frequency.Daily}>Daily</MenuItem>
-                    <MenuItem value={Frequency.Weekly}>Weekly</MenuItem>
-                    {/* <MenuItem value={Frequency.Monthly}>Monthly</MenuItem> */}
-                  </Select>
-                </div>
-                <div className="time">
-                  <Select
-                    value={this.state.time}
-                    onChange={this.handleChange}
-                    inputProps={{
-                      name: "time",
-                      id: "time-value"
+                <div className="row">
+                  <div className="frequency">
+                    <Select
+                      value={this.state.frequency}
+                      onChange={this.handleChange}
+                      inputProps={{
+                        name: "frequency",
+                        id: "frequency-value"
+                      }}
                       // autoWidth={true}
-                    }}
-                  >
-                    <MenuItem value={TimeOpts.Morning}>Morning</MenuItem>
-                    <MenuItem value={TimeOpts.Noon}>Noon</MenuItem>
-                    <MenuItem value={TimeOpts.Afternoon}>Afternoon</MenuItem>
-                    <MenuItem value={TimeOpts.Evening}>Evening</MenuItem>
-                    <MenuItem value={TimeOpts.Midnight}>Midnight</MenuItem>
-                  </Select>
+                    >
+                      <MenuItem value={Frequency.Daily}>Daily</MenuItem>
+                      <MenuItem value={Frequency.Weekly}>Weekly</MenuItem>
+                      {/* <MenuItem value={Frequency.Monthly}>Monthly</MenuItem> */}
+                    </Select>
+                  </div>
+                  <div className="time">
+                    <Select
+                      value={this.state.time}
+                      onChange={this.handleChange}
+                      inputProps={{
+                        name: "time",
+                        id: "time-value"
+                        // autoWidth={true}
+                      }}
+                    >
+                      <MenuItem value={TimeOpts.Morning}>Morning</MenuItem>
+                      <MenuItem value={TimeOpts.Noon}>Noon</MenuItem>
+                      <MenuItem value={TimeOpts.Afternoon}>Afternoon</MenuItem>
+                      <MenuItem value={TimeOpts.Evening}>Evening</MenuItem>
+                      <MenuItem value={TimeOpts.Midnight}>Midnight</MenuItem>
+                    </Select>
+                  </div>
                 </div>
 
                 {this.state.frequency === Frequency.Weekly && (
