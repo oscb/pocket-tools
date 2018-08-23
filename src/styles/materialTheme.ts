@@ -9,6 +9,9 @@ const theme = createMuiTheme({
     primary: {
       main: Theme.secondaryColor
     },
+    secondary: {
+      main: Theme.mainColor
+    },
     error: {
       main: Theme.mainColor
     }
@@ -17,8 +20,8 @@ const theme = createMuiTheme({
     MuiInput: {
       root: {
         width: "100%",
-        fontFamily: "Alegreya Sans, sans-serif",
-        color: Theme.secondaryColor // TODO: Read from Theme
+        fontFamily: "Alegreya Sans, Helvetica, sans-serif",
+        // color: Theme.secondaryColor // TODO: Read from Theme
       },
       underline: {
         "&:after": {
@@ -34,29 +37,7 @@ const theme = createMuiTheme({
     },
     MuiFormHelperText: {
       root: {
-        fontFamily: "Alegreya Sans, sans-serif",
-      }
-    },
-    MuiCheckbox: {
-      root: {
-        width: "1em",
-        height: "1em"
-      },
-      colorPrimary: {
-        "&$checked": {
-          color: Theme.mainColor 
-        },
-        "&$disabled": {
-          color: Theme.textColorSubtle
-        }
-      },
-      colorSecondary: {
-        "&$checked": {
-          color: Theme.mainColor 
-        },
-        "&$disabled": {
-          color: Theme.textColorSubtle
-        }
+        fontFamily: "Alegreya Sans, Helvetica, sans-serif",
       }
     },
     MuiSelect: {
@@ -71,6 +52,15 @@ const theme = createMuiTheme({
     MuiFormLabel: {
       root: {
         marginTop: 0,
+        fontSize: '16px',
+        fontWeight: 'normal',
+        color: Theme.textColor,
+        fontFamily: "Alegreya Sans, Helvetica, sans-serif",
+      }
+    },
+    MuiInputLabel: {
+      shrink: {
+        textTransform: 'uppercase',
       }
     }
   }

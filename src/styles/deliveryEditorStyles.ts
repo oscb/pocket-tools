@@ -14,18 +14,40 @@ type AdvancedProps = {
   open: boolean
 }
 
-const StyledAdvanced = styled('div')`
-  padding: 0 1rem;
-  overflow: hidden;
-  transition: max-height 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
-  background: rgba(0, 0, 0, 0.1);
-  max-height: 0;
-  max-height: ${(props: AdvancedProps) => props.open ? '1000px' : '0'};
+const expand = keyframes`
+  0%, from {
+    max-height: 0;
+  }
+
+  100%, to {
+    max-height: 1000px;
+  }
 `
 
-const StyledEditor = styled('div')`
-  
+const contract = keyframes`
+  0%, from {
+    max-height: 1000px;
+  }
+
+  100%, to {
+    max-height: 0;
+  }
 `
+
+const StyledAdvanced = styled('div')<AdvancedProps>(
+  {
+    padding: '0 1rem',
+    overflow: 'hidden',
+    background: 'rgba(0, 0, 0, 0.1)',
+    maxHeight: 0,
+  }, 
+  (props) => ({
+    animation: `${props.open ? expand : contract} 1s cubic-bezier(0.0, 0, 0.2, 1) 0s 1 forwards`,
+  })
+);
+
+
+const StyledEditor = styled('div')``
 
 const StyledSectionRow = styled('div')`
   display: flex;
@@ -89,6 +111,16 @@ const StyledSelect = styled(Select)`
   flex: 1 1 100%;
 `
 
+const StyledLabel = styled('label')`
+  font-size: 12px; /* 16px * 0.75 of scaling in a normal component */
+  font-weight: normal;
+  color: ${props => props.theme.textColor};
+  text-transform: uppercase;
+  width: 100%;
+  display: block;
+  text-align: left;
+`
+
 export const EditorStyles = {
   Counter: StyledEditorCounter,
   Week: StyledEditorWeek,
@@ -98,5 +130,6 @@ export const EditorStyles = {
   Editor: StyledEditor,
   Advanced: StyledAdvanced,
   Toggle: StyledToggleAdvanced,
-  Select: StyledSelect
+  Select: StyledSelect,
+  Label: StyledLabel
 }

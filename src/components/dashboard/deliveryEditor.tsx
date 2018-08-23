@@ -3,7 +3,7 @@ import Select from "@material-ui/core/Select";
 import Radio from "@material-ui/core/Radio";
 import MenuItem from "@material-ui/core/MenuItem";
 import CheckCircle from "./checkCircle";
-import { Checkbox, Divider, TextField } from "@material-ui/core";
+import { Checkbox, Divider, TextField, FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 import Counter, { CounterProps } from "./counter";
 import Modal, { ModalProps } from "./modal";
 // import { hot } from "react-hot-loader";
@@ -150,12 +150,12 @@ class DeliveryEditor extends React.Component<
       <Modal title="New Delivery!">
         <ModalStyles.Form>
           <EditorStyles.Editor>
-            <ModalStyles.Section>
+            <ModalStyles.Section className={css`margin-bottom: 0;`}>
               <EditorStyles.SectionTitle>
                 <span>Articles</span>
               </EditorStyles.SectionTitle>
               <EditorStyles.Fieldset>
-                <label>How many?</label>
+                <EditorStyles.Label>How many?</EditorStyles.Label>
                 <EditorStyles.Row>
                   <EditorStyles.Select
                     value={this.state.countType}
@@ -179,7 +179,7 @@ class DeliveryEditor extends React.Component<
                 </EditorStyles.Row>
               </EditorStyles.Fieldset>
               <EditorStyles.Fieldset>
-                <label>Order By</label>
+                <EditorStyles.Label>Order By</EditorStyles.Label>
                 <EditorStyles.Select
                   value={this.state.orderBy}
                   onChange={this.handleChange}
@@ -207,22 +207,23 @@ class DeliveryEditor extends React.Component<
                   name="domain"
                   label="Domain"
                   InputLabelProps={{
-                    shrink: true
+                    // shrink: true
                   }}
                   placeholder="e.g. newyorker.com, theverge.com, ..."
                   fullWidth
                   value={this.state.domain}
                   onChange={e => this.handleChange(e)}
                   margin="normal"
+                  helperText="Leave empty to include all"
                 />
 
                 {/* Included Tags */}
                 <TextField
                   name="included"
-                  label="included"
+                  label="Included Tags"
                   // className={classes.textField}
                   InputLabelProps={{
-                    shrink: true
+                    // shrink: true
                   }}
                   placeholder="e.g. tech, videogames, developer notes, ..."
                   multiline
@@ -230,15 +231,17 @@ class DeliveryEditor extends React.Component<
                   value={this.state.included}
                   onChange={e => this.handleChange(e)}
                   margin="normal"
+                  helperText="All tagged and untagged included by default. Sepparate with commas (,)"
                 />
 
                 {/* Excluded Tags */}
                 <TextField
                   name="excluded"
-                  label="excluded"
+                  label="Excluded Tags"
                   // className={classes.textField}
                   InputLabelProps={{
-                    shrink: true
+                    // shrink: true,
+
                   }}
                   placeholder="e.g. funny videos, recipes, ..."
                   multiline
@@ -246,21 +249,26 @@ class DeliveryEditor extends React.Component<
                   value={this.state.excluded}
                   onChange={e => this.handleChange(e)}
                   margin="normal"
+                  helperText="All tagged and untagged included by default"
                 />
 
                 {/* Longform only */}
-                <label className={css`margin-bottom: 1rem;`}>
-                  <Checkbox
-                    checked={this.state.longformOnly}
-                    onChange={x =>
-                      this.setState({
-                        ...this.state,
-                        longformOnly: !this.state.longformOnly
-                      })
+                <FormGroup row>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={this.state.longformOnly}
+                        onChange={x =>
+                          this.setState({
+                            ...this.state,
+                            longformOnly: !this.state.longformOnly
+                          })}
+                        value="longformOnly"
+                      />
                     }
+                    label="Longform articles only (15+ mins)?"
                   />
-                  <span>Longform articles only (15+ mins)?</span>
-                </label>
+                </FormGroup>
               </EditorStyles.Advanced>
 
             <ModalStyles.Section>
@@ -269,7 +277,7 @@ class DeliveryEditor extends React.Component<
               </EditorStyles.SectionTitle>
 
               <EditorStyles.Fieldset>
-                <label>When?</label>
+                <EditorStyles.Label>When?</EditorStyles.Label>
                 <EditorStyles.Row>
                   <Select
                     value={this.state.frequency}
@@ -313,18 +321,24 @@ class DeliveryEditor extends React.Component<
                   </EditorStyles.Week>
                 )}
 
-                <label>
-                  <Checkbox
-                    checked={this.state.archive}
-                    onChange={x =>
-                      this.setState({
-                        ...this.state,
-                        archive: !this.state.archive
-                      })
+                <FormGroup row>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={this.state.archive}
+                        onChange={x =>
+                          this.setState({
+                            ...this.state,
+                            archive: !this.state.archive
+                          })}
+                        value="longformOnly"
+                        color="primary"
+                      />
                     }
+                    label="Archive after delivery?"
                   />
-                  <span>Archive after delivery?</span>
-                </label>
+                </FormGroup>
+
               </EditorStyles.Fieldset>
             </ModalStyles.Section>
           </EditorStyles.Editor>

@@ -145,24 +145,14 @@ const StyledModalForm = styled('form')`
   justify-content: center;
   flex-wrap: wrap;
 
-  label {
-    font-size: 0.8rem;
-    font-weight: normal;
-    color: ${props => props.theme.textColor};
-    text-transform: uppercase;
-    width: 100%;
-    display: block;
-    text-align: left;
-    /* margin-top: 1em; */
-  }
-
   p.info {
     color: ${props => props.theme.textColorSubtle};
-    font-size: 0.8rem;
+    font-size: 12px;
     /* margin-top: 0; */
   }
 
   p.error {
+    font-size: 12px;
     color: ${props => props.theme.mainColor};
   }
 `
