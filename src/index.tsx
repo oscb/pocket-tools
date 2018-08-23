@@ -8,14 +8,18 @@ import "./index.scss";
 import { MuiThemeProvider } from "@material-ui/core";
 
 // Material Theme
-import theme from "./Theme";
+import theme from "./styles/materialTheme";
+import { ThemeProvider } from "emotion-theming";
+import { Theme } from "./styles/theme";
 
 const root = document.createElement("div");
 document.body.appendChild(root);
 
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
-    <App />
+    <ThemeProvider theme={Theme}>
+      <App />
+    </ThemeProvider>
   </MuiThemeProvider>,
   root
 );

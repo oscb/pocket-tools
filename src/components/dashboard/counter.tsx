@@ -1,6 +1,5 @@
 import * as React from "react";
-
-import "./counter.scss";
+import styled from "react-emotion";
 
 export interface CounterProps {
   count: number;
@@ -14,6 +13,46 @@ export interface CounterProps {
 export interface CounterState {
   count: number;
 }
+
+const StyledCounter = styled('div')`
+  display: flex;
+  vertical-align: top;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+
+  span {
+    flex: 2 0 5rem;
+    color: ${props => props.theme.textColor};
+    font-size: 1.2rem;
+  }
+
+  button {
+    flex: 0 0 2rem;
+    box-sizing: border-box;
+    background: ${props => props.theme.mainColor};
+    color: ${props => props.theme.bgColor};
+    border: none;
+    border-radius: 2rem;
+    height: 2rem;
+    width: 2rem;
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+
+    &:hover {
+      transform: scale(1.1, 1.1);
+    }
+
+    &:active {
+      transform: scale(0.8, 0.8);
+    }
+
+    &:focus {
+      outline:0;
+    }
+  }
+`
 
 export default class Counter extends React.Component<
   CounterProps,
@@ -74,13 +113,13 @@ export default class Counter extends React.Component<
 
   render() {
     return (
-      <div className="count-number">
+      <StyledCounter>
         <button onClick={e => this.handleChange(e, false)}>-</button>
         <span>
           {this.state.count} {this.props.units}
         </span>
         <button onClick={e => this.handleChange(e, true)}>+</button>
-      </div>
+      </StyledCounter>
     );
   }
 }

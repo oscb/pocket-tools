@@ -9,6 +9,8 @@ import { withRouter } from "react-router";
 import "./App.scss";
 import "./icons";
 import { ApiHelper } from './models/apiHelper';
+import { ThemeProvider } from "emotion-theming";
+import { Theme } from "./styles/theme";
 
 type PrivateRouteProps = { component: React.ComponentType<{}> } & RouteProps;
 

@@ -1,4 +1,3 @@
-import "./user.scss";
 import * as React from "react";
 import { RouteComponentProps, Redirect } from "react-router";
 import Modal from "../dashboard/modal";
@@ -7,6 +6,8 @@ import { User, UserApi } from '../../models/user';
 import Loader from "../loader/loader";
 import * as _ from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ModalStyles } from "../../styles/modalStyles";
+import { css } from "emotion";
 
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -156,7 +157,7 @@ export default class UserProfile extends React.Component<
       });
       setTimeout(() => {
         this.props.history.push("/dashboard");
-      }, 1000);
+      }, 2000);
     }).catch((e) => {
       let detail = e.response.body.error !== undefined ? e.response.body.error : '';
       this.setState({
@@ -186,74 +187,78 @@ export default class UserProfile extends React.Component<
         spin={this.state.formState === FormState.Saving}
         iconStyle={this.state.formState === FormState.Saved ? { background: 'rgba(39, 94, 132, 1)'} : {}}
       >
-        <form className="user-editor">
-          <TextField
-            name="username"
-            label="Pocket Username"
-            InputLabelProps={{
-              shrink: true
-            }}
-            style={{marginTop: 0}}
-            fullWidth
-            value={this.state.username}
-            margin="normal"
-            disabled
-          />
-          <TextField
-            error={this.checkErrors('email')}
-            helperText={this.checkErrors('email') ? "Enter a valid email" : undefined}
-            name="email"
-            label="Email"
-            InputLabelProps={{
-              shrink: true
-            }}
-            disabled={this.state.formState === FormState.Saving}
-            fullWidth
-            placeholder="your_email@gmail.com"
-            value={this.state.email}
-            onChange={e => this.handleChange(e, this.debouncedValidation(this.validateEmail))}
-            margin="normal"
-          />
-          <TextField
-            error={this.checkErrors('kindle_email')}
-            helperText={this.checkErrors('kindle_email') ? "Enter a valid email ending with @kindle.com" : undefined}
-            name="kindle_email"
-            label="Kindle Email"
-            InputLabelProps={{
-              shrink: true
-            }}
-            disabled={this.state.formState === FormState.Saving}
-            fullWidth
-            placeholder="your_kindle@kindle.com"
-            value={this.state.kindle_email}
-            onChange={e => this.handleChange(e, this.debouncedValidation(this.validateKindleEmail))}
-            margin="normal"
-          />
-          <p>
-            {/* TODO: Add quick copy button to copy the email! */}
-            <i>
-              Remember to give access to deliveries@pockettools.xyz in to your
-              approved email list in Amazon!{" "}
-              <a href="https://www.amazon.com/gp/help/customer/display.html?nodeId=201974240">
-                Learn more
-              </a>
-            </i>
-          </p>
-          {
-          this.checkErrors('save') &&
-          <p className="form-error">
-            {this.state.saveError}
-          </p>
-          }
-        </form>
+        <ModalStyles.Form>
+          <ModalStyles.Section>
 
-        {this.state.formState === FormState.Saving && <div className="user-saving">Saving...</div>}
-        {this.state.formState === FormState.Saved && <div className="user-saved">Saved!</div>}
-        {this.state.formState === FormState.Enabled && 
-        <button className="submit" disabled={!this.validateForm()} onClick={e => this.save(e)}>
-          Save
-        </button>
-        }
+            <TextField
+              name="username"
+              label="Pocket Username"
+              InputLabelProps={{
+                shrink: true
+              }}
+              style={{marginTop: 0}}
+              fullWidth
+              value={this.state.username}
+              margin="normal"
+              disabled
+            />
+            <TextField
+              error={this.checkErrors('email')}
+              helperText={this.checkErrors('email') ? "Enter a valid email" : undefined}
+              name="email"
+              label="Email"
+              InputLabelProps={{
+                shrink: true
+              }}
+              disabled={this.state.formState === FormState.Saving}
+              fullWidth
+              placeholder="your_email@gmail.com"
+              value={this.state.email}
+              onChange={e => this.handleChange(e, this.debouncedValidation(this.validateEmail))}
+              margin="normal"
+            />
+            <TextField
+              error={this.checkErrors('kindle_email')}
+              helperText={this.checkErrors('kindle_email') ? "Enter a valid email ending with @kindle.com" : undefined}
+              name="kindle_email"
+              label="Kindle Email"
+              InputLabelProps={{
+                shrink: true
+              }}
+              disabled={this.state.formState === FormState.Saving}
+              fullWidth
+              placeholder="your_kindle@kindle.com"
+              value={this.state.kindle_email}
+              onChange={e => this.handleChange(e, this.debouncedValidation(this.validateKindleEmail))}
+              margin="normal"
+            />
+            <p className="info">
+              {/* TODO: Add quick copy button to copy the email! */}
+              <i>
+                Remember to give access to deliveries@pockettools.xyz in to your
+                approved email list in Amazon!{" "}
+                <a href="https://www.amazon.com/gp/help/customer/display.html?nodeId=201974240">
+                  Learn more
+                </a>
+              </i>
+            </p>
+            {
+            this.checkErrors('save') &&
+            <p className="info error">
+              {this.state.saveError}
+            </p>
+            }
+          </ModalStyles.Section>
+
+          {this.state.formState === FormState.Saving && <ModalStyles.Status>Saving...</ModalStyles.Status>}
+          {this.state.formState === FormState.Saved && <ModalStyles.Status>Saved!</ModalStyles.Status>}
+          {this.state.formState === FormState.Enabled && 
+          <ModalStyles.Button disabled={!this.validateForm()} onClick={e => this.save(e)}>
+            Save
+          </ModalStyles.Button>
+          }
+        </ModalStyles.Form>
+
 
       </Modal>
     );

@@ -1,15 +1,16 @@
 import { createMuiTheme } from "@material-ui/core/styles";
+import { Theme } from "./theme";
 
 const theme = createMuiTheme({
   palette: {
     text: {
-      primary: "rgba(39, 94, 132, 1)"
+      primary: Theme.textColor
     },
     primary: {
-      main: "rgba(39, 94, 132, 1)"
+      main: Theme.secondaryColor
     },
     error: {
-      main: "rgba(255, 118, 132, 1)"
+      main: Theme.mainColor
     }
   },
   overrides: {
@@ -17,7 +18,7 @@ const theme = createMuiTheme({
       root: {
         width: "100%",
         fontFamily: "Alegreya Sans, sans-serif",
-        color: "rgba(39, 94, 132, 1)"
+        color: Theme.secondaryColor // TODO: Read from Theme
       },
       underline: {
         "&:after": {
@@ -43,18 +44,18 @@ const theme = createMuiTheme({
       },
       colorPrimary: {
         "&$checked": {
-          color: "rgba(255, 118, 132, 1)"
+          color: Theme.mainColor 
         },
         "&$disabled": {
-          color: "#9f9f9f"
+          color: Theme.textColorSubtle
         }
       },
       colorSecondary: {
         "&$checked": {
-          color: "rgba(255, 118, 132, 1)"
+          color: Theme.mainColor 
         },
         "&$disabled": {
-          color: "#9f9f9f"
+          color: Theme.textColorSubtle
         }
       }
     },
@@ -65,6 +66,11 @@ const theme = createMuiTheme({
       },
       select: {
         textAlign: "left"
+      }
+    },
+    MuiFormLabel: {
+      root: {
+        marginTop: 0,
       }
     }
   }

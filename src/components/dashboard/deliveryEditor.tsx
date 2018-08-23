@@ -1,5 +1,4 @@
 import * as React from "react";
-import "./deliveryEditor.scss";
 import Select from "@material-ui/core/Select";
 import Radio from "@material-ui/core/Radio";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -13,6 +12,12 @@ import { RouteComponentProps } from "react-router";
 import { AuthAPI } from "../../models/auth";
 import { User } from "../../models/user";
 import { ApiHelper } from "../../models/apiHelper";
+import { EditorStyles } from "../../styles/deliveryEditorStyles";
+import { ThemeProvider } from "emotion-theming";
+import { Theme } from "../../styles/theme";
+import { ModalStyles } from "../../styles/modalStyles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { css } from "emotion";
 
 export interface DeliveryEditorProps {}
 
@@ -110,7 +115,8 @@ class DeliveryEditor extends React.Component<
     });
   };
 
-  showAdvanded() {
+  showAdvanced = event => {
+    event.preventDefault();
     this.setState(state => {
       return {
         ...state,
@@ -142,40 +148,39 @@ class DeliveryEditor extends React.Component<
 
     return (
       <Modal title="New Delivery!">
-        <form className="delivery-editor">
-          <div className="editor">
-            <div className="section">
-              <div className="main">
-                <h3>
-                  <span>Articles</span>
-                </h3>
-                <fieldset className="count">
-                  <label>How many?</label>
-                  <div className="row">
-                    <div className="count-selection">
-                      <Select
-                        value={this.state.countType}
-                        onChange={this.handleChange}
-                        inputProps={{
-                          name: "countType",
-                          id: "countType-value"
-                        }}
-                        // autoWidth={true}
-                      >
-                        <MenuItem value={CountType.Time}>By Time</MenuItem>
-                        <MenuItem value={CountType.Count}>By Count</MenuItem>
-                      </Select>
-                    </div>
-                    {/* Switch between input and selection */}
+        <ModalStyles.Form>
+          <EditorStyles.Editor>
+            <ModalStyles.Section>
+              <EditorStyles.SectionTitle>
+                <span>Articles</span>
+              </EditorStyles.SectionTitle>
+              <EditorStyles.Fieldset>
+                <label>How many?</label>
+                <EditorStyles.Row>
+                  <EditorStyles.Select
+                    value={this.state.countType}
+                    onChange={this.handleChange}
+                    inputProps={{
+                      name: "countType",
+                      id: "countType-value"
+                    }}
+                    // autoWidth={true}
+                  >
+                    <MenuItem value={CountType.Time}>By Time</MenuItem>
+                    <MenuItem value={CountType.Count}>By Count</MenuItem>
+                  </EditorStyles.Select>
+                  {/* Switch between input and selection */}
+                  <EditorStyles.Counter>
                     <Counter
                       {...counterOpts as CounterProps}
                       count={this.state.count}
                     />
-                  </div>
-              </fieldset>
-              <fieldset className="order">
+                  </EditorStyles.Counter>
+                </EditorStyles.Row>
+              </EditorStyles.Fieldset>
+              <EditorStyles.Fieldset>
                 <label>Order By</label>
-                <Select
+                <EditorStyles.Select
                   value={this.state.orderBy}
                   onChange={this.handleChange}
                   inputProps={{
@@ -186,22 +191,17 @@ class DeliveryEditor extends React.Component<
                 >
                   <MenuItem value={OrderBy.Newest}>Newest</MenuItem>
                   <MenuItem value={OrderBy.Oldest}>Oldest</MenuItem>
-                </Select>
-              </fieldset>
-            </div>
-              <a
-                href="#"
-                className="toggleAdvanced"
-                onClick={e => this.showAdvanded()}
-              >
-                {(!this.state.showAdvanced && "▾ Show Advanced Options") ||
-                  "▴ Hide Advanced Options"}
-              </a>
-              <div
-                className={`advanced ${
-                  this.state.showAdvanced ? "open" : "close"
-                }`}
-              >
+                </EditorStyles.Select>
+              </EditorStyles.Fieldset>
+            </ModalStyles.Section>
+            <EditorStyles.Toggle
+              href="#"
+              onClick={e => this.showAdvanced(e)}
+            >
+              {(!this.state.showAdvanced && "▾ Show Advanced Options") ||
+                "▴ Hide Advanced Options"}
+            </EditorStyles.Toggle>
+            <EditorStyles.Advanced open={this.state.showAdvanced}>
                 {/* Domain */}
                 <TextField
                   name="domain"
@@ -249,7 +249,7 @@ class DeliveryEditor extends React.Component<
                 />
 
                 {/* Longform only */}
-                <label>
+                <label className={css`margin-bottom: 1rem;`}>
                   <Checkbox
                     checked={this.state.longformOnly}
                     onChange={x =>
@@ -261,53 +261,48 @@ class DeliveryEditor extends React.Component<
                   />
                   <span>Longform articles only (15+ mins)?</span>
                 </label>
-              </div>
-            </div>
+              </EditorStyles.Advanced>
 
-            <div className="section">
-              <h3>
+            <ModalStyles.Section>
+              <EditorStyles.SectionTitle>
                 <span>Delivery</span>
-              </h3>
+              </EditorStyles.SectionTitle>
 
-              <fieldset className="delivery">
+              <EditorStyles.Fieldset>
                 <label>When?</label>
-                <div className="row">
-                  <div className="frequency">
-                    <Select
-                      value={this.state.frequency}
-                      onChange={this.handleChange}
-                      inputProps={{
-                        name: "frequency",
-                        id: "frequency-value"
-                      }}
+                <EditorStyles.Row>
+                  <Select
+                    value={this.state.frequency}
+                    onChange={this.handleChange}
+                    inputProps={{
+                      name: "frequency",
+                      id: "frequency-value"
+                    }}
+                    // autoWidth={true}
+                  >
+                    <MenuItem value={Frequency.Daily}>Daily</MenuItem>
+                    <MenuItem value={Frequency.Weekly}>Weekly</MenuItem>
+                    {/* <MenuItem value={Frequency.Monthly}>Monthly</MenuItem> */}
+                  </Select>
+                  <Select
+                    value={this.state.time}
+                    onChange={this.handleChange}
+                    inputProps={{
+                      name: "time",
+                      id: "time-value"
                       // autoWidth={true}
-                    >
-                      <MenuItem value={Frequency.Daily}>Daily</MenuItem>
-                      <MenuItem value={Frequency.Weekly}>Weekly</MenuItem>
-                      {/* <MenuItem value={Frequency.Monthly}>Monthly</MenuItem> */}
-                    </Select>
-                  </div>
-                  <div className="time">
-                    <Select
-                      value={this.state.time}
-                      onChange={this.handleChange}
-                      inputProps={{
-                        name: "time",
-                        id: "time-value"
-                        // autoWidth={true}
-                      }}
-                    >
-                      <MenuItem value={TimeOpts.Morning}>Morning</MenuItem>
-                      <MenuItem value={TimeOpts.Noon}>Noon</MenuItem>
-                      <MenuItem value={TimeOpts.Afternoon}>Afternoon</MenuItem>
-                      <MenuItem value={TimeOpts.Evening}>Evening</MenuItem>
-                      <MenuItem value={TimeOpts.Midnight}>Midnight</MenuItem>
-                    </Select>
-                  </div>
-                </div>
+                    }}
+                  >
+                    <MenuItem value={TimeOpts.Morning}>Morning</MenuItem>
+                    <MenuItem value={TimeOpts.Noon}>Noon</MenuItem>
+                    <MenuItem value={TimeOpts.Afternoon}>Afternoon</MenuItem>
+                    <MenuItem value={TimeOpts.Evening}>Evening</MenuItem>
+                    <MenuItem value={TimeOpts.Midnight}>Midnight</MenuItem>
+                  </Select>
+                </EditorStyles.Row>
 
                 {this.state.frequency === Frequency.Weekly && (
-                  <div className="week">
+                  <EditorStyles.Week>
                     <CheckCircle label="M" />
                     <CheckCircle label="T" />
                     <CheckCircle label="W" />
@@ -315,7 +310,7 @@ class DeliveryEditor extends React.Component<
                     <CheckCircle label="F" />
                     <CheckCircle label="S" />
                     <CheckCircle label="S" />
-                  </div>
+                  </EditorStyles.Week>
                 )}
 
                 <label>
@@ -330,11 +325,14 @@ class DeliveryEditor extends React.Component<
                   />
                   <span>Archive after delivery?</span>
                 </label>
-              </fieldset>
-            </div>
-          </div>
-          <button className="submit">Show Sample</button>
-        </form>
+              </EditorStyles.Fieldset>
+            </ModalStyles.Section>
+          </EditorStyles.Editor>
+          <ModalStyles.Button primary={false}>
+            <FontAwesomeIcon icon="times" /> Cancel
+          </ModalStyles.Button>
+          <ModalStyles.Button>Show Sample <FontAwesomeIcon icon="arrow-right" /></ModalStyles.Button>
+        </ModalStyles.Form>
       </Modal>
     );
   }
