@@ -47,7 +47,9 @@ const StyledAdvanced = styled('div')<AdvancedProps>(
 );
 
 
-const StyledEditor = styled('div')``
+const StyledEditor = styled('div')`
+  width: 100%;
+`
 
 const StyledSectionRow = styled('div')`
   display: flex;
@@ -102,8 +104,8 @@ const StyledEditorWeek = styled('div')`
 `
 
 const StyledEditorCounter = styled('div')`
-  flex: 0 1 15rem;
-  margin-left: 2rem;
+  flex: 0 1 24rem;
+  padding-left: 2rem;
   vertical-align: top;
 `
 

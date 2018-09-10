@@ -53,6 +53,7 @@ module.exports = (env) => {
             name: 'dist/media/[name].[hash:8].[ext]',
           },
         },
+        // TODO: I need to add Babel to make HMR work
         {
           test: /\.(ts|tsx)$/,
           include: sourcePath,
@@ -166,16 +167,15 @@ module.exports = (env) => {
       }),
     ].concat(isDevBuild ? [
       new webpack.HotModuleReplacementPlugin(),
-      
     ] : [
-      new webpack.optimize.UglifyJsPlugin(),
       new MiniCssExtractPlugin(),
     ]),
 
     optimization: {
       splitChunks : {
         chunks: 'all'
-      }
+      },
+      // TODO: FOr Prod, minimize
     }
   }]
 }

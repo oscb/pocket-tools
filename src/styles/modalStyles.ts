@@ -1,8 +1,9 @@
 import styled, { keyframes, css } from "react-emotion";
-import { lighten, darken, desaturate } from 'polished'
+import { Button } from "./button";
 
-const StyledModal = styled('div')`
+const StyleModalbase = css`
   position: absolute;
+  top: 0;
   right: 0;
   left: 0;
   bottom: 0;
@@ -12,19 +13,21 @@ const StyledModal = styled('div')`
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  box-sizing: border-box;
 `
 
-const StyledBg = styled('div')`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  right: 0;
-  left: 0;
-  bottom: 0;
+const StyledModal = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+`
+
+const StyledBg = css`
+  ${StyleModalbase}
   background: #24c6dc;
   background: -webkit-linear-gradient(to bottom, #514a9d, #24c6dc);
   background: linear-gradient(to bottom, #514a9d, #24c6dc);
-  opacity: 0.95;
 `
 
 const StyledModalName = styled('h1')`
@@ -38,16 +41,25 @@ const StyledModalName = styled('h1')`
   font-size: 22px;
 `
 
+const CSSModalContent = css`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  box-sizing: border-box;
+`
+
 const StyledModalContent = styled('div')`
   background: ${props => props.theme.bgColor};
   color: ${props => props.theme.secondaryColor};
   text-align: center;
   width: 90%;
+  max-width: 500px;
   position: relative;
   border-radius: .5rem;
   box-shadow: 0 .25rem .125rem 0 rgba(0,0,0,0.1);
-  bottom: 0;
-  max-height: 90%;
+  /* max-height: 90%; */
   overflow: scroll;
   transition: all 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
 `
@@ -88,26 +100,6 @@ const StyledModalIcon = styled('div')`
 
 const StyledModalClose = styled('div')`
 
-`
-
-const Button = props => css`
-  background: ${props.color};
-
-  &:hover {
-    background: ${lighten(0.05, props.color)};
-  }
-
-  &:active {
-    background: ${darken(0.05, props.color)};
-  }
-
-  &:disabled {
-    background: ${desaturate(0.95, props.color)};
-  }
-
-  &:focus {
-    outline: none;
-  }
 `
 
 interface StyledModalButtonProps {
@@ -162,7 +154,13 @@ const StyledSection = styled('div')`
   margin: 0 0 1rem 0;
 `
 
+const StyledLoaderMessage = styled('h1')`
+  font-size: 1rem;
+  padding: 1rem;
+`
+
 export const ModalStyles = {
+  Base: StyleModalbase,
   Background: StyledBg,
   Content: StyledModalContent,
   Icon: StyledModalIcon,
@@ -173,4 +171,5 @@ export const ModalStyles = {
   Form: StyledModalForm,
   Section: StyledSection,
   Status: StyledModalStatus,
+  Loader: StyledLoaderMessage,
 }

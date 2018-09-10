@@ -1,24 +1,21 @@
 // import * as path from 'path';
 import * as React from "react";
 import { hot } from "react-hot-loader";
-import { Home, RouterHomeProps, HomeProps } from "./components/home/home";
-import { BrowserRouter, Route, Redirect, RouteProps } from "react-router-dom";
-import Dashboard from "./components/dashboard/dashboard";
-import User from "./components/user/user";
 import { withRouter } from "react-router";
+import { BrowserRouter, Redirect, Route, RouteProps } from "react-router-dom";
 import "./App.scss";
+import Dashboard from "./components/dashboard/dashboard";
+import { Home, HomeProps, RouterHomeProps } from "./components/home/home";
 import "./icons";
 import { ApiHelper } from './models/apiHelper';
-import { ThemeProvider } from "emotion-theming";
-import { Theme } from "./styles/theme";
 
 type PrivateRouteProps = { component: React.ComponentType<{}> } & RouteProps;
 
 const RouterDashboard = withRouter(Dashboard);
-const RouterUser = withRouter(User);
 const RouterHome = withRouter(Home);
 const PrivateRoute = (props: PrivateRouteProps) => {
   const { component: Component, ...rest } = props;
+
   return (
     <Route
       {...rest}
@@ -52,8 +49,7 @@ class App extends React.Component {
               new RouterHome({ ...homeProps, ...e } as RouterHomeProps)
             }
           />
-          <PrivateRoute path="/dashboard" component={RouterDashboard} />
-          <PrivateRoute path="/user" component={RouterUser} />
+          <PrivateRoute component={RouterDashboard} />
         </div>
       </BrowserRouter>
     );

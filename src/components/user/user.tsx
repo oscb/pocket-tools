@@ -33,17 +33,13 @@ export default class UserProfile extends React.Component<
   UserProfileProps & RouteComponentProps<any>,
   UserProfileState
 > {
-  user: string;
-  newUser: boolean = false;
+
 
   constructor(
     props: UserProfileProps & RouteComponentProps<any>,
     state: UserProfileState
   ) {
     super(props);
-    if (props.history.location.state) {
-      this.newUser = props.history.location.state.newUser;
-    }
 
     let router_state: Partial<UserProfileState> = this.props.history.location
       .state;
@@ -176,16 +172,25 @@ export default class UserProfile extends React.Component<
     return name in this.state.errors && this.state.errors[name];
   }
 
+  cancel(e?: React.MouseEvent) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    this.props.history.push('/dasboard');
+  }
+
   render() {
     if (this.state.formState === FormState.Loading) {
       return (<Loader message="Loading your user data" />);
     } 
     return (
       <Modal 
-        title={this.newUser ? "Setup your account!" : "Account"} 
+        title={this.props.newUser ? "Setup your account!" : "Account"} 
         icon={this.state.formState === FormState.Saving ? 'sync' : this.state.formState === FormState.Saved ? 'check' : 'user'} 
         spin={this.state.formState === FormState.Saving}
         iconStyle={this.state.formState === FormState.Saved ? { background: 'rgba(39, 94, 132, 1)'} : {}}
+        close={() => this.cancel()}
       >
         <ModalStyles.Form>
           <ModalStyles.Section>
@@ -252,6 +257,11 @@ export default class UserProfile extends React.Component<
 
           {this.state.formState === FormState.Saving && <ModalStyles.Status>Saving...</ModalStyles.Status>}
           {this.state.formState === FormState.Saved && <ModalStyles.Status>Saved!</ModalStyles.Status>}
+          {this.state.formState === FormState.Enabled && !this.props.newUser && 
+            <ModalStyles.Button primary={false} onClick={e => this.cancel(e)}>
+              <FontAwesomeIcon icon="times" /> Cancel
+            </ModalStyles.Button>
+          }
           {this.state.formState === FormState.Enabled && 
           <ModalStyles.Button disabled={!this.validateForm()} onClick={e => this.save(e)}>
             Save

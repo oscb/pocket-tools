@@ -30,6 +30,7 @@ export interface Delivery {
   query: Query;
   frequency: string;
   time: string;
+  autoArchive: boolean;
   day?: string;
   mailings?: Mailing[];
 }
@@ -43,22 +44,22 @@ export class DeliveryAPI {
 
   async get(id: string): Promise<Delivery> {
     let resp = await this.authReq('GET', `/deliveries/${id}`).send();
-    return resp.body as Delivery;
+    return this.toDelivery(resp.body);
   }
 
   async getByUser(): Promise<Delivery[]> {
     let resp = await this.authReq('GET', `/deliveries`).send();
-    return resp.body as Delivery[];
+    return resp.body as Delivery[]; // TODO
   }
 
   async add(delivery: Delivery): Promise<Delivery> {
     let resp = await this.authReq('POST', `/deliveries`).send(delivery);
-    return resp.body as Delivery;
+    return this.toDelivery(resp.body);
   }
 
   async update(delivery: Delivery): Promise<Delivery> {
     let resp = await this.authReq('PUT', `/deliveries/${delivery.id}`).send(delivery);
-    return resp.body as Delivery;
+    return this.toDelivery(resp.body);
   }
 
   async delete(delivery: Delivery): Promise<boolean> {
@@ -66,7 +67,7 @@ export class DeliveryAPI {
     return resp.status === 200;
   }
 
-  private toDelivery(response: any): Delivery {
+  private toDelivery = (response: any): Delivery => {
     const { _id: id, __v: v, query, mailings, ...other } = response;
     return {
       id: id,
@@ -76,14 +77,14 @@ export class DeliveryAPI {
     } as Delivery;
   }
 
-  private toQuery(response: any): Query {
+  private toQuery = (response: any): Query => {
     const { _id: id, ...other } = response;
     return {
       ...other
     } as Query;
   }
 
-  private toMailing(response: any): Mailing {
+  private toMailing = (response: any): Mailing => {
     const { _id: id, ...other } = response;
     return {
       datetime: other.datetime,
@@ -91,7 +92,7 @@ export class DeliveryAPI {
     } as Mailing;
   }
 
-  private toArticle(response: any): Article {
+  private toArticle = (response: any): Article => {
     const { _id: id, ...other } = response;
     return { ...other } as Article;
   }
