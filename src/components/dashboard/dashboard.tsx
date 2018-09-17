@@ -152,12 +152,36 @@ export default class Dashboard extends React.Component<
   }
 
   private async loadDeliveries() {
+    const animationTime = 2.5;
+    const start = new Date().getTime();
     const deliveries = await DeliveryApi.getByUser();
-    this.setState({
-      ...this.state,
-      status: DashboardStatus.loaded,
-      deliveries: deliveries
-    });
+    const timeToLoad = new Date().getTime() - start;
+
+    // Animation takes 2.5s to get to the middle, so we want to stop it at the next middle point 
+    // TODO: this doesn't work really well since React is not instantaneous, but I'll leave it for now.
+    const progress = ((timeToLoad /1000) % (animationTime * 2));
+    if (progress !== animationTime) {
+      let next =  2.5 - progress;
+      if (progress > animationTime) {
+        next += 2.5;
+      }
+      setTimeout(
+        () => {
+          this.setState({
+            ...this.state,
+            status: DashboardStatus.loaded,
+            deliveries: deliveries
+          });
+        },
+        next * 1000 * 3
+      )
+    } else {
+      this.setState({
+        ...this.state,
+        status: DashboardStatus.loaded,
+        deliveries: deliveries
+      });
+    }
   }
 
   private logout(e: React.MouseEvent<HTMLAnchorElement>) {

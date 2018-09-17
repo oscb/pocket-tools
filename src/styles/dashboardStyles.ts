@@ -68,7 +68,7 @@ const RumbleDiv = styled('div')`
 const NewButton = styled('button')(
   {
     border: 'none',
-    flex: '1 0 0',
+    flex: '1 0 auto',
     fontSize: '1rem',
     margin: '1rem',
     padding: '1rem',
