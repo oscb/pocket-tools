@@ -10,7 +10,7 @@ import Loader from "../loader/loader";
 import DeliveryEditor from "./deliveryEditor";
 import { css } from "emotion";
 import { ModalStyles } from "../../styles/modalStyles";
-import UserProfile from "../user/user";
+import UserProfile from "../user/userProfile";
 import { DashboardStyles } from "../../styles/dashboardStyles";
 
 
@@ -110,7 +110,9 @@ export default class Dashboard extends React.Component<
           this.state.deliveries && 
           <DashboardStyles.Empty>
             <DashboardStyles.EmptyIcon>
+              <DashboardStyles.Rumble>
                 <FontAwesomeIcon icon="truck"/>
+              </DashboardStyles.Rumble>
             </DashboardStyles.EmptyIcon>
             <p>You don't have deliveries yet!</p>
           </DashboardStyles.Empty>}
@@ -158,7 +160,7 @@ export default class Dashboard extends React.Component<
     const timeToLoad = new Date().getTime() - start;
 
     // Animation takes 2.5s to get to the middle, so we want to stop it at the next middle point 
-    // TODO: this doesn't work really well since React is not instantaneous, but I'll leave it for now.
+    // TODO: this doesn't work perfectly fine since React is not instantaneous, but I'll leave it for now.
     const progress = ((timeToLoad /1000) % (animationTime * 2));
     if (progress !== animationTime) {
       let next =  2.5 - progress;

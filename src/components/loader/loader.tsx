@@ -11,11 +11,12 @@ export default class Loader extends React.Component<LoaderProps, any> {
   public render() {
     return (
       <Modal
+        key="loader"
         title="" 
         icon='sync'
         spin={true}
         className={css`
-          width: 50%;
+          width: 250px;
         `}
       >
         <ModalStyles.Loader>

@@ -14,7 +14,7 @@ export interface ModalProps {
   className?: string;
 }
 
-const ModalAnim = posed.div({
+const ModalAnimated = posed.div({
   enter: { 
     y: 0, 
     opacity: 1,
@@ -30,6 +30,17 @@ const ModalAnim = posed.div({
       duration: 200,
       ease: 'anticipate'
     }
+  }
+});
+
+export const ModalContainerAnimated = posed.div({
+  enter: { 
+    opacity: 1, 
+    delay: 300,
+    beforeChildren: true,
+  },
+  exit: { 
+    opacity: 0,
   }
 });
 
@@ -57,7 +68,7 @@ export default class Modal extends React.Component<ModalProps, any> {
         {this.props.title && 
           <ModalStyles.Title>{this.props.title}</ModalStyles.Title>
         }
-        <ModalAnim className={css`${CSSModalContent}`}>
+        <ModalAnimated className={css`${CSSModalContent}`}>
           {this.props.icon !== undefined && 
           <ModalStyles.Icon spin={this.props.spin} style={this.props.iconStyle}>
             <FontAwesomeIcon icon={this.props.icon}/>
@@ -69,7 +80,7 @@ export default class Modal extends React.Component<ModalProps, any> {
             </ModalStyles.Close> */}
             {this.props.children}
           </ModalStyles.Content>
-        </ModalAnim>
+        </ModalAnimated>
       </ModalStyles.Modal>
     );
   }
