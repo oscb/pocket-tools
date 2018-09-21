@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RouteComponentProps, Redirect } from "react-router";
-import Modal, { ModalContainerAnimated } from "../dashboard/modal";
+import Modal, { ModalContainerAnimated, ModalContainer, CSSModalCentered } from "../dashboard/modal";
 import { TextField } from "@material-ui/core";
 import { User, UserApi } from '../../models/user';
 import Loader from "../loader/loader";
@@ -192,20 +192,20 @@ export default class UserProfile extends React.Component<
       e.preventDefault();
       e.stopPropagation();
     }
-    this.props.history.push('/dasboard');
+    this.props.history.push('/dashboard');
   }
 
   render() {
     return (
       <PoseGroup>
         {this.state.formState === FormState.Loading && 
-        <ModalContainerAnimated key="loader">
+        <ModalContainerAnimated key="loader" className={css`${CSSModalCentered}`}>
           <Loader key="loader" message="Loading your user data" />
         </ModalContainerAnimated>
         }
         {this.state.formState !== FormState.Preloading && 
         this.state.formState !== FormState.Loading &&
-        <ModalContainerAnimated key="form">
+        <ModalContainerAnimated key="form" className={css`${CSSModalCentered}`}>
           <Modal 
             key="userForm"
             title={this.props.newUser ? "Setup your account!" : "Account"} 
@@ -276,19 +276,20 @@ export default class UserProfile extends React.Component<
                 </p>
                 }
               </ModalStyles.Section>
-
-              {this.state.formState === FormState.Saving && <ModalStyles.Status>Saving...</ModalStyles.Status>}
-              {this.state.formState === FormState.Saved && <ModalStyles.Status>Saved!</ModalStyles.Status>}
-              {this.state.formState === FormState.Enabled && !this.props.newUser && 
-                <ModalStyles.Button primary={false} onClick={e => this.cancel(e)}>
-                  <FontAwesomeIcon icon="times" /> Cancel
+              <ModalStyles.ButtonBar>
+                {this.state.formState === FormState.Saving && <ModalStyles.Status>Saving...</ModalStyles.Status>}
+                {this.state.formState === FormState.Saved && <ModalStyles.Status>Saved!</ModalStyles.Status>}
+                {this.state.formState === FormState.Enabled && !this.props.newUser && 
+                  <ModalStyles.Button primary={false} onClick={e => this.cancel(e)}>
+                    <FontAwesomeIcon icon="times" /> Cancel
+                  </ModalStyles.Button>
+                }
+                {this.state.formState === FormState.Enabled && 
+                <ModalStyles.Button disabled={!this.validateForm()} onClick={e => this.save(e)}>
+                  Save
                 </ModalStyles.Button>
-              }
-              {this.state.formState === FormState.Enabled && 
-              <ModalStyles.Button disabled={!this.validateForm()} onClick={e => this.save(e)}>
-                Save
-              </ModalStyles.Button>
-              }
+                }
+              </ModalStyles.ButtonBar>
             </ModalStyles.Form>
           </Modal>
         </ModalContainerAnimated>

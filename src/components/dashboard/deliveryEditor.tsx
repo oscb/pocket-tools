@@ -105,13 +105,11 @@ class DeliveryEditor extends React.Component<
       kindle_email: this.User.kindle_email,
       formStatus: FormStatus.Enabled
     }
-    // TODO: Refactor the URL Routes/routers, this value can't be read if this is rendered inside dashboard
-    // Check how React Router recommends to do modals
-    // I could just pass the id in the component props actually...
+    
     if (props.match.params.id) {
       this.state = {
         ...defaultState,
-        formStatus: FormStatus.Loading
+        formStatus: FormStatus.Loading  
       }
       this.loadData(props.match.params.id);
     } else {
@@ -142,7 +140,10 @@ class DeliveryEditor extends React.Component<
     }
 
     return (
-      <ModalPose pose={(this.state.formStatus !== FormStatus.Enabled && this.state.formStatus !== FormStatus.Saved) ? 'hidden' : 'visible'}>
+      <ModalPose 
+        pose={(this.state.formStatus !== FormStatus.Enabled && this.state.formStatus !== FormStatus.Saved) ? 'hidden' : 'visible'} 
+        className={css`margin: auto;`}
+      >
         <Modal title="New Delivery!">
           <ModalStyles.Form>
             <EditorStyles.Editor>
@@ -335,12 +336,14 @@ class DeliveryEditor extends React.Component<
                 </EditorStyles.Fieldset>
               </ModalStyles.Section>
             </EditorStyles.Editor>
-            <ModalStyles.Button primary={false} onClick={e => this.cancel(e)}>
-              <FontAwesomeIcon icon="times" /> Cancel
-            </ModalStyles.Button>
-            <ModalStyles.Button onClick={e => this.save(e)}>
-              Show Sample <FontAwesomeIcon icon="arrow-right" />
-            </ModalStyles.Button>
+            <ModalStyles.ButtonBar>
+              <ModalStyles.Button primary={false} onClick={e => this.cancel(e)}>
+                <FontAwesomeIcon icon="times" /> Cancel
+              </ModalStyles.Button>
+              <ModalStyles.Button onClick={e => this.save(e)}>
+                Show Sample <FontAwesomeIcon icon="arrow-right" />
+              </ModalStyles.Button>
+            </ModalStyles.ButtonBar>
           </ModalStyles.Form>
         </Modal>
       </ModalPose>
@@ -462,7 +465,7 @@ class DeliveryEditor extends React.Component<
       e.preventDefault();
       e.stopPropagation();
     }
-    this.props.history.push('/dasboard');
+    this.props.history.push('/dashboard');
   }
 }
 

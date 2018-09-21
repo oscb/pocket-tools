@@ -21,7 +21,7 @@ const PrivateRoute = (props: PrivateRouteProps) => {
       {...rest}
       render={p => {
         if (ApiHelper.isAuthenticated) {
-          return <Component {...props} />;
+          return <Component {...p} />;
         } else {
           return <Redirect to={{ pathname: "/" }} />;
         }

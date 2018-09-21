@@ -44,6 +44,12 @@ export const ModalContainerAnimated = posed.div({
   }
 });
 
+export const ModalContainer = (props: any) => (
+  <ModalContainerAnimated key={props.key} className={css`${CSSModalCentered}`}>
+    {props.children}
+  </ModalContainerAnimated>
+  );
+
 const CSSModalContent = css`
   width: 100%;
   display: flex;
@@ -51,6 +57,10 @@ const CSSModalContent = css`
   justify-content: center;
   flex-direction: column;
   box-sizing: border-box;
+`
+
+export const CSSModalCentered = css`
+  margin: auto;
 `
 
 export default class Modal extends React.Component<ModalProps, any> {

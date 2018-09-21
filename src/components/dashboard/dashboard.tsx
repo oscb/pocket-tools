@@ -41,8 +41,6 @@ export default class Dashboard extends React.Component<
   DashboardProps & RouteComponentProps<any>,
   DashboardState
 > {
-  private previousLocation: any;
-
   constructor(props, state) {
     super(props);
 
@@ -53,25 +51,11 @@ export default class Dashboard extends React.Component<
       status: DashboardStatus.loading,
       ...state
     };
-
-    this.previousLocation = this.props.location
-  }
-
-  public componentWillUpdate(nextProps) {
-    const { location } = this.props;
-    if (nextProps.history.action !== "POP" && 
-        (!location.state || !location.state.modal)) 
-    {
-      this.previousLocation = this.props.location;
-    }
   }
 
   public render() {
-    const isModal = !!(this.props.location.state &&
-      this.props.location.state.modal &&
-      this.previousLocation !== location
-    );
-
+    const isModal = this.props.location.pathname !== '/dashboard';
+    
     return (
       <div className="dashboard">
         <Header logo="Pocket Tools">
@@ -125,28 +109,26 @@ export default class Dashboard extends React.Component<
           </DashboardStyles.Button>
         </DashboardStyles.Content>
         <PoseGroup>
-          {isModal ?
+          {isModal && 
             <RouteContainer key={this.props.location.key} className={css`${ModalStyles.Background}`}>
               <Switch location={this.props.location}>
-                <Route path="/delivery/:id?" key="delivery">
+                <Route path="/delivery/:id?" key="delivery" component={DeliveryEditor}/>
+                {/* <Route path="/delivery/:id?" key="delivery">
                   <DeliveryEditor 
                   history={this.props.history} 
                   location={this.props.location} 
                   match={this.props.match}
                   />
-                </Route>
-                <Route path="/user" key="user">
+                </Route> */}
+                <Route path="/user" key="user" render={(props) => (
                   <UserProfile 
+                    {...props}
                     newUser={this.props.location.state ? !!this.props.location.state.newUser : false} 
-                    history={this.props.history} 
-                    location={this.props.location} 
-                    match={this.props.match}
                     />
+                  )}>
                 </Route>
               </Switch>
             </RouteContainer>
-            :
-            null
           }
         </PoseGroup>
       </div>

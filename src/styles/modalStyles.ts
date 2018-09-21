@@ -1,7 +1,7 @@
 import styled, { keyframes, css } from "react-emotion";
 import { Button } from "./button";
 
-const StyleModalbase = css`
+const Base = css`
   position: absolute;
   top: 0;
   right: 0;
@@ -10,27 +10,28 @@ const StyleModalbase = css`
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  /* align-items: center;
+  justify-content: center; */
   flex-direction: column;
   box-sizing: border-box;
+  overflow-y: auto;
 `
 
-const StyledModal = styled('div')`
+const Modal = styled('div')`
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 `
 
-const StyledBg = css`
-  ${StyleModalbase}
+const Background = css`
+  ${Base}
   background: #24c6dc;
   background: -webkit-linear-gradient(to bottom, #514a9d, #24c6dc);
   background: linear-gradient(to bottom, #514a9d, #24c6dc);
 `
 
-const StyledModalName = styled('h1')`
+const Title = styled('h1')`
   position: relative;
   margin: 1em 0;
   z-index: 10;
@@ -50,7 +51,7 @@ const CSSModalContent = css`
   box-sizing: border-box;
 `
 
-const StyledModalContent = styled('div')`
+const Content = styled('div')`
   background: ${props => props.theme.bgColor};
   color: ${props => props.theme.secondaryColor};
   text-align: center;
@@ -79,7 +80,7 @@ type StyledModalIconProps = {
   spin: boolean
 }
 
-const StyledModalIcon = styled('div')`
+const Icon = styled('div')`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -98,7 +99,7 @@ const StyledModalIcon = styled('div')`
   ${(props: StyledModalIconProps) => props.spin ? AnimateSpin : '' };
 `
 
-const StyledModalClose = styled('div')`
+const Close = styled('div')`
 
 `
 
@@ -106,14 +107,22 @@ interface StyledModalButtonProps {
   primary?: boolean;
 }
 
-const StyledModalButton = styled('button')<StyledModalButtonProps>(
+const ModalButton = styled('button')<StyledModalButtonProps>(
   {
     border: 'none',
     flex: '1 0 0',
-    fontSize: '1.2rem',
+    fontSize: '1rem',
     padding: '0.75rem',
     fontWeight: 'bold',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    display: 'flex',
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+
+    svg: {
+      margin: '0 0.5rem'
+    }
   }, 
   (props) => ({
     color: props.theme.bgColor,
@@ -126,11 +135,11 @@ const StyledModalButton = styled('button')<StyledModalButtonProps>(
       })
   )
 );
-StyledModalButton.defaultProps = { primary: true }
+ModalButton.defaultProps = { primary: true }
 
-const StyledModalStatus = StyledModalButton.withComponent('div');
+const Status = ModalButton.withComponent('div');
 
-const StyledModalForm = styled('form')`
+const Form = styled('form')`
   color: ${props => props.theme.textColor};
   display: flex;
   align-items: center;
@@ -149,27 +158,33 @@ const StyledModalForm = styled('form')`
   }
 `
 
-const StyledSection = styled('div')`
+const Section = styled('div')`
   padding: 1rem;
-  margin: 0 0 1rem 0;
+  /* margin: 0 0 1rem 0; */
 `
 
-const StyledLoaderMessage = styled('h1')`
+const Loader = styled('h1')`
   font-size: 1rem;
   padding: 1rem;
 `
 
+const ButtonBar = styled('div')`
+  display: flex;
+  width: 100%;
+`
+
 export const ModalStyles = {
-  Base: StyleModalbase,
-  Background: StyledBg,
-  Content: StyledModalContent,
-  Icon: StyledModalIcon,
-  Modal: StyledModal,
-  Title: StyledModalName,
-  Close: StyledModalClose,
-  Button: StyledModalButton,
-  Form: StyledModalForm,
-  Section: StyledSection,
-  Status: StyledModalStatus,
-  Loader: StyledLoaderMessage,
+  Background,
+  Base,
+  Button: ModalButton,
+  ButtonBar,
+  Close,
+  Content,
+  Form,
+  Icon,
+  Loader,
+  Modal,
+  Section,
+  Status,
+  Title,
 }

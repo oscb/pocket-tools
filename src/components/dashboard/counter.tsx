@@ -24,7 +24,7 @@ const StyledCounter = styled('div')`
   span {
     flex: 2 0 5rem;
     color: ${props => props.theme.textColor};
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 
   button {
