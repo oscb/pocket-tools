@@ -16,7 +16,7 @@ export interface UserProfileProps {
   newUser: boolean;
 }
 
-enum FormState {
+enum FormStatus {
   Preloading,
   Loading,
   Enabled,
@@ -25,7 +25,7 @@ enum FormState {
 }
 
 interface UserProfileState extends User {
-  formState: FormState,
+  formStatus: FormStatus,
   // TODO: Mix these 2 togheter
   errors: {[field: string]: boolean};
   saveError?: string;
@@ -56,17 +56,16 @@ export default class UserProfile extends React.Component<
 
     this.timeout = setTimeout(
       () => {
-        console.log("Wait's over!");
         this.setState({
           ...this.state,
-          formState: FormState.Loading
+          formStatus: FormStatus.Loading
         });
       },
       this.minWaitTime
-    )
+    );
 
     this.state = {
-      formState: FormState.Preloading,
+      formStatus: FormStatus.Preloading,
       errors: {},
       ...state
     };
@@ -77,7 +76,7 @@ export default class UserProfile extends React.Component<
     clearTimeout(this.timeout);
     this.setState({
       ...this.state,
-      formState: FormState.Enabled,
+      formStatus: FormStatus.Enabled,
       id: user.id,
       username: user.username,
       email: user.email,
@@ -124,7 +123,7 @@ export default class UserProfile extends React.Component<
     this.setState({
       ...this.state,
       [event.target.name]: event.target.value,
-      formState: this.state.formState !== FormState.Saving ? FormState.Enabled : this.state.formState
+      formStatus: this.state.formStatus !== FormStatus.Saving ? FormStatus.Enabled : this.state.formStatus
     });
   };
 
@@ -143,7 +142,7 @@ export default class UserProfile extends React.Component<
     }
     this.setState({
       ...this.state,
-      formState: FormState.Saving,
+      formStatus: FormStatus.Saving,
     });
 
     let { 
@@ -160,10 +159,9 @@ export default class UserProfile extends React.Component<
       
 
     UserApi.update(userData).then(() => {
-      // TODO: Update User Data
       this.setState({
         ...this.state,
-        formState: FormState.Saved,
+        formStatus: FormStatus.Saved,
         errors: {}
       });
       setTimeout(() => {
@@ -173,7 +171,7 @@ export default class UserProfile extends React.Component<
       let detail = e.response.body.error !== undefined ? e.response.body.error : '';
       this.setState({
         ...this.state,
-        formState: FormState.Enabled,
+        formStatus: FormStatus.Enabled,
         saveError: `There was an error saving your data. Status:${e.status} Message: ${e.message} ${detail}. Try again later. If you keep seeing this error send an email to support@pockettoolkit.com` ,
         errors: {
           ...this.state.errors,
@@ -198,20 +196,20 @@ export default class UserProfile extends React.Component<
   render() {
     return (
       <PoseGroup>
-        {this.state.formState === FormState.Loading && 
+        {this.state.formStatus === FormStatus.Loading && 
         <ModalContainerAnimated key="loader" className={css`${CSSModalCentered}`}>
           <Loader key="loader" message="Loading your user data" />
         </ModalContainerAnimated>
         }
-        {this.state.formState !== FormState.Preloading && 
-        this.state.formState !== FormState.Loading &&
+        {this.state.formStatus !== FormStatus.Preloading && 
+        this.state.formStatus !== FormStatus.Loading &&
         <ModalContainerAnimated key="form" className={css`${CSSModalCentered}`}>
           <Modal 
             key="userForm"
             title={this.props.newUser ? "Setup your account!" : "Account"} 
-            icon={this.state.formState === FormState.Saving ? 'sync' : this.state.formState === FormState.Saved ? 'check' : 'user'} 
-            spin={this.state.formState === FormState.Saving}
-            iconStyle={this.state.formState === FormState.Saved ? { background: 'rgba(39, 94, 132, 1)'} : {}}
+            icon={this.state.formStatus === FormStatus.Saving ? 'sync' : this.state.formStatus === FormStatus.Saved ? 'check' : 'user'} 
+            spin={this.state.formStatus === FormStatus.Saving}
+            iconStyle={this.state.formStatus === FormStatus.Saved ? { background: 'rgba(39, 94, 132, 1)'} : {}}
             close={() => this.cancel()}
           >
             <ModalStyles.Form>
@@ -237,7 +235,7 @@ export default class UserProfile extends React.Component<
                   InputLabelProps={{
                     shrink: true
                   }}
-                  disabled={this.state.formState === FormState.Saving}
+                  disabled={this.state.formStatus === FormStatus.Saving}
                   fullWidth
                   placeholder="your_email@gmail.com"
                   value={this.state.email}
@@ -252,7 +250,7 @@ export default class UserProfile extends React.Component<
                   InputLabelProps={{
                     shrink: true
                   }}
-                  disabled={this.state.formState === FormState.Saving}
+                  disabled={this.state.formStatus === FormStatus.Saving}
                   fullWidth
                   placeholder="your_kindle@kindle.com"
                   value={this.state.kindle_email}
@@ -277,14 +275,14 @@ export default class UserProfile extends React.Component<
                 }
               </ModalStyles.Section>
               <ModalStyles.ButtonBar>
-                {this.state.formState === FormState.Saving && <ModalStyles.Status>Saving...</ModalStyles.Status>}
-                {this.state.formState === FormState.Saved && <ModalStyles.Status>Saved!</ModalStyles.Status>}
-                {this.state.formState === FormState.Enabled && !this.props.newUser && 
+                {this.state.formStatus === FormStatus.Saving && <ModalStyles.Status>Saving...</ModalStyles.Status>}
+                {this.state.formStatus === FormStatus.Saved && <ModalStyles.Status>Saved!</ModalStyles.Status>}
+                {this.state.formStatus === FormStatus.Enabled && !this.props.newUser && 
                   <ModalStyles.Button primary={false} onClick={e => this.cancel(e)}>
                     <FontAwesomeIcon icon="times" /> Cancel
                   </ModalStyles.Button>
                 }
-                {this.state.formState === FormState.Enabled && 
+                {this.state.formStatus === FormStatus.Enabled && 
                 <ModalStyles.Button disabled={!this.validateForm()} onClick={e => this.save(e)}>
                   Save
                 </ModalStyles.Button>

@@ -4,18 +4,20 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import { css } from "emotion";
 import * as React from "react";
-import posed from "react-pose";
+import posed, { PoseGroup } from "react-pose";
 import { RouteComponentProps } from "react-router";
 import { $enum } from "ts-enum-util";
 import { ApiHelper } from "../../models/apiHelper";
 // import { hot } from "react-hot-loader";
-import { Delivery, DeliveryApi, Query } from '../../models/delivery';
+import { Delivery, DeliveryApi, Query, Article } from '../../models/delivery';
 import { User } from "../../models/user";
 import { EditorStyles } from "../../styles/deliveryEditorStyles";
 import { ModalStyles } from "../../styles/modalStyles";
 import CheckCircle from "./checkCircle";
 import Counter, { CounterProps } from "./counter";
-import Modal from "./modal";
+import Modal, { ModalContainerAnimated, CSSModalCentered, CSSModalContent } from "./modal";
+import Loader from "../loader/loader";
+import ArticleItem from "./articleItem";
 
 export interface DeliveryEditorProps {}
 
@@ -43,10 +45,13 @@ enum TimeOpts {
 }
 
 enum FormStatus {
+  Preloading,
   Loading,
   Enabled,
   Saving,
-  Saved
+  Preview,
+  Activating,
+  Finished
   // TODO: Might need more states
   // [Loading   ->] Enabled   -> Saving   -> Sample   -> Saving   -> Active
   //                          [Error]     <- Cancel (goes to enabled) 
@@ -70,14 +75,40 @@ interface DeliveryEditorState {
 
   // Form
   formStatus: FormStatus;
+
+  // Preview
+  preview?: Article[]
 }
 
-const ModalPose = posed.div({
-  visible: {
-    opacity: 1
+const Preview = posed.div({
+  enter: { 
+    staggerChildren: 50 
   },
-  hidden: {
-    opacity: 0
+  exit: { 
+    staggerChildren: 20, 
+    staggerDirection: -1 
+  }
+});
+
+const ArticleAnimated = posed.div({
+  enter: { 
+    x: 0, 
+    opacity: 1,
+  },
+  exit: { 
+    x: 100, 
+    opacity: 0,
+  }
+});
+
+const PreviewBar = posed.div({
+  enter: { 
+    y: 0, 
+    opacity: 1,
+  },
+  exit: { 
+    y: 100, 
+    opacity: 0,
   }
 });
 
@@ -86,6 +117,8 @@ class DeliveryEditor extends React.Component<
   DeliveryEditorState
 > {
   private User: User;
+  private minWaitTime: number = 500;
+  private timeout: NodeJS.Timer;
 
   constructor(props: DeliveryEditorProps & RouteComponentProps<any>, state: DeliveryEditorState) {
     super(props);
@@ -109,8 +142,19 @@ class DeliveryEditor extends React.Component<
     if (props.match.params.id) {
       this.state = {
         ...defaultState,
-        formStatus: FormStatus.Loading  
+        formStatus: FormStatus.Preloading  
       }
+
+      this.timeout = setTimeout(
+        () => {
+          this.setState({
+            ...this.state,
+            formStatus: FormStatus.Loading
+          });
+        },
+        this.minWaitTime
+      );
+
       this.loadData(props.match.params.id);
     } else {
       this.state = defaultState;
@@ -140,12 +184,16 @@ class DeliveryEditor extends React.Component<
     }
 
     return (
-      <ModalPose 
-        pose={(this.state.formStatus !== FormStatus.Enabled && this.state.formStatus !== FormStatus.Saved) ? 'hidden' : 'visible'} 
-        className={css`margin: auto;`}
-      >
-        <Modal title="New Delivery!">
-          <ModalStyles.Form>
+      <PoseGroup>
+      {this.state.formStatus === FormStatus.Loading && 
+        <ModalContainerAnimated key="loadingDelivery" className={css`${CSSModalCentered}`}>
+          <Loader key="loader" message="Loading delivery" />
+        </ModalContainerAnimated>
+      }
+      {this.state.formStatus === FormStatus.Enabled &&
+        <ModalContainerAnimated key="form" className={css`${CSSModalCentered}`}>
+          <Modal title="New Delivery!">
+            <ModalStyles.Form>
             <EditorStyles.Editor>
               <ModalStyles.Section className={css`margin-bottom: 0;`}>
                 <EditorStyles.SectionTitle>
@@ -345,18 +393,74 @@ class DeliveryEditor extends React.Component<
               </ModalStyles.Button>
             </ModalStyles.ButtonBar>
           </ModalStyles.Form>
-        </Modal>
-      </ModalPose>
+          </Modal>
+        </ModalContainerAnimated>
+      }
+      {this.state.formStatus === FormStatus.Saving && 
+        <ModalContainerAnimated key="loadingPreview" className={css`${CSSModalCentered}`}>
+          <Loader key="loader" message="Saving your delivery and loading preview..." />
+        </ModalContainerAnimated>
+      }
+      {this.state.formStatus === FormStatus.Preview && 
+        <ModalContainerAnimated key="preview" className={css`${CSSModalCentered}`}>
+          <div className={css`${CSSModalContent}`}>
+            <ModalStyles.Title>This would be your delivery!</ModalStyles.Title>
+            
+            <Preview key="previewList" className={css`margin-bottom: 3rem;`}>
+              {this.state.preview.map(article => (
+                <ArticleAnimated key={article.item_id}>
+                  <ArticleItem 
+                    key={article.resolved_id}
+                    title={article.resolved_title} 
+                    image={article.top_image_url} 
+                    url={article.resolved_url}
+                    timeToRead={article.time_to_read} />
+                </ArticleAnimated>
+              ))}
+            </Preview>
+            {/* TODO: Move this class */}
+            <PreviewBar className={css`
+              position: fixed; 
+              bottom: 0; 
+              width: 90%; 
+              max-width: 400px;
+              display: flex;
+              border-radius: 1rem 1rem 0 0;
+              overflow: hidden;`}>
+              {/* TODO: Cancel must go back to editor */}
+              <ModalStyles.Button primary={false} onClick={e => this.cancel(e)}>
+                <FontAwesomeIcon icon="times" /> Go back!
+              </ModalStyles.Button>
+              {/* TODO: Save should activate */}
+              <ModalStyles.Button onClick={e => this.save(e)}>
+                Set it up! <FontAwesomeIcon icon="arrow-right" />
+              </ModalStyles.Button>
+            </PreviewBar>
+          </div>
+        </ModalContainerAnimated>
+      }
+      {this.state.formStatus === FormStatus.Activating && 
+        <ModalContainerAnimated key="activating" className={css`${CSSModalCentered}`}>
+          <Loader key="loader" message="Activating your delivery..." />
+        </ModalContainerAnimated>
+      }
+      {this.state.formStatus === FormStatus.Finished && 
+        <ModalContainerAnimated key="done" className={css`${CSSModalCentered}`}>
+          <h1>Delivery Ready! 😄</h1>
+        </ModalContainerAnimated>
+      }
+      </PoseGroup>
     );
   }
 
   private async loadData(id: string) {
     try {
       let delivery = await DeliveryApi.get(id);
+      clearTimeout(this.timeout);
       let otherDelivery = this.apiToState(delivery);
       this.setState({
         ...this.state,
-        formStatus: FormStatus.Saved,
+        formStatus: FormStatus.Enabled,
         ...otherDelivery
       });
     } catch (e) {
@@ -390,6 +494,17 @@ class DeliveryEditor extends React.Component<
     } as Partial<DeliveryEditorState>
   }
 
+  private parseTags(tagsField?: string): string[] {
+    if (
+      tagsField !== undefined && 
+      tagsField !== null && 
+      tagsField.trim().length > 0
+    ) {
+      return tagsField.split(',').map(x => x.trim()).filter(x => x.length > 0);
+    }
+    return [];
+  }
+
   private stateToApi(state: DeliveryEditorState): Delivery {
     return {
       id: this.state.id,
@@ -401,8 +516,8 @@ class DeliveryEditor extends React.Component<
         countType: this.state.countType,
         count: this.state.count,
         orderBy: this.state.orderBy,
-        includedTags: this.state.included !== undefined ? this.state.included.split(',') : [],
-        excludedTags: this.state.excluded !== undefined ? this.state.excluded.split(',') : [],
+        includedTags: this.parseTags(this.state.included),
+        excludedTags: this.parseTags(this.state.excluded),
         longformOnly: this.state.longformOnly
       } as Query,
       frequency: this.state.frequency,
@@ -429,6 +544,8 @@ class DeliveryEditor extends React.Component<
   }
 
   private async save(e: React.MouseEvent<HTMLButtonElement>): Promise<any> {
+    const minTime = 1500;
+    const startTime = new Date().getTime();
     e.preventDefault();
     this.setState({
       ...this.state,
@@ -443,12 +560,22 @@ class DeliveryEditor extends React.Component<
     }
     try {
       delivery = await resp;
-      this.setState({
-        ...this.state,
-        formStatus: FormStatus.Saved,
-        ...this.apiToState(delivery)
-      });
-      // TODO: Redirect to sample
+      const articles = await DeliveryApi.preview(delivery.id);
+
+      const timeSoFar = new Date().getTime() - startTime;
+      const nextStep = () => {
+        this.setState({
+          ...this.state,
+          formStatus: FormStatus.Preview,
+          ...this.apiToState(delivery),
+          preview: articles
+        });
+      }
+      if (timeSoFar > minTime) {
+        nextStep();
+      } else {
+        setTimeout(nextStep, minTime - timeSoFar);
+      }
     } catch(e) {
       // TODO: Handle errors
       alert(e);

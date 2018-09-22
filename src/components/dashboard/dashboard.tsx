@@ -113,13 +113,6 @@ export default class Dashboard extends React.Component<
             <RouteContainer key={this.props.location.key} className={css`${ModalStyles.Background}`}>
               <Switch location={this.props.location}>
                 <Route path="/delivery/:id?" key="delivery" component={DeliveryEditor}/>
-                {/* <Route path="/delivery/:id?" key="delivery">
-                  <DeliveryEditor 
-                  history={this.props.history} 
-                  location={this.props.location} 
-                  match={this.props.match}
-                  />
-                </Route> */}
                 <Route path="/user" key="user" render={(props) => (
                   <UserProfile 
                     {...props}

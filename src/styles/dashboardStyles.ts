@@ -19,7 +19,7 @@ const Empty = styled('div')`
   padding: 2rem;
   margin: 2rem;
   width: 100%;
-  border-radius: 1rem;
+  border-radius: ${props => props.theme.borderRadius};
   color: lightgray;
   border: lightgray 2px dashed;
   text-align: center;
@@ -76,10 +76,10 @@ const NewButton = styled('button')(
     boxSizing: 'border-box',
     width: '100%',
     borderRadius: '0.5rem',
-    boxShadow: '0 .25rem .125rem 0 rgba(0,0,0,0.1)',
   }, 
   (props) => ({
     color: props.theme.bgColor,
+    boxShadow: props.theme.boxShadow
   }), 
   (props) => (
     Button({ color: props.theme.mainColor })

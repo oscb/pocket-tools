@@ -50,7 +50,7 @@ export const ModalContainer = (props: any) => (
   </ModalContainerAnimated>
   );
 
-const CSSModalContent = css`
+export const CSSModalContent = css`
   width: 100%;
   display: flex;
   align-items: center;

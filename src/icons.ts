@@ -1,6 +1,6 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faGetPocket } from '@fortawesome/free-brands-svg-icons'
-import { faCoffee, faAngleDoubleDown, faBookmark, faSpinner, faAsterisk, faSync, faUser, faUserCircle, faUserCheck, faCheck, faPlus, faPlusCircle, faFrown, faTruck, faTimesCircle, faTimes, faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import { faCoffee, faAngleDoubleDown, faBookmark, faSpinner, faAsterisk, faSync, faUser, faUserCircle, faUserCheck, faCheck, faPlus, faPlusCircle, faFrown, faTruck, faTimesCircle, faTimes, faArrowRight, faClock, faLink } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
   faCoffee, 
@@ -20,5 +20,7 @@ library.add(
   faTruck,
   faTimesCircle,
   faTimes,
-  faArrowRight
+  faArrowRight,
+  faClock,
+  faLink
 );

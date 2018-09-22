@@ -14,10 +14,10 @@ export interface Query {
 
 export interface Mailing {
   datetime: Date,
-  articles: Article[]
+  articles: SentArticle[]
 }
 
-export interface Article {
+export interface SentArticle {
   pocketId: string;
   url: string;
 }
@@ -35,6 +35,32 @@ export interface Delivery {
   mailings?: Mailing[];
 }
 
+export interface Article {
+  item_id: string;
+  resolved_id: string;
+  given_url: string;
+  given_title: string;
+  favorite: string;
+  status: string;
+  time_added: string;
+  time_updated: string;
+  time_read: string;
+  time_favorited: string;
+  sort_id: number;
+  resolved_title: string;
+  resolved_url: string;
+  excerpt: string;
+  is_article: string;
+  is_index: string;
+  has_video: string;
+  has_image: string;
+  word_count: string;
+  lang: string;
+  time_to_read: number;
+  top_image_url: string;
+  listen_duration_estimate: number;
+}
+
 export class DeliveryAPI {
   private authReq: (method: string, url: string) => agent.SuperAgentRequest;
 
@@ -49,7 +75,7 @@ export class DeliveryAPI {
 
   async getByUser(): Promise<Delivery[]> {
     let resp = await this.authReq('GET', `/deliveries`).send();
-    return resp.body as Delivery[]; // TODO
+    return resp.body.map(this.toDelivery);
   }
 
   async add(delivery: Delivery): Promise<Delivery> {
@@ -65,6 +91,11 @@ export class DeliveryAPI {
   async delete(delivery: Delivery): Promise<boolean> {
     let resp = await this.authReq('DELETE', `/deliveries/${delivery.id}`).send(delivery);
     return resp.status === 200;
+  }
+
+  async preview(id: string): Promise<Article[]> {
+    let resp = await this.authReq('GET', `/deliveries/${id}/execute`).send();
+    return resp.body.map(x => x as Article);
   }
 
   private toDelivery = (response: any): Delivery => {
@@ -92,9 +123,9 @@ export class DeliveryAPI {
     } as Mailing;
   }
 
-  private toArticle = (response: any): Article => {
+  private toArticle = (response: any): SentArticle => {
     const { _id: id, ...other } = response;
-    return { ...other } as Article;
+    return { ...other } as SentArticle;
   }
 }
 

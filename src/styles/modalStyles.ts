@@ -58,11 +58,11 @@ const Content = styled('div')`
   width: 90%;
   max-width: 500px;
   position: relative;
-  border-radius: .5rem;
-  box-shadow: 0 .25rem .125rem 0 rgba(0,0,0,0.1);
-  /* max-height: 90%; */
+  border-radius: ${props => props.theme.borderRadius};
+  box-shadow: ${props => props.theme.boxShadow};
   overflow: scroll;
   transition: all 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+  margin-bottom: 2rem;
 `
 
 const SpinKeyframe = keyframes`
