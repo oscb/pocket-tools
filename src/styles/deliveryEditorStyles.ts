@@ -46,6 +46,13 @@ const StyledAdvanced = styled('div')<AdvancedProps>(
   })
 );
 
+export const AdvancedStyles = css`
+  padding: 0 1rem;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.1);
+  max-height: 0;
+`
+
 
 const StyledEditor = styled('div')`
   width: 100%;

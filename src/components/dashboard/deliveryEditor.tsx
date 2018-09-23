@@ -11,7 +11,7 @@ import { ApiHelper } from "../../models/apiHelper";
 // import { hot } from "react-hot-loader";
 import { Delivery, DeliveryApi, Query, Article } from '../../models/delivery';
 import { User } from "../../models/user";
-import { EditorStyles } from "../../styles/deliveryEditorStyles";
+import { EditorStyles, AdvancedStyles } from "../../styles/deliveryEditorStyles";
 import { ModalStyles } from "../../styles/modalStyles";
 import CheckCircle from "./checkCircle";
 import Counter, { CounterProps } from "./counter";
@@ -113,6 +113,15 @@ const PreviewBar = posed.div({
     opacity: 0,
   }
 });
+
+const AdvancedSection = posed.div({
+  open: {
+    maxHeight: 500
+  },
+  close: {
+    maxHeight: 0
+  }
+})
 
 class DeliveryEditor extends React.Component<
   DeliveryEditorProps & RouteComponentProps<any>,
@@ -251,7 +260,7 @@ class DeliveryEditor extends React.Component<
                 {(!this.state.showAdvanced && "▾ Show Advanced Options") ||
                   "▴ Hide Advanced Options"}
               </EditorStyles.Toggle>
-              <EditorStyles.Advanced open={this.state.showAdvanced}>
+                <AdvancedSection pose={this.state.showAdvanced ? "open" : "close"} className={css`${AdvancedStyles}`}>
                   {/* Domain */}
                   <TextField
                     name="domain"
@@ -316,7 +325,7 @@ class DeliveryEditor extends React.Component<
                       label="Longform articles only (15+ mins)?"
                     />
                   </FormGroup>
-                </EditorStyles.Advanced>
+                </AdvancedSection>
 
               <ModalStyles.Section>
                 <EditorStyles.SectionTitle>
@@ -470,13 +479,18 @@ class DeliveryEditor extends React.Component<
 
   private async loadData(id: string) {
     try {
-      let delivery = await DeliveryApi.get(id);
+      const delivery = await DeliveryApi.get(id);
       clearTimeout(this.timeout);
-      let otherDelivery = this.apiToState(delivery);
+      const stateDelivery = this.apiToState(delivery);
       this.setState({
         ...this.state,
         formStatus: FormStatus.Enabled,
-        ...otherDelivery
+        ...stateDelivery,
+        showAdvanced: 
+          (!!delivery.query.domain || 
+          (!!delivery.query.includedTags && delivery.query.includedTags.length > 0) || 
+          (!!delivery.query.excludedTags && delivery.query.excludedTags.length > 0) || 
+          delivery.query.longformOnly)
       });
     } catch (e) {
       // TODO: handle errors
