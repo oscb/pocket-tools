@@ -18,6 +18,8 @@ import Counter, { CounterProps } from "./counter";
 import Modal, { ModalContainerAnimated, CSSModalCentered, CSSModalContent } from "./modal";
 import Loader from "../loader/loader";
 import ArticleItem from "./articleItem";
+import { hot } from "react-hot-loader";
+import { DashboardStyles } from "../../styles/dashboardStyles";
 
 export interface DeliveryEditorProps {}
 
@@ -119,6 +121,7 @@ class DeliveryEditor extends React.Component<
   private User: User;
   private minWaitTime: number = 500;
   private timeout: NodeJS.Timer;
+  private isNew: boolean;
 
   constructor(props: DeliveryEditorProps & RouteComponentProps<any>, state: DeliveryEditorState) {
     super(props);
@@ -156,7 +159,9 @@ class DeliveryEditor extends React.Component<
       );
 
       this.loadData(props.match.params.id);
+      this.isNew = false;
     } else {
+      this.isNew = true;
       this.state = defaultState;
     }
   }
@@ -192,7 +197,7 @@ class DeliveryEditor extends React.Component<
       }
       {this.state.formStatus === FormStatus.Enabled &&
         <ModalContainerAnimated key="form" className={css`${CSSModalCentered}`}>
-          <Modal title="New Delivery!">
+          <Modal title={this.state.id !== undefined ? "Your Delivery" : "New Delivery!"}>
             <ModalStyles.Form>
             <EditorStyles.Editor>
               <ModalStyles.Section className={css`margin-bottom: 0;`}>
@@ -385,10 +390,10 @@ class DeliveryEditor extends React.Component<
               </ModalStyles.Section>
             </EditorStyles.Editor>
             <ModalStyles.ButtonBar>
-              <ModalStyles.Button primary={false} onClick={e => this.cancel(e)}>
+              <ModalStyles.Button primary={false} onClick={this.cancel}>
                 <FontAwesomeIcon icon="times" /> Cancel
               </ModalStyles.Button>
-              <ModalStyles.Button onClick={e => this.save(e)}>
+              <ModalStyles.Button onClick={this.save}>
                 Show Sample <FontAwesomeIcon icon="arrow-right" />
               </ModalStyles.Button>
             </ModalStyles.ButtonBar>
@@ -404,7 +409,7 @@ class DeliveryEditor extends React.Component<
       {this.state.formStatus === FormStatus.Preview && 
         <ModalContainerAnimated key="preview" className={css`${CSSModalCentered}`}>
           <div className={css`${CSSModalContent}`}>
-            <ModalStyles.Title>This would be your delivery!</ModalStyles.Title>
+            <ModalStyles.Title>This is your next delivery!</ModalStyles.Title>
             
             <Preview key="previewList" className={css`margin-bottom: 3rem;`}>
               {this.state.preview.map(article => (
@@ -427,13 +432,11 @@ class DeliveryEditor extends React.Component<
               display: flex;
               border-radius: 1rem 1rem 0 0;
               overflow: hidden;`}>
-              {/* TODO: Cancel must go back to editor */}
-              <ModalStyles.Button primary={false} onClick={e => this.cancel(e)}>
-                <FontAwesomeIcon icon="times" /> Go back!
+              <ModalStyles.Button primary={false} onClick={this.goBackToEditor}>
+                <FontAwesomeIcon icon="edit" /> Edit again
               </ModalStyles.Button>
-              {/* TODO: Save should activate */}
-              <ModalStyles.Button onClick={e => this.save(e)}>
-                Set it up! <FontAwesomeIcon icon="arrow-right" />
+              <ModalStyles.Button onClick={this.activate}>
+                Complete! <FontAwesomeIcon icon="check" />
               </ModalStyles.Button>
             </PreviewBar>
           </div>
@@ -446,7 +449,19 @@ class DeliveryEditor extends React.Component<
       }
       {this.state.formStatus === FormStatus.Finished && 
         <ModalContainerAnimated key="done" className={css`${CSSModalCentered}`}>
-          <h1>Delivery Ready! 😄</h1>
+          <Modal
+            key="doneModal"
+            title="" 
+            icon='check'
+            spin={false}
+            className={css`
+              width: 250px;
+            `}
+          >
+            <ModalStyles.Loader>
+              Delivery Ready! 😄
+            </ModalStyles.Loader>
+          </Modal>
         </ModalContainerAnimated>
       }
       </PoseGroup>
@@ -543,7 +558,7 @@ class DeliveryEditor extends React.Component<
     });
   }
 
-  private async save(e: React.MouseEvent<HTMLButtonElement>): Promise<any> {
+  private save = async (e: React.MouseEvent<HTMLButtonElement>): Promise<any> => {
     const minTime = 1500;
     const startTime = new Date().getTime();
     e.preventDefault();
@@ -587,14 +602,69 @@ class DeliveryEditor extends React.Component<
     }
   }
 
-  private cancel(e?: React.MouseEvent) {
+  private cancel = (e?: React.MouseEvent) => {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
+    if (this.isNew && this.state.id !== undefined) {
+      DeliveryApi.delete(this.state.id!);
+    }
     this.props.history.push('/dashboard');
+  }
+
+  private activate = async (e: React.MouseEvent<HTMLButtonElement>): Promise<any> => {
+    const doneMessageTime = 3000;
+    const minTime = 1500;
+    const startTime = new Date().getTime();
+    e.preventDefault();
+
+    this.setState({
+      ...this.state,
+      formStatus: FormStatus.Activating,
+    });
+
+    try {
+      await DeliveryApi.update({
+        id: this.state.id,
+        active: true
+      });
+      const timeSoFar = new Date().getTime() - startTime;
+      const nextStep = () => {
+        this.setState({
+          ...this.state,
+          formStatus: FormStatus.Finished,
+        });
+
+        setTimeout(() => {
+          this.props.history.push('/dashboard');
+        }, doneMessageTime);
+      }
+      if (timeSoFar > minTime) {
+        nextStep();
+      } else {
+        setTimeout(nextStep, minTime - timeSoFar);
+      }
+    } catch(e) {
+      // TODO: Handle errors
+      alert(e);
+      console.error(e);
+      this.setState({
+        ...this.state,
+        formStatus: FormStatus.Enabled
+      });
+    }
+  }
+
+  private goBackToEditor = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    this.setState({
+      ...this.state,
+      formStatus: FormStatus.Enabled,
+      preview: []
+    });
   }
 }
 
-export default DeliveryEditor;
-// export default hot(module)(DeliveryEditor);
+// export default DeliveryEditor;
+export default hot(module)(DeliveryEditor);

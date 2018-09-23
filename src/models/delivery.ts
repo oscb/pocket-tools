@@ -83,13 +83,13 @@ export class DeliveryAPI {
     return this.toDelivery(resp.body);
   }
 
-  async update(delivery: Delivery): Promise<Delivery> {
+  async update(delivery: Partial<Delivery>): Promise<Delivery> {
     let resp = await this.authReq('PUT', `/deliveries/${delivery.id}`).send(delivery);
     return this.toDelivery(resp.body);
   }
 
-  async delete(delivery: Delivery): Promise<boolean> {
-    let resp = await this.authReq('DELETE', `/deliveries/${delivery.id}`).send(delivery);
+  async delete(id: string): Promise<boolean> {
+    let resp = await this.authReq('DELETE', `/deliveries/${id}`).send();
     return resp.status === 200;
   }
 
