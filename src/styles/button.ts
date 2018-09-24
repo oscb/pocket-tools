@@ -3,6 +3,7 @@ import { darken, desaturate, lighten } from 'polished';
 
 export const Button = props => css`
   background: ${props.color};
+  border: none;
 
   &:hover {
     background: ${lighten(0.05, props.color)};

@@ -12,6 +12,8 @@ import { css } from "emotion";
 import { ModalStyles } from "../../styles/modalStyles";
 import UserProfile from "../user/userProfile";
 import { DashboardStyles } from "../../styles/dashboardStyles";
+import DeliveryItem from "./deliveryItem";
+import { hot } from "react-hot-loader";
 
 
 const RouteContainer = posed.div({
@@ -21,6 +23,29 @@ const RouteContainer = posed.div({
     beforeChildren: true,
   },
   exit: { 
+    opacity: 0,
+  }
+});
+
+const DeliveryList = posed.div({
+  enter: { 
+    staggerChildren: 50,
+    opacity: 1,
+  },
+  exit: { 
+    staggerChildren: 20, 
+    staggerDirection: -1,
+    opacity: 0,
+  }
+});
+
+const DeliveryAnimated = posed.div({
+  enter: { 
+    x: 0, 
+    opacity: 1,
+  },
+  exit: { 
+    x: 100, 
     opacity: 0,
   }
 });
@@ -37,7 +62,7 @@ interface DashboardState {
   status: DashboardStatus
 }
 
-export default class Dashboard extends React.Component<
+class Dashboard extends React.Component<
   DashboardProps & RouteComponentProps<any>,
   DashboardState
 > {
@@ -91,7 +116,7 @@ export default class Dashboard extends React.Component<
           }
         {/* Loaded Empty */}
           {this.state.status === DashboardStatus.loaded && 
-          this.state.deliveries && 
+          this.state.deliveries.length === 0 && 
           <DashboardStyles.Empty>
             <DashboardStyles.EmptyIcon>
               <DashboardStyles.Rumble>
@@ -100,12 +125,30 @@ export default class Dashboard extends React.Component<
             </DashboardStyles.EmptyIcon>
             <p>You don't have deliveries yet!</p>
           </DashboardStyles.Empty>}
-        {/* TODO: Loaded show deliveries */}
-          {this.props.children}
+        {/* Loaded show deliveries */}
+        <DashboardStyles.List>
+          <PoseGroup>
+          {this.state.status === DashboardStatus.loaded && 
+            this.state.deliveries.length > 0 && 
+                <DeliveryList key="deliveries">
+                  {this.state.deliveries.map(x =>
+                    <DeliveryAnimated key={x.id}>
+                      <DeliveryItem 
+                        {...x} 
+                        editFunc={this.editDelivery} 
+                        deleteFunc={this.deleteDelivery}
+                        sendFunc={this.sendDelivery}
+                        />
+                    </DeliveryAnimated>
+                  )}
+                </DeliveryList>
+          }
+          </PoseGroup>
+        </DashboardStyles.List>
           
           {/* TODO: Move this Click Function out */}
           <DashboardStyles.Button onClick={e => {this.props.history.push('/delivery', { modal: true })}}>
-            <FontAwesomeIcon icon="plus-circle" /> Create delivery
+            <FontAwesomeIcon icon="plus" /> Create delivery
           </DashboardStyles.Button>
         </DashboardStyles.Content>
         <PoseGroup>
@@ -166,4 +209,18 @@ export default class Dashboard extends React.Component<
     ApiHelper.logout();
     this.props.history.push("/");
   }
+
+  private editDelivery = (id: string) => {
+    this.props.history.push(`/delivery/${id}`, { modal: true });
+  }
+
+  private deleteDelivery = (id: string) => {
+    alert('delete');
+  }
+
+  private sendDelivery = (id: string) => {
+    alert("send!");
+  }
 }
+
+export default hot(module)(Dashboard);

@@ -649,7 +649,7 @@ class DeliveryEditor extends React.Component<
           ...this.state,
           formStatus: FormStatus.Finished,
         });
-
+        // TODO: Trigger a reload in Dashboard
         setTimeout(() => {
           this.props.history.push('/dashboard');
         }, doneMessageTime);

@@ -11,5 +11,9 @@ export const Theme = {
 
   // For a consistent style!
   borderRadius: '0.5rem',
-  boxShadow: '0 .25rem .125rem 0 rgba(0,0,0,0.1)'
+  boxShadow: '0 .25rem .125rem 0 rgba(0,0,0,0.1)',
+
+  // Fonts
+  bodyFont: '"Alegreya Sans", sans-serif',
+  titleFont: '"Roboto Slab", sans-serif'
 }

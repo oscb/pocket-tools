@@ -19,12 +19,13 @@ const Empty = styled('div')`
   padding: 2rem;
   margin: 2rem;
   width: 100%;
+  max-width: 350px;
   border-radius: ${props => props.theme.borderRadius};
   color: lightgray;
   border: lightgray 2px dashed;
   text-align: center;
   font-weight: bold;
-  font-family: "Roboto Slab", sans-serif;
+  font-family: ${props => props.theme.titleFont};
 `
 
 const TruckKeyframes = keyframes`
@@ -75,9 +76,10 @@ const NewButton = styled('button')(
     fontWeight: 'bold',
     boxSizing: 'border-box',
     width: '100%',
-    borderRadius: '0.5rem',
+    maxWidth: '350px'
   }, 
   (props) => ({
+    borderRadius: props.theme.borderRadius,
     color: props.theme.bgColor,
     boxShadow: props.theme.boxShadow
   }), 
@@ -86,6 +88,13 @@ const NewButton = styled('button')(
   )
 );
 
+const List = styled('div')`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+`
+
 export const DashboardStyles = {
   Content: Content,
   Empty: Empty,
@@ -93,4 +102,5 @@ export const DashboardStyles = {
   Rumble: RumbleDiv,
   Translate: TranslateTruckDiv,
   Button: NewButton,
+  List
 }
