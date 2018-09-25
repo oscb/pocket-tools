@@ -14,6 +14,7 @@ import UserProfile from "../user/userProfile";
 import { DashboardStyles } from "../../styles/dashboardStyles";
 import DeliveryItem from "./deliveryItem";
 import { hot } from "react-hot-loader";
+import styled from "react-emotion";
 
 
 const RouteContainer = posed.div({
@@ -23,18 +24,6 @@ const RouteContainer = posed.div({
     beforeChildren: true,
   },
   exit: { 
-    opacity: 0,
-  }
-});
-
-const DeliveryList = posed.div({
-  enter: { 
-    staggerChildren: 50,
-    opacity: 1,
-  },
-  exit: { 
-    staggerChildren: 20, 
-    staggerDirection: -1,
     opacity: 0,
   }
 });
@@ -83,7 +72,8 @@ class Dashboard extends React.Component<
     
     return (
       <div className="dashboard">
-        <Header logo="Pocket Tools">
+      {/* TODO: this is a hack, needs to figure out which one is actually upcomming */}
+        <Header logo="Pocket Tools" delivery={this.state.deliveries ? this.state.deliveries[0] : null}>
           <Link to={{
               pathname: '/dashboard'
           }}>
@@ -126,25 +116,23 @@ class Dashboard extends React.Component<
             <p>You don't have deliveries yet!</p>
           </DashboardStyles.Empty>}
         {/* Loaded show deliveries */}
-        <DashboardStyles.List>
-          <PoseGroup>
-          {this.state.status === DashboardStatus.loaded && 
-            this.state.deliveries.length > 0 && 
-                <DeliveryList key="deliveries">
-                  {this.state.deliveries.map(x =>
-                    <DeliveryAnimated key={x.id}>
-                      <DeliveryItem 
-                        {...x} 
-                        editFunc={this.editDelivery} 
-                        deleteFunc={this.deleteDelivery}
-                        sendFunc={this.sendDelivery}
-                        />
-                    </DeliveryAnimated>
-                  )}
-                </DeliveryList>
-          }
-          </PoseGroup>
-        </DashboardStyles.List>
+        <PoseGroup>
+        {this.state.status === DashboardStatus.loaded && 
+          this.state.deliveries.length > 0 && 
+              <DashboardStyles.DeliveryList key="deliveries">
+                {this.state.deliveries.map(x =>
+                  <DeliveryAnimated key={x.id}>
+                    <DeliveryItem 
+                      {...x} 
+                      editFunc={this.editDelivery} 
+                      deleteFunc={this.deleteDelivery}
+                      sendFunc={this.sendDelivery}
+                      />
+                  </DeliveryAnimated>
+                )}
+              </DashboardStyles.DeliveryList>
+        }
+        </PoseGroup>
           
           {/* TODO: Move this Click Function out */}
           <DashboardStyles.Button onClick={e => {this.props.history.push('/delivery', { modal: true })}}>

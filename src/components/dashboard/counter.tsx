@@ -22,9 +22,10 @@ const StyledCounter = styled('div')`
   align-items: center;
 
   span {
-    flex: 2 0 5rem;
+    flex: 0 0 auto;
     color: ${props => props.theme.textColor};
     font-size: 1rem;
+    margin: 0 1rem;
   }
 
   button {

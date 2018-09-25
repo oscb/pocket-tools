@@ -1,5 +1,6 @@
 import styled, { css, keyframes } from 'react-emotion';
 import { Select } from '@material-ui/core';
+import posed from 'react-pose';
 
 const StyledToggleAdvanced = styled('a')`
   color: ${props => props.theme.textColorSubtle};
@@ -130,6 +131,41 @@ const StyledLabel = styled('label')`
   text-align: left;
 `
 
+const PreviewBarAnimated = posed.div({
+  enter: { 
+    y: 0, 
+    opacity: 1,
+  },
+  exit: { 
+    y: 100, 
+    opacity: 0,
+  }
+});
+
+const PreviewBar = styled(PreviewBarAnimated)`
+  position: fixed; 
+  bottom: 0; 
+  width: 90%; 
+  max-width: 400px;
+  display: flex;
+  border-radius: 1rem 1rem 0 0;
+  overflow: hidden;
+`
+
+const PreviewAnimated = posed.div({
+  enter: { 
+    staggerChildren: 50 
+  },
+  exit: { 
+    staggerChildren: 20, 
+    staggerDirection: -1 
+  }
+});
+
+const Preview = styled(PreviewAnimated)`
+  margin-bottom: 3rem;
+`
+
 export const EditorStyles = {
   Counter: StyledEditorCounter,
   Week: StyledEditorWeek,
@@ -140,5 +176,7 @@ export const EditorStyles = {
   Advanced: StyledAdvanced,
   Toggle: StyledToggleAdvanced,
   Select: StyledSelect,
-  Label: StyledLabel
+  Label: StyledLabel,
+  PreviewBar,
+  Preview
 }

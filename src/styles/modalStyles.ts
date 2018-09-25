@@ -1,5 +1,6 @@
 import styled, { keyframes, css } from "react-emotion";
 import { Button } from "./button";
+import posed from "react-pose";
 
 const Base = css`
   position: absolute;
@@ -173,6 +174,21 @@ const ButtonBar = styled('div')`
   width: 100%;
 `
 
+const ModalWrapperAnimated = posed.div({
+  enter: { 
+    opacity: 1, 
+    delay: 300,
+    beforeChildren: true,
+  },
+  exit: { 
+    opacity: 0,
+  }
+});
+
+const ModalWrapper = styled(ModalWrapperAnimated)`
+  margin: auto;
+`
+
 export const ModalStyles = {
   Background,
   Base,
@@ -187,4 +203,5 @@ export const ModalStyles = {
   Section,
   Status,
   Title,
+  ModalWrapper
 }

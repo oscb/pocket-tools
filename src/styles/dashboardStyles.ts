@@ -1,5 +1,6 @@
 import styled, { keyframes } from "react-emotion";
 import { Button } from "./button";
+import posed from "react-pose";
 
 const Content = styled('div')`
   display: flex;
@@ -88,12 +89,26 @@ const NewButton = styled('button')(
   )
 );
 
-const List = styled('div')`
+const DeliveryListAnimated = posed.div({
+  enter: { 
+    staggerChildren: 50,
+    opacity: 1,
+  },
+  exit: { 
+    staggerChildren: 20, 
+    staggerDirection: -1,
+    opacity: 0,
+  }
+});
+
+const DeliveryList = styled(DeliveryListAnimated)`
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
 `
+
 
 export const DashboardStyles = {
   Content: Content,
@@ -102,5 +117,5 @@ export const DashboardStyles = {
   Rumble: RumbleDiv,
   Translate: TranslateTruckDiv,
   Button: NewButton,
-  List
+  DeliveryList
 }

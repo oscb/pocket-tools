@@ -2,9 +2,13 @@ import * as React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Logo from '../header/logo';
 import './header.scss';
+import styled from 'react-emotion';
+import DeliveryHeader from '../dashboard/deliveryHeader';
+import { Delivery } from '../../models/delivery';
 
 export interface HeaderProps {
   logo: string;
+  delivery?: Delivery;
 }
 
 interface HeaderState {
@@ -38,26 +42,30 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
     }
 
     return (
-      <header>
-        <div className="container">
-          <div className="logo-box">
-            <Logo text={this.props.logo} />
-          </div>
-          <div className="nav-box">
-            <a className="navToggle" href="#" onClick={(e) => this.toggleNav(e)}>
+      <React.Fragment>
+        <HeaderContainer>
+          <LogoBox>
+            <StyledLogo text={this.props.logo} />
+          </LogoBox>
+          <NavBox>
+            <NavToggle href="#" onClick={(e) => this.toggleNav(e)}>
               Menu <FontAwesomeIcon icon="angle-double-down" />
-            </a>
-          </div>
-          <div className="delivery-box">
-            <div className="next-delivery">
-              <h3>Next delivery:</h3>
-              <h1>Wednesday Morning <FontAwesomeIcon icon="coffee" /> </h1>
-              <h2>1 hour of new articles</h2>
-            </div>
-          </div>
-        </div>
+            </NavToggle>
+          </NavBox>
+          <DeliveryBox>
+            {this.props.delivery && 
+            <React.Fragment>
+              <DeliveryHeadTitle>Your next Delivery:</DeliveryHeadTitle>
+              <DeliveryHead 
+                {...this.props.delivery}
+                showDetails={false}
+                />
+            </React.Fragment>
+              }
+          </DeliveryBox>
+        </HeaderContainer>
         {nav}
-      </header>
+      </React.Fragment>
     );
   }
 
@@ -71,3 +79,86 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
     });
   }
 }
+
+
+const HeaderContainer = styled('header')`
+  background: ${props => props.theme.secondaryColor};
+  display: grid;
+  grid-template-columns: auto 120px;
+  grid-template-rows: 40px auto 40px;
+  width: 100%;
+  min-height: 100px;
+`
+
+const LogoBox = styled('div')`
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  margin: 0;
+`
+
+const NavBox = styled('div')`
+  grid-column: 2;
+  grid-row: 3;
+  margin: 0;
+  align-self: end;
+  /* justify-self: right; */
+`
+
+const DeliveryBox = styled('div')`
+  grid-column: 1;
+  grid-row: 1 / 4;
+  justify-self: start;
+  margin: 0;
+  padding: 1em;
+`
+
+const NavToggle = styled('a')`
+  display: block;
+  z-index: 100;
+  color: rgba(1, 1, 1, 0.4);
+  text-align: center;
+  font-size: 1em;
+  padding: 0 0.2em;
+  text-decoration: none;
+  vertical-align: middle;
+
+  &:hover {
+    background-color: $color1;
+  }
+
+  span {
+    font-size: 1.5em;
+    vertical-align: middle;
+  }
+`
+
+const DeliveryHead = styled(DeliveryHeader)`
+  margin: 0;
+  padding: 0;
+  line-height: 1rem;
+
+  h1 {
+    margin-top: 0.25rem;
+    color: ${props => props.theme.bgColor};
+  }
+  
+  h2 {
+    margin-bottom: 0.25rem;
+    color: ${props => props.theme.contrastColor};
+  }
+`
+
+const DeliveryHeadTitle = styled('h3')`
+  margin: 0;
+  color: ${props => props.theme.contrastColor};
+  font-size: 13px;
+  font-weight: normal;
+  font-family: ${props => props.theme.bodyFont};
+  line-height: 1rem;
+`
+
+const StyledLogo = styled(Logo)`
+  font-size: 9px;
+  margin: 2em;
+`

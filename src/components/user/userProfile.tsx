@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RouteComponentProps, Redirect } from "react-router";
-import Modal, { ModalContainerAnimated, ModalContainer, CSSModalCentered } from "../dashboard/modal";
+import Modal from "../dashboard/modal";
 import { TextField } from "@material-ui/core";
 import { User, UserApi } from '../../models/user';
 import Loader from "../loader/loader";
@@ -197,13 +197,13 @@ export default class UserProfile extends React.Component<
     return (
       <PoseGroup>
         {this.state.formStatus === FormStatus.Loading && 
-        <ModalContainerAnimated key="loader" className={css`${CSSModalCentered}`}>
+        <ModalStyles.ModalWrapper key="loader">
           <Loader key="loader" message="Loading your user data" />
-        </ModalContainerAnimated>
+        </ModalStyles.ModalWrapper>
         }
         {this.state.formStatus !== FormStatus.Preloading && 
         this.state.formStatus !== FormStatus.Loading &&
-        <ModalContainerAnimated key="form" className={css`${CSSModalCentered}`}>
+        <ModalStyles.ModalWrapper key="form">
           <Modal 
             key="userForm"
             title={this.props.newUser ? "Setup your account!" : "Account"} 
@@ -290,7 +290,7 @@ export default class UserProfile extends React.Component<
               </ModalStyles.ButtonBar>
             </ModalStyles.Form>
           </Modal>
-        </ModalContainerAnimated>
+        </ModalStyles.ModalWrapper>
         } 
       </PoseGroup>
     );

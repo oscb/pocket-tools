@@ -15,7 +15,7 @@ import { EditorStyles, AdvancedStyles } from "../../styles/deliveryEditorStyles"
 import { ModalStyles } from "../../styles/modalStyles";
 import CheckCircle from "./checkCircle";
 import Counter, { CounterProps } from "./counter";
-import Modal, { ModalContainerAnimated, CSSModalCentered, CSSModalContent } from "./modal";
+import Modal, { CSSModalContent } from "./modal";
 import Loader from "../loader/loader";
 import ArticleItem from "./articleItem";
 import { hot } from "react-hot-loader";
@@ -82,16 +82,6 @@ interface DeliveryEditorState {
   preview?: Article[]
 }
 
-const Preview = posed.div({
-  enter: { 
-    staggerChildren: 50 
-  },
-  exit: { 
-    staggerChildren: 20, 
-    staggerDirection: -1 
-  }
-});
-
 const ArticleAnimated = posed.div({
   enter: { 
     x: 0, 
@@ -99,17 +89,6 @@ const ArticleAnimated = posed.div({
   },
   exit: { 
     x: 100, 
-    opacity: 0,
-  }
-});
-
-const PreviewBar = posed.div({
-  enter: { 
-    y: 0, 
-    opacity: 1,
-  },
-  exit: { 
-    y: 100, 
     opacity: 0,
   }
 });
@@ -200,12 +179,12 @@ class DeliveryEditor extends React.Component<
     return (
       <PoseGroup>
       {this.state.formStatus === FormStatus.Loading && 
-        <ModalContainerAnimated key="loadingDelivery" className={css`${CSSModalCentered}`}>
+        <ModalStyles.ModalWrapper key="loadingDelivery">
           <Loader key="loader" message="Loading delivery" />
-        </ModalContainerAnimated>
+        </ModalStyles.ModalWrapper>
       }
       {this.state.formStatus === FormStatus.Enabled &&
-        <ModalContainerAnimated key="form" className={css`${CSSModalCentered}`}>
+        <ModalStyles.ModalWrapper key="form">
           <Modal title={this.state.id !== undefined ? "Your Delivery" : "New Delivery!"}>
             <ModalStyles.Form>
             <EditorStyles.Editor>
@@ -408,19 +387,19 @@ class DeliveryEditor extends React.Component<
             </ModalStyles.ButtonBar>
           </ModalStyles.Form>
           </Modal>
-        </ModalContainerAnimated>
+        </ModalStyles.ModalWrapper>
       }
       {this.state.formStatus === FormStatus.Saving && 
-        <ModalContainerAnimated key="loadingPreview" className={css`${CSSModalCentered}`}>
+        <ModalStyles.ModalWrapper key="loadingPreview">
           <Loader key="loader" message="Saving your delivery and loading preview..." />
-        </ModalContainerAnimated>
+        </ModalStyles.ModalWrapper>
       }
       {this.state.formStatus === FormStatus.Preview && 
-        <ModalContainerAnimated key="preview" className={css`${CSSModalCentered}`}>
+        <ModalStyles.ModalWrapper key="preview">
           <div className={css`${CSSModalContent}`}>
             <ModalStyles.Title>This is your next delivery!</ModalStyles.Title>
             
-            <Preview key="previewList" className={css`margin-bottom: 3rem;`}>
+            <EditorStyles.Preview key="previewList">
               {this.state.preview.map(article => (
                 <ArticleAnimated key={article.item_id}>
                   <ArticleItem 
@@ -431,33 +410,25 @@ class DeliveryEditor extends React.Component<
                     timeToRead={article.time_to_read} />
                 </ArticleAnimated>
               ))}
-            </Preview>
-            {/* TODO: Move this class */}
-            <PreviewBar className={css`
-              position: fixed; 
-              bottom: 0; 
-              width: 90%; 
-              max-width: 400px;
-              display: flex;
-              border-radius: 1rem 1rem 0 0;
-              overflow: hidden;`}>
+            </EditorStyles.Preview>
+            <EditorStyles.PreviewBar>
               <ModalStyles.Button primary={false} onClick={this.goBackToEditor}>
                 <FontAwesomeIcon icon="edit" /> Edit again
               </ModalStyles.Button>
               <ModalStyles.Button onClick={this.activate}>
                 Complete! <FontAwesomeIcon icon="check" />
               </ModalStyles.Button>
-            </PreviewBar>
+            </EditorStyles.PreviewBar>
           </div>
-        </ModalContainerAnimated>
+        </ModalStyles.ModalWrapper>
       }
       {this.state.formStatus === FormStatus.Activating && 
-        <ModalContainerAnimated key="activating" className={css`${CSSModalCentered}`}>
+        <ModalStyles.ModalWrapper key="activating">
           <Loader key="loader" message="Activating your delivery..." />
-        </ModalContainerAnimated>
+        </ModalStyles.ModalWrapper>
       }
       {this.state.formStatus === FormStatus.Finished && 
-        <ModalContainerAnimated key="done" className={css`${CSSModalCentered}`}>
+        <ModalStyles.ModalWrapper key="done">
           <Modal
             key="doneModal"
             title="" 
@@ -471,7 +442,7 @@ class DeliveryEditor extends React.Component<
               Delivery Ready! 😄
             </ModalStyles.Loader>
           </Modal>
-        </ModalContainerAnimated>
+        </ModalStyles.ModalWrapper>
       }
       </PoseGroup>
     );
