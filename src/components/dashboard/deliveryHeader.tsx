@@ -51,7 +51,7 @@ const QueryInfo = styled('div')`
 `
 
 const TitleContainer = styled('div')`
-  flex: 1 0 ;
+  flex: 1 0 auto;
 `
 
 export interface DeliveryHeaderProps {

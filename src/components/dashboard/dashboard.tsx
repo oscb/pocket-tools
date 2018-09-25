@@ -93,7 +93,6 @@ class Dashboard extends React.Component<
         {/* Loading */}
           {this.state.status === DashboardStatus.loading && 
             <DashboardStyles.Empty>
-              {/* TODO: Better solution for space */}
               <DashboardStyles.EmptyIcon className={css`height: 64px;`}>
                 <DashboardStyles.Translate>
                   <DashboardStyles.Rumble>

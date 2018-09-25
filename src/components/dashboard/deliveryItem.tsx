@@ -4,8 +4,20 @@ import styled from 'react-emotion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button } from '../../styles/button';
 import DeliveryHeader from './deliveryHeader';
+import posed from 'react-pose';
 
-const Container = styled('div')`
+const ArticleAnimated = posed.div({
+  enter: { 
+    x: 0, 
+    opacity: 1,
+  },
+  exit: { 
+    x: 200, 
+    opacity: 0,
+  }
+});
+
+const Container = styled(ArticleAnimated)`
   width: 350px;
   margin: 1rem;
   overflow: hidden;

@@ -163,7 +163,10 @@ const PreviewAnimated = posed.div({
 });
 
 const Preview = styled(PreviewAnimated)`
+  margin: 1.5rem;
+  margin-top: 0;
   margin-bottom: 3rem;
+  max-width: 500px;
 `
 
 const EmptyResults = styled('div')`

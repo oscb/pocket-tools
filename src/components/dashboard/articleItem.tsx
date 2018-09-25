@@ -1,15 +1,20 @@
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import styled from 'react-emotion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import posed from 'react-pose';
 
-export interface ArticleItemProps {
-  image: string;
-  title: string;
-  url: string;
-  timeToRead?: number;
-}
+const ArticleAnimated = posed.div({
+  enter: { 
+    x: 0, 
+    opacity: 1,
+  },
+  exit: { 
+    x: 200, 
+    opacity: 0,
+  }
+});
 
-const Container = styled('div')`
+const Container = styled(ArticleAnimated)`
   background: ${props => props.theme.bgColor};
   color: ${props => props.theme.textColor};
   width: 100%;
@@ -84,6 +89,12 @@ const Link = styled('p')`
 const Time = styled('p')`
   text-align: right;
 `
+export interface ArticleItemProps {
+  image: string;
+  title: string;
+  url: string;
+  timeToRead?: number;
+}
 
 export default class ArticleItem extends React.Component<ArticleItemProps, any> {
   public render() {

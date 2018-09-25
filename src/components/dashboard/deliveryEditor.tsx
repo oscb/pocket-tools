@@ -80,17 +80,6 @@ interface DeliveryEditorState {
   preview?: Article[]
 }
 
-const ArticleAnimated = posed.div({
-  enter: { 
-    x: 0, 
-    opacity: 1,
-  },
-  exit: { 
-    x: 100, 
-    opacity: 0,
-  }
-});
-
 const AdvancedSection = posed.div({
   open: {
     maxHeight: 500
@@ -406,14 +395,12 @@ class DeliveryEditor extends React.Component<
                 <ModalStyles.Title>This is your next delivery!</ModalStyles.Title>
                 <EditorStyles.Preview key="previewList">
                   {this.state.preview.map(article => (
-                    <ArticleAnimated key={article.item_id}>
-                      <ArticleItem 
-                        key={article.resolved_id}
-                        title={article.resolved_title} 
-                        image={article.top_image_url} 
-                        url={article.resolved_url}
-                        timeToRead={article.time_to_read} />
-                    </ArticleAnimated>
+                    <ArticleItem 
+                      key={article.resolved_id}
+                      title={article.resolved_title} 
+                      image={article.top_image_url} 
+                      url={article.resolved_url}
+                      timeToRead={article.time_to_read} />
                   ))}
                 </EditorStyles.Preview>
               </React.Fragment>
