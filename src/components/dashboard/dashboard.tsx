@@ -72,6 +72,9 @@ class Dashboard extends React.Component<
   }
 
   public render() {
+    if (this.props.location.state && this.props.location.state.reload) {
+      this.loadDeliveries(true);
+    }
     const isModal = this.props.location.pathname !== '/dashboard';
     
     return (

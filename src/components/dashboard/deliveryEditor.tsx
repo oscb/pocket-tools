@@ -616,7 +616,7 @@ class DeliveryEditor extends React.Component<
         });
         // TODO: Trigger a reload in Dashboard
         setTimeout(() => {
-          this.props.history.push('/dashboard');
+          this.props.history.push('/dashboard', { reload: true } );
         }, doneMessageTime);
       }
       if (timeSoFar > minTime) {
