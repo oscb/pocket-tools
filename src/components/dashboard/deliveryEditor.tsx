@@ -174,205 +174,205 @@ class DeliveryEditor extends React.Component<
         <ModalStyles.ModalWrapper key="form">
           <Modal title={this.state.id !== undefined ? "Your Delivery" : "New Delivery!"}>
             <ModalStyles.Form>
-            <EditorStyles.Editor>
-              <ModalStyles.Section className={css`margin-bottom: 0;`}>
-                <EditorStyles.SectionTitle>
-                  <span>Articles</span>
-                </EditorStyles.SectionTitle>
-                <EditorStyles.Fieldset>
-                  <EditorStyles.Label>How many?</EditorStyles.Label>
-                  <EditorStyles.Row>
-                    <EditorStyles.Select
-                      value={this.state.countType}
-                      onChange={this.handleChange}
-                      inputProps={{
-                        name: "countType",
-                        id: "countType-value"
-                      }}
-                      // autoWidth={true}
-                    >
-                      <MenuItem value={CountType.Time}>By Time</MenuItem>
-                      <MenuItem value={CountType.Count}>By Count</MenuItem>
-                    </EditorStyles.Select>
-                    {/* Switch between input and selection */}
-                    <EditorStyles.Counter>
-                      <Counter
-                        {...counterOpts as CounterProps}
-                        count={this.state.count}
-                      />
-                    </EditorStyles.Counter>
-                  </EditorStyles.Row>
-                </EditorStyles.Fieldset>
-                <EditorStyles.Fieldset>
-                  <EditorStyles.Label>Order By</EditorStyles.Label>
-                  <EditorStyles.Select
-                    value={this.state.orderBy}
-                    onChange={this.handleChange}
-                    inputProps={{
-                      name: "orderBy",
-                      id: "orderBy-value"
-                    }}
-                    // autoWidth={true}
-                  >
-                    <MenuItem value={OrderBy.Newest}>Newest</MenuItem>
-                    <MenuItem value={OrderBy.Oldest}>Oldest</MenuItem>
-                  </EditorStyles.Select>
-                </EditorStyles.Fieldset>
-              </ModalStyles.Section>
-              <EditorStyles.Toggle
-                href="#"
-                onClick={e => this.showAdvanced(e)}
-              >
-                {(!this.state.showAdvanced && "▾ Show Advanced Options") ||
-                  "▴ Hide Advanced Options"}
-              </EditorStyles.Toggle>
-                <AdvancedSection pose={this.state.showAdvanced ? "open" : "close"} className={css`${AdvancedStyles}`}>
-                  {/* Domain */}
-                  <TextField
-                    name="domain"
-                    label="Domain"
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                    placeholder="e.g. newyorker.com, theverge.com, ..."
-                    fullWidth
-                    value={this.state.domain}
-                    onChange={e => this.handleChange(e)}
-                    margin="normal"
-                    helperText="Leave empty to include all"
-                  />
-
-                  {/* Included Tags */}
-                  <TextField
-                    name="included"
-                    label="Included Tags"
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                    placeholder="e.g. tech, videogames, developer notes, ..."
-                    multiline
-                    fullWidth
-                    value={this.state.included}
-                    onChange={e => this.handleChange(e)}
-                    margin="normal"
-                    helperText="All tagged and untagged items included by default. Sepparate with commas (,)"
-                  />
-
-                  {/* Excluded Tags */}
-                  <TextField
-                    name="excluded"
-                    label="Excluded Tags"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    placeholder="e.g. funny videos, recipes, ..."
-                    multiline
-                    fullWidth
-                    value={this.state.excluded}
-                    onChange={e => this.handleChange(e)}
-                    margin="normal"
-                    helperText="Items with any of these tags will be ignored. Sepparate with commas (,)"
-                  />
-
-                  {/* Longform only */}
-                  <FormGroup row>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={this.state.longformOnly}
-                          onChange={x =>
-                            this.setState({
-                              ...this.state,
-                              longformOnly: !this.state.longformOnly
-                            })}
-                          value="longformOnly"
-                        />
-                      }
-                      label="Longform articles only (15+ mins)?"
-                    />
-                  </FormGroup>
-                </AdvancedSection>
-
-              <ModalStyles.Section>
-                <EditorStyles.SectionTitle>
-                  <span>Delivery</span>
-                </EditorStyles.SectionTitle>
-
-                <EditorStyles.Fieldset>
-                  <EditorStyles.Label>When?</EditorStyles.Label>
-                  <EditorStyles.Row>
-                    <Select
-                      value={this.state.frequency}
-                      onChange={this.handleChange}
-                      inputProps={{
-                        name: "frequency",
-                        id: "frequency-value"
-                      }}
-                      // autoWidth={true}
-                    >
-                      <MenuItem value={Frequency.Daily}>Daily</MenuItem>
-                      <MenuItem value={Frequency.Weekly}>Weekly</MenuItem>
-                      {/* <MenuItem value={Frequency.Monthly}>Monthly</MenuItem> */}
-                    </Select>
-                    <Select
-                      value={this.state.time}
-                      onChange={this.handleChange}
-                      inputProps={{
-                        name: "time",
-                        id: "time-value"
+              <EditorStyles.Editor>
+                <ModalStyles.Section className={css`margin-bottom: 0;`}>
+                  <EditorStyles.SectionTitle>
+                    <span>Articles</span>
+                  </EditorStyles.SectionTitle>
+                  <EditorStyles.Fieldset>
+                    <EditorStyles.Label>How many?</EditorStyles.Label>
+                    <EditorStyles.Row>
+                      <EditorStyles.Select
+                        value={this.state.countType}
+                        onChange={this.handleChange}
+                        inputProps={{
+                          name: "countType",
+                          id: "countType-value"
+                        }}
                         // autoWidth={true}
-                      }}
-                    >
-                      <MenuItem value={TimeOpts.Morning}>Morning</MenuItem>
-                      <MenuItem value={TimeOpts.Noon}>Noon</MenuItem>
-                      <MenuItem value={TimeOpts.Afternoon}>Afternoon</MenuItem>
-                      <MenuItem value={TimeOpts.Evening}>Evening</MenuItem>
-                      <MenuItem value={TimeOpts.Midnight}>Midnight</MenuItem>
-                    </Select>
-                  </EditorStyles.Row>
-
-                  {this.state.frequency === Frequency.Weekly && (
-                    <EditorStyles.Week>
-                      <CheckCircle label="M" />
-                      <CheckCircle label="T" />
-                      <CheckCircle label="W" />
-                      <CheckCircle label="T" />
-                      <CheckCircle label="F" />
-                      <CheckCircle label="S" />
-                      <CheckCircle label="S" />
-                    </EditorStyles.Week>
-                  )}
-
-                  <FormGroup row>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={this.state.archive}
-                          onChange={x =>
-                            this.setState({
-                              ...this.state,
-                              archive: !this.state.archive
-                            })}
-                          value="longformOnly"
-                          color="primary"
+                      >
+                        <MenuItem value={CountType.Time}>By Time</MenuItem>
+                        <MenuItem value={CountType.Count}>By Count</MenuItem>
+                      </EditorStyles.Select>
+                      {/* Switch between input and selection */}
+                      <EditorStyles.Counter>
+                        <Counter
+                          {...counterOpts as CounterProps}
+                          count={this.state.count}
                         />
-                      }
-                      label="Archive after delivery?"
+                      </EditorStyles.Counter>
+                    </EditorStyles.Row>
+                  </EditorStyles.Fieldset>
+                  <EditorStyles.Fieldset>
+                    <EditorStyles.Label>Order By</EditorStyles.Label>
+                    <EditorStyles.Select
+                      value={this.state.orderBy}
+                      onChange={this.handleChange}
+                      inputProps={{
+                        name: "orderBy",
+                        id: "orderBy-value"
+                      }}
+                      // autoWidth={true}
+                    >
+                      <MenuItem value={OrderBy.Newest}>Newest</MenuItem>
+                      <MenuItem value={OrderBy.Oldest}>Oldest</MenuItem>
+                    </EditorStyles.Select>
+                  </EditorStyles.Fieldset>
+                </ModalStyles.Section>
+                <EditorStyles.Toggle
+                  href="#"
+                  onClick={e => this.showAdvanced(e)}
+                >
+                  {(!this.state.showAdvanced && "▾ Show Advanced Options") ||
+                    "▴ Hide Advanced Options"}
+                </EditorStyles.Toggle>
+                  <AdvancedSection pose={this.state.showAdvanced ? "open" : "close"} className={css`${AdvancedStyles}`}>
+                    {/* Domain */}
+                    <TextField
+                      name="domain"
+                      label="Domain"
+                      InputLabelProps={{
+                        shrink: true
+                      }}
+                      placeholder="e.g. newyorker.com, theverge.com, ..."
+                      fullWidth
+                      value={this.state.domain}
+                      onChange={e => this.handleChange(e)}
+                      margin="normal"
+                      helperText="Leave empty to include all"
                     />
-                  </FormGroup>
 
-                </EditorStyles.Fieldset>
-              </ModalStyles.Section>
-            </EditorStyles.Editor>
-            <ModalStyles.ButtonBar>
-              <ModalStyles.Button primary={false} onClick={this.cancel}>
-                <FontAwesomeIcon icon="times" /> Cancel
-              </ModalStyles.Button>
-              <ModalStyles.Button onClick={this.save}>
-                Show Sample <FontAwesomeIcon icon="arrow-right" />
-              </ModalStyles.Button>
-            </ModalStyles.ButtonBar>
-          </ModalStyles.Form>
+                    {/* Included Tags */}
+                    <TextField
+                      name="included"
+                      label="Included Tags"
+                      InputLabelProps={{
+                        shrink: true
+                      }}
+                      placeholder="e.g. tech, videogames, developer notes, ..."
+                      multiline
+                      fullWidth
+                      value={this.state.included}
+                      onChange={e => this.handleChange(e)}
+                      margin="normal"
+                      helperText="All tagged and untagged items included by default. Sepparate with commas (,)"
+                    />
+
+                    {/* Excluded Tags */}
+                    <TextField
+                      name="excluded"
+                      label="Excluded Tags"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      placeholder="e.g. funny videos, recipes, ..."
+                      multiline
+                      fullWidth
+                      value={this.state.excluded}
+                      onChange={e => this.handleChange(e)}
+                      margin="normal"
+                      helperText="Items with any of these tags will be ignored. Sepparate with commas (,)"
+                    />
+
+                    {/* Longform only */}
+                    <FormGroup row>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={this.state.longformOnly}
+                            onChange={x =>
+                              this.setState({
+                                ...this.state,
+                                longformOnly: !this.state.longformOnly
+                              })}
+                            value="longformOnly"
+                          />
+                        }
+                        label="Longform articles only (15+ mins)?"
+                      />
+                    </FormGroup>
+                  </AdvancedSection>
+
+                <ModalStyles.Section>
+                  <EditorStyles.SectionTitle>
+                    <span>Delivery</span>
+                  </EditorStyles.SectionTitle>
+
+                  <EditorStyles.Fieldset>
+                    <EditorStyles.Label>When?</EditorStyles.Label>
+                    <EditorStyles.Row>
+                      <Select
+                        value={this.state.frequency}
+                        onChange={this.handleChange}
+                        inputProps={{
+                          name: "frequency",
+                          id: "frequency-value"
+                        }}
+                        // autoWidth={true}
+                      >
+                        <MenuItem value={Frequency.Daily}>Daily</MenuItem>
+                        <MenuItem value={Frequency.Weekly}>Weekly</MenuItem>
+                        {/* <MenuItem value={Frequency.Monthly}>Monthly</MenuItem> */}
+                      </Select>
+                      <Select
+                        value={this.state.time}
+                        onChange={this.handleChange}
+                        inputProps={{
+                          name: "time",
+                          id: "time-value"
+                          // autoWidth={true}
+                        }}
+                      >
+                        <MenuItem value={TimeOpts.Morning}>Morning</MenuItem>
+                        <MenuItem value={TimeOpts.Noon}>Noon</MenuItem>
+                        <MenuItem value={TimeOpts.Afternoon}>Afternoon</MenuItem>
+                        <MenuItem value={TimeOpts.Evening}>Evening</MenuItem>
+                        <MenuItem value={TimeOpts.Midnight}>Midnight</MenuItem>
+                      </Select>
+                    </EditorStyles.Row>
+
+                    {this.state.frequency === Frequency.Weekly && (
+                      <EditorStyles.Week>
+                        <CheckCircle label="M" />
+                        <CheckCircle label="T" />
+                        <CheckCircle label="W" />
+                        <CheckCircle label="T" />
+                        <CheckCircle label="F" />
+                        <CheckCircle label="S" />
+                        <CheckCircle label="S" />
+                      </EditorStyles.Week>
+                    )}
+
+                    <FormGroup row>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={this.state.archive}
+                            onChange={x =>
+                              this.setState({
+                                ...this.state,
+                                archive: !this.state.archive
+                              })}
+                            value="longformOnly"
+                            color="primary"
+                          />
+                        }
+                        label="Archive after delivery?"
+                      />
+                    </FormGroup>
+
+                  </EditorStyles.Fieldset>
+                </ModalStyles.Section>
+              </EditorStyles.Editor>
+              <ModalStyles.ButtonBar>
+                <ModalStyles.Button primary={false} onClick={this.cancel}>
+                  <FontAwesomeIcon icon="times" /> Cancel
+                </ModalStyles.Button>
+                <ModalStyles.Button onClick={this.save}>
+                  Show Sample <FontAwesomeIcon icon="arrow-right" />
+                </ModalStyles.Button>
+              </ModalStyles.ButtonBar>
+            </ModalStyles.Form>
           </Modal>
         </ModalStyles.ModalWrapper>
       }

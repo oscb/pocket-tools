@@ -42,9 +42,9 @@ const ActionBar = styled('div')`
 `
 
 export interface DeliveryItemProps {
-  editFunc: (id: string) => void;
-  deleteFunc: (id: string) => void;
-  sendFunc: (id: string) => void;
+  editFunc: (delivery: Delivery) => void;
+  deleteFunc: (delivery: Delivery) => void;
+  sendFunc: (delivery: Delivery) => void;
 }
 
 export default class DeliveryItem extends React.Component<Delivery & DeliveryItemProps, any> {
@@ -73,11 +73,10 @@ export default class DeliveryItem extends React.Component<Delivery & DeliveryIte
     );
   }
 
-  private generateButtonCallback(func: (id: string) => void) {
+  private generateButtonCallback(func: (delivery: Delivery) => void) {
     return (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      func(this.props.id);
+      func(this.props);
     }
   }
-
 }

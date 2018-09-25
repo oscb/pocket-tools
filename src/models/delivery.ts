@@ -98,6 +98,11 @@ export class DeliveryAPI {
     return resp.body.map(x => x as Article);
   }
 
+  async send(id: string): Promise<boolean> {
+    let resp = await this.authReq('GET', `/deliveries/${id}/deliver`).send();
+    return resp.status === 200;
+  }
+
   private toDelivery = (response: any): Delivery => {
     const { _id: id, __v: v, query, mailings, ...other } = response;
     return {
