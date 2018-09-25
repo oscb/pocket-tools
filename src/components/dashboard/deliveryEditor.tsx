@@ -8,18 +8,16 @@ import posed, { PoseGroup } from "react-pose";
 import { RouteComponentProps } from "react-router";
 import { $enum } from "ts-enum-util";
 import { ApiHelper } from "../../models/apiHelper";
-// import { hot } from "react-hot-loader";
 import { Delivery, DeliveryApi, Query, Article } from '../../models/delivery';
 import { User } from "../../models/user";
 import { EditorStyles, AdvancedStyles } from "../../styles/deliveryEditorStyles";
 import { ModalStyles } from "../../styles/modalStyles";
 import CheckCircle from "./checkCircle";
 import Counter, { CounterProps } from "./counter";
-import Modal, { CSSModalContent } from "./modal";
+import Modal from "./modal";
 import Loader from "../loader/loader";
 import ArticleItem from "./articleItem";
 import { hot } from "react-hot-loader";
-import { DashboardStyles } from "../../styles/dashboardStyles";
 
 export interface DeliveryEditorProps {}
 
@@ -396,21 +394,30 @@ class DeliveryEditor extends React.Component<
       }
       {this.state.formStatus === FormStatus.Preview && 
         <ModalStyles.ModalWrapper key="preview">
-          <div className={css`${CSSModalContent}`}>
-            <ModalStyles.Title>This is your next delivery!</ModalStyles.Title>
-            
-            <EditorStyles.Preview key="previewList">
-              {this.state.preview.map(article => (
-                <ArticleAnimated key={article.item_id}>
-                  <ArticleItem 
-                    key={article.resolved_id}
-                    title={article.resolved_title} 
-                    image={article.top_image_url} 
-                    url={article.resolved_url}
-                    timeToRead={article.time_to_read} />
-                </ArticleAnimated>
-              ))}
-            </EditorStyles.Preview>
+          <ModalStyles.ModalBox>
+            {(this.state.preview === undefined || this.state.preview.length === 0) && 
+              <EditorStyles.EmptyResults>
+                🤔<br/> 
+                No articles in your Pocket match your query. No worries, we will send articles if we find any!
+              </EditorStyles.EmptyResults>
+            }
+              {this.state.preview !== undefined && this.state.preview.length > 0 && 
+              <React.Fragment>
+                <ModalStyles.Title>This is your next delivery!</ModalStyles.Title>
+                <EditorStyles.Preview key="previewList">
+                  {this.state.preview.map(article => (
+                    <ArticleAnimated key={article.item_id}>
+                      <ArticleItem 
+                        key={article.resolved_id}
+                        title={article.resolved_title} 
+                        image={article.top_image_url} 
+                        url={article.resolved_url}
+                        timeToRead={article.time_to_read} />
+                    </ArticleAnimated>
+                  ))}
+                </EditorStyles.Preview>
+              </React.Fragment>
+            }
             <EditorStyles.PreviewBar>
               <ModalStyles.Button primary={false} onClick={this.goBackToEditor}>
                 <FontAwesomeIcon icon="edit" /> Edit again
@@ -419,7 +426,7 @@ class DeliveryEditor extends React.Component<
                 Complete! <FontAwesomeIcon icon="check" />
               </ModalStyles.Button>
             </EditorStyles.PreviewBar>
-          </div>
+          </ModalStyles.ModalBox>
         </ModalStyles.ModalWrapper>
       }
       {this.state.formStatus === FormStatus.Activating && 

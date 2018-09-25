@@ -43,15 +43,6 @@ const Title = styled('h1')`
   font-size: 22px;
 `
 
-const CSSModalContent = css`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  box-sizing: border-box;
-`
-
 const Content = styled('div')`
   background: ${props => props.theme.bgColor};
   color: ${props => props.theme.secondaryColor};
@@ -189,6 +180,42 @@ const ModalWrapper = styled(ModalWrapperAnimated)`
   margin: auto;
 `
 
+const ModalBoxCSS = css`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  box-sizing: border-box;
+`
+
+const ModalBox = styled('div')`
+  ${ModalBoxCSS}
+`
+
+const ModalBoxAnimated = styled(
+  posed.div({
+    enter: { 
+      y: 0, 
+      opacity: 1,
+      transition: {
+        duration: 300,
+        ease: 'backOut'
+      }
+    },
+    exit: { 
+      y: 150, 
+      opacity: 0,
+      transition: {
+        duration: 200,
+        ease: 'anticipate'
+      }
+    }
+  })
+)`
+  ${ModalBoxCSS}
+`
+
 export const ModalStyles = {
   Background,
   Base,
@@ -203,5 +230,7 @@ export const ModalStyles = {
   Section,
   Status,
   Title,
-  ModalWrapper
+  ModalWrapper,
+  ModalBox,
+  ModalBoxAnimated
 }

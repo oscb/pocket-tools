@@ -166,6 +166,15 @@ const Preview = styled(PreviewAnimated)`
   margin-bottom: 3rem;
 `
 
+const EmptyResults = styled('div')`
+  color: ${props => props.theme.secondaryColor};
+  font-size: 1.5rem;
+  font-family: ${props => props.theme.titleFont};
+  padding: 1rem;
+  max-width: 300px;
+  text-align: center;
+`
+
 export const EditorStyles = {
   Counter: StyledEditorCounter,
   Week: StyledEditorWeek,
@@ -178,5 +187,6 @@ export const EditorStyles = {
   Select: StyledSelect,
   Label: StyledLabel,
   PreviewBar,
-  Preview
+  Preview,
+  EmptyResults
 }

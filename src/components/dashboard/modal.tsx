@@ -14,35 +14,6 @@ export interface ModalProps {
   className?: string;
 }
 
-const ModalAnimated = posed.div({
-  enter: { 
-    y: 0, 
-    opacity: 1,
-    transition: {
-      duration: 300,
-      ease: 'backOut'
-    }
-  },
-  exit: { 
-    y: 150, 
-    opacity: 0,
-    transition: {
-      duration: 200,
-      ease: 'anticipate'
-    }
-  }
-});
-
-export const CSSModalContent = css`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  box-sizing: border-box;
-`
-
-
 export default class Modal extends React.Component<ModalProps, any> {
 
   onShadeClick = (e: React.MouseEvent) => {
@@ -58,7 +29,7 @@ export default class Modal extends React.Component<ModalProps, any> {
         {this.props.title && 
           <ModalStyles.Title>{this.props.title}</ModalStyles.Title>
         }
-        <ModalAnimated className={css`${CSSModalContent}`}>
+        <ModalStyles.ModalBoxAnimated>
           {this.props.icon !== undefined && 
           <ModalStyles.Icon spin={this.props.spin} style={this.props.iconStyle}>
             <FontAwesomeIcon icon={this.props.icon}/>
@@ -70,7 +41,7 @@ export default class Modal extends React.Component<ModalProps, any> {
             </ModalStyles.Close> */}
             {this.props.children}
           </ModalStyles.Content>
-        </ModalAnimated>
+        </ModalStyles.ModalBoxAnimated>
       </ModalStyles.Modal>
     );
   }
