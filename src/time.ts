@@ -39,10 +39,6 @@ function transformSchedule(
     adjustedTime = adjustedTime % 24;
     adjustedTime = adjustedTime < 0 ? adjustedTime + 24 : adjustedTime;
     const adjustedTimeslot = getTimeslot(adjustedTime, timeslotOp);
-
-    // console.log(`Timeslot Original:${timeslot * TimeslotDurationMinutes / 60} Adjusted: ${adjustedTime}`);
-    // console.log(`Timeslot Original:${TimeOpts[timeslot]} Adjusted: ${TimeOpts[adjustedTimeslot]}`);
-    // console.log(`Dates Original:${days} Adjusted: ${adjustedDates}`);
     return [adjustedTimeslot, adjustedDates];
   }
 }
