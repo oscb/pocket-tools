@@ -30,8 +30,9 @@ export interface Delivery {
   query: Query;
   frequency: string;
   time: string;
+  timezone: number;
   autoArchive: boolean;
-  day?: string;
+  day?: string[];
   mailings?: Mailing[];
 }
 

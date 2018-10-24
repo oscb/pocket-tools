@@ -15,6 +15,7 @@ import DeliveryItem from "./deliveryItem";
 import { hot } from "react-hot-loader";
 import styled from "react-emotion";
 import Modal from "./modal";
+import { TimeOpts, UtcToLocal } from "../../time";
 
 
 const RouteContainer = posed.div({
@@ -60,7 +61,6 @@ class Dashboard extends React.Component<
 
   constructor(props, state) {
     super(props);
-
     this.loadDeliveries();
 
     this.state = {
@@ -71,10 +71,17 @@ class Dashboard extends React.Component<
     };
   }
 
-  public render() {
-    if (this.props.location.state && this.props.location.state.reload) {
+  public componentDidUpdate(prevProps: DashboardProps & RouteComponentProps<any>, prevState: DashboardState) {
+    if (
+      this.props.location.state !== undefined && 
+      this.props.location.state.reload === true && 
+      prevProps.location.state !== undefined && 
+      prevProps.location.state.reload !== true ) {
       this.loadDeliveries(true);
     }
+  }
+
+  public render() {
     const isModal = this.props.location.pathname !== '/dashboard';
     
     return (
@@ -177,6 +184,13 @@ class Dashboard extends React.Component<
     const deliveries = await DeliveryApi.getByUser();
     const timeToLoad = new Date().getTime() - start;
 
+    // Transform dates to local
+    for (let delivery of deliveries) {
+      let [time, day] = UtcToLocal(TimeOpts[delivery.time], delivery.day);
+      delivery.time = TimeOpts[time];
+      delivery.day = day;
+    }
+
     // Animation takes 2.5s to get to the middle, so we want to stop it at the next middle point 
     // TODO: this doesn't work perfectly fine since React is not instantaneous, but I'll leave it for now.
     const progress = ((timeToLoad /1000) % (animationTime * 2));
@@ -199,7 +213,7 @@ class Dashboard extends React.Component<
       this.setState({
         ...this.state,
         status: DashboardStatus.loaded,
-        deliveries: deliveries
+        deliveries: deliveries,
       });
     }
   }

@@ -23,7 +23,6 @@ export default class Modal extends React.Component<ModalProps, any> {
   }
 
   public render() {
-    // TODO: Add close modal with config
     return (
       <ModalStyles.Modal className={this.props.className}>
         {this.props.title && 

@@ -2,15 +2,12 @@ import "./checkCircle.scss";
 import * as React from 'react';
 
 export interface CheckCircleProps {
-  label: string,
-  checked?: boolean
+  label: string;
+  checked?: boolean;
+  onCheck?: (prev: boolean) => void;
 }
 
-export interface CheckCircleState {
-  checked: boolean
-}
-
-export default class CheckCircle extends React.Component<CheckCircleProps, CheckCircleState> {
+export default class CheckCircle extends React.Component<CheckCircleProps> {
   public static defaultProps: Partial<CheckCircleProps> = {
     checked: false
   };
@@ -25,13 +22,14 @@ export default class CheckCircle extends React.Component<CheckCircleProps, Check
 
   handleClick(x: React.MouseEvent<HTMLDivElement>) {
     x.preventDefault();
-    this.setState(state => { return { checked: !state.checked } });
-    // TODO: Bubble up!
+    if (this.props.onCheck) {
+      this.props.onCheck(this.props.checked);
+    }
   }
 
   render() {
     return (
-      <div className={ `checkcircle ${this.state.checked ? " enabled" : ""}`} onClick={x => this.handleClick(x)}>
+      <div className={ `checkcircle ${this.props.checked ? " enabled" : ""}`} onClick={x => this.handleClick(x)}>
         <span>{this.props.label}</span>
       </div>
     );

@@ -3,19 +3,20 @@ import { Button } from "./button";
 import posed from "react-pose";
 
 const Base = css`
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   left: 0;
   bottom: 0;
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   display: flex;
   /* align-items: center;
   justify-content: center; */
   flex-direction: column;
   box-sizing: border-box;
   overflow-y: auto;
+  z-index: 100;
 `
 
 const Modal = styled('div')`

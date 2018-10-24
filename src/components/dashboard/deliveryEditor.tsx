@@ -18,30 +18,23 @@ import Modal from "./modal";
 import Loader from "../loader/loader";
 import ArticleItem from "./articleItem";
 import { hot } from "react-hot-loader";
+import { TimeOpts, localToUtc, UtcToLocal, WeekDays } from "../../time";
 
 export interface DeliveryEditorProps {}
 
 enum CountType {
-  Time = "time",
-  Count = "count"
+  Time,
+  Count
 }
 
 enum OrderBy {
-  Newest = "newest",
-  Oldest = "oldest"
+  Newest,
+  Oldest
 }
 
 enum Frequency {
-  Daily = "daily",
-  Weekly = "weekly"
-}
-
-enum TimeOpts {
-  Morning = "morning",
-  Noon = "noon",
-  Afternoon = "afternoon",
-  Evening = "evening",
-  Midnight = "midnight"
+  Daily,
+  Weekly
 }
 
 enum FormStatus {
@@ -52,7 +45,6 @@ enum FormStatus {
   Preview,
   Activating,
   Finished
-  // TODO: Might need more states
   // [Loading   ->] Enabled   -> Saving   -> Sample   -> Saving   -> Active
   //                          [Error]     <- Cancel (goes to enabled) 
 }
@@ -64,7 +56,7 @@ interface DeliveryEditorState {
   orderBy: OrderBy;
   frequency: Frequency;
   time: TimeOpts;
-  archive: boolean;
+  autoArchive: boolean;
   count: number;
   showAdvanced: boolean;
   longformOnly: boolean;
@@ -72,6 +64,7 @@ interface DeliveryEditorState {
   excluded?: string;
   domain?: string;
   kindle_email: string;
+  day?: string[];
 
   // Form
   formStatus: FormStatus;
@@ -87,7 +80,10 @@ const AdvancedSection = posed.div({
   close: {
     maxHeight: 0
   }
-})
+});
+
+// Timeslot values
+
 
 class DeliveryEditor extends React.Component<
   DeliveryEditorProps & RouteComponentProps<any>,
@@ -110,7 +106,7 @@ class DeliveryEditor extends React.Component<
       frequency: Frequency.Weekly,
       time: TimeOpts.Morning,
       count: 30,
-      archive: true,
+      autoArchive: true,
       showAdvanced: false,
       longformOnly: false,
       kindle_email: this.User.kindle_email,
@@ -191,8 +187,9 @@ class DeliveryEditor extends React.Component<
                         }}
                         // autoWidth={true}
                       >
-                        <MenuItem value={CountType.Time}>By Time</MenuItem>
-                        <MenuItem value={CountType.Count}>By Count</MenuItem>
+                        {Object.keys(CountType)
+                          .filter(key => isNaN(Number(key)))
+                          .map(item => <MenuItem key={item} value={CountType[item]}>{item}</MenuItem>)}
                       </EditorStyles.Select>
                       {/* Switch between input and selection */}
                       <EditorStyles.Counter>
@@ -214,8 +211,9 @@ class DeliveryEditor extends React.Component<
                       }}
                       // autoWidth={true}
                     >
-                      <MenuItem value={OrderBy.Newest}>Newest</MenuItem>
-                      <MenuItem value={OrderBy.Oldest}>Oldest</MenuItem>
+                      {Object.keys(OrderBy)
+                        .filter(key => isNaN(Number(key)))
+                        .map(item => <MenuItem key={item} value={OrderBy[item]}>{item}</MenuItem>)}
                     </EditorStyles.Select>
                   </EditorStyles.Fieldset>
                 </ModalStyles.Section>
@@ -290,6 +288,30 @@ class DeliveryEditor extends React.Component<
                         }
                         label="Longform articles only (15+ mins)?"
                       />
+
+                      {/* Kindle Email */}
+                      <TextField
+                        name="kindle_email"
+                        label="Kindle Email"
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                        fullWidth
+                        placeholder="your_kindle@kindle.com"
+                        value={this.state.kindle_email}
+                        onChange={e => this.handleChange(e)}
+                        margin="normal"
+                      />
+                      <p className="info">
+                        {/* TODO: Add quick copy button to copy the email! */}
+                        <i>
+                          Remember to give access to deliveries@pockettools.xyz in to your
+                          approved email list in Amazon!{" "}
+                          <a href="https://www.amazon.com/gp/help/customer/display.html?nodeId=201974240">
+                            Learn more
+                          </a>
+                        </i>
+                      </p>
                     </FormGroup>
                   </AdvancedSection>
 
@@ -310,9 +332,9 @@ class DeliveryEditor extends React.Component<
                         }}
                         // autoWidth={true}
                       >
-                        <MenuItem value={Frequency.Daily}>Daily</MenuItem>
-                        <MenuItem value={Frequency.Weekly}>Weekly</MenuItem>
-                        {/* <MenuItem value={Frequency.Monthly}>Monthly</MenuItem> */}
+                        {Object.keys(Frequency)
+                          .filter(key => isNaN(Number(key)))
+                          .map(item => <MenuItem key={item} value={Frequency[item]}>{item}</MenuItem>)}
                       </Select>
                       <Select
                         value={this.state.time}
@@ -323,23 +345,36 @@ class DeliveryEditor extends React.Component<
                           // autoWidth={true}
                         }}
                       >
-                        <MenuItem value={TimeOpts.Morning}>Morning</MenuItem>
-                        <MenuItem value={TimeOpts.Noon}>Noon</MenuItem>
-                        <MenuItem value={TimeOpts.Afternoon}>Afternoon</MenuItem>
-                        <MenuItem value={TimeOpts.Evening}>Evening</MenuItem>
-                        <MenuItem value={TimeOpts.Midnight}>Midnight</MenuItem>
+                        {Object.keys(TimeOpts)
+                          .filter(key => isNaN(Number(key)))
+                          .map(item => <MenuItem key={item} value={TimeOpts[item]}>{item}</MenuItem>)}
                       </Select>
                     </EditorStyles.Row>
 
                     {this.state.frequency === Frequency.Weekly && (
                       <EditorStyles.Week>
-                        <CheckCircle label="M" />
-                        <CheckCircle label="T" />
-                        <CheckCircle label="W" />
-                        <CheckCircle label="T" />
-                        <CheckCircle label="F" />
-                        <CheckCircle label="S" />
-                        <CheckCircle label="S" />
+                        {Object.keys(WeekDays)
+                        .filter(key => isNaN(Number(key)))
+                        .map(item => {
+                          
+                          return <CheckCircle 
+                            key={item}
+                            label={item.substring(0, 1)} 
+                            checked={(this.state.day !== undefined && this.state.day.indexOf(item) !== -1)} 
+                            onCheck={(prev) => {
+                              if (prev) {
+                                this.setState({
+                                  ...this.state,
+                                  day: this.state.day.filter(x => x !== item)
+                                });
+                              } else {
+                                this.setState({
+                                  ...this.state,
+                                  day: this.state.day !== undefined ? [...this.state.day, item] : [item]
+                                });
+                              }
+                            }}/>;
+                        })}
                       </EditorStyles.Week>
                     )}
 
@@ -347,11 +382,11 @@ class DeliveryEditor extends React.Component<
                       <FormControlLabel
                         control={
                           <Switch
-                            checked={this.state.archive}
+                            checked={this.state.autoArchive}
                             onChange={x =>
                               this.setState({
                                 ...this.state,
-                                archive: !this.state.archive
+                                autoArchive: !this.state.autoArchive
                               })}
                             value="longformOnly"
                             color="primary"
@@ -465,26 +500,26 @@ class DeliveryEditor extends React.Component<
   }
 
   private apiToState(delivery: Delivery): Partial<DeliveryEditorState> {
-    const x = $enum(CountType);
+    const [time, days] = UtcToLocal(TimeOpts[delivery.time], delivery.day);
+
     return {
       id: delivery.id,
       
       // Query
       count: delivery.query.count,
-      countType: delivery.query.countType as CountType,
-      orderBy: delivery.query.orderBy as OrderBy,
-      frequency: delivery.frequency as Frequency,
+      countType: CountType[delivery.query.countType],
+      orderBy: OrderBy[delivery.query.orderBy],
+      frequency: Frequency[delivery.frequency],
       domain: delivery.query.domain,
       included: delivery.query.includedTags !== undefined ? delivery.query.includedTags.join(', ') : undefined,
       excluded: delivery.query.excludedTags !== undefined ? delivery.query.excludedTags.join(', ') : undefined,
 
       // Delivery
-      time: delivery.time as TimeOpts,
-      archive: delivery.autoArchive,
+      time: time,
+      days: days,
+      autoArchive: delivery.autoArchive,
       longformOnly: delivery.query.longformOnly,
       kindle_email: delivery.kindle_email,
-
-      day: "" // TODO: How to represent this? Ideas: Comma separated names/nums e.g. Monday, Tuesday or 15, 30, else bit mask 101010
     } as Partial<DeliveryEditorState>
   }
 
@@ -500,23 +535,28 @@ class DeliveryEditor extends React.Component<
   }
 
   private stateToApi(state: DeliveryEditorState): Delivery {
+    const offset = new Date().getTimezoneOffset();
+    const [time, days] = localToUtc(this.state.time, this.state.day);
+
     return {
       id: this.state.id,
       user: this.User.id,
       kindle_email: this.state.kindle_email,
-      active: false, // TODO
+      active: false,
       query: {
-        domain: this.state.domain,
-        countType: this.state.countType,
         count: this.state.count,
-        orderBy: this.state.orderBy,
-        includedTags: this.parseTags(this.state.included),
+        countType: CountType[this.state.countType],
+        domain: this.state.domain,
         excludedTags: this.parseTags(this.state.excluded),
-        longformOnly: this.state.longformOnly
+        includedTags: this.parseTags(this.state.included),
+        longformOnly: this.state.longformOnly,
+        orderBy: OrderBy[this.state.orderBy],
       } as Query,
-      frequency: this.state.frequency,
-      time: this.state.time, // TODO: Revisit this when working on the scheduler
-      day: "", // TODO: How is this one going to show up?
+      frequency: Frequency[this.state.frequency],
+      time: TimeOpts[time],
+      timezone: offset,
+      autoArchive: this.state.autoArchive,
+      day: days,
     } as Delivery;
   }
 
