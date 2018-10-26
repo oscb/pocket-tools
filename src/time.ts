@@ -9,16 +9,17 @@ export enum TimeOpts {
 }
 
 export enum WeekDays {
+  Sunday,
   Monday,
   Tuesday,
   Wednesday,
   Thursday,
   Friday,
   Saturday,
-  Sunday,
 }
 
-const TimeslotsSize = Object.keys(TimeOpts).filter(key => isNaN(Number(key))).length;
+export const TimeslotsIterator = Object.keys(TimeOpts).filter(key => !isNaN(Number(key)));
+export const TimeslotsSize = Object.keys(TimeOpts).filter(key => isNaN(Number(key))).length;
 const TimeslotDurationMinutes = (24 / TimeslotsSize)  * 60;
 
 function transformSchedule(
@@ -43,7 +44,7 @@ function transformSchedule(
   }
 }
 
-function getTimeslot(hour: number, round: (time: number) => number) {
+export function getTimeslot(hour: number, round: (time: number) => number) {
   if (hour > 24 || hour < 0) {
     throw new Error(`Invalid hour: ${hour}`);
   }

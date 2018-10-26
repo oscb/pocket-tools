@@ -32,7 +32,7 @@ export interface Delivery {
   time: string;
   timezone: number;
   autoArchive: boolean;
-  day?: string[];
+  days?: string[];
   mailings?: Mailing[];
 }
 

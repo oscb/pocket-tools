@@ -15,8 +15,10 @@ import DeliveryItem from "./deliveryItem";
 import { hot } from "react-hot-loader";
 import styled from "react-emotion";
 import Modal from "./modal";
-import { TimeOpts, UtcToLocal } from "../../time";
+import { TimeOpts, UtcToLocal, WeekDays, getTimeslot, TimeslotsSize, TimeslotsIterator } from "../../time";
 
+type TimeMap = { [timeslot: string]: [Delivery] };
+type ScheduleMap = { [day: string]: TimeMap };
 
 const RouteContainer = posed.div({
   enter: { 
@@ -83,11 +85,16 @@ class Dashboard extends React.Component<
 
   public render() {
     const isModal = this.props.location.pathname !== '/dashboard';
+    const nextDelivery = this.findNextDelivery(this.state.deliveries);
     
     return (
       <div className="dashboard">
       {/* TODO: this is a hack, needs to figure out which one is actually upcomming */}
-        <Header logo="Pocket Tools" delivery={this.state.deliveries ? this.state.deliveries[0] : null}>
+        <Header 
+          logo="Pocket Tools" 
+          nextDelivery={nextDelivery !== null ? nextDelivery.delivery : null}
+          nextDate={nextDelivery !== null ? nextDelivery.day : undefined }
+          >
           <Link to={{
               pathname: '/dashboard'
           }}>
@@ -186,9 +193,9 @@ class Dashboard extends React.Component<
 
     // Transform dates to local
     for (let delivery of deliveries) {
-      let [time, day] = UtcToLocal(TimeOpts[delivery.time], delivery.day);
+      let [time, day] = UtcToLocal(TimeOpts[delivery.time], delivery.days);
       delivery.time = TimeOpts[time];
-      delivery.day = day;
+      delivery.days = day;
     }
 
     // Animation takes 2.5s to get to the middle, so we want to stop it at the next middle point 
@@ -308,6 +315,76 @@ class Dashboard extends React.Component<
 
   private dismissConfirmation = () => {
     this.setState({...this.state, showConfirmation: false});
+  }
+
+  private findNextDelivery(deliveries: Delivery[]): { delivery: Delivery, day: string } {
+    let deliveryMap: ScheduleMap = {};
+    
+    // Group deliveries by [day][timeslot]
+    for (const delivery of deliveries) {
+      let days = this.getDeliveryDays(delivery);
+
+      for (const day of days) {
+        if (! (day in days)) {
+          deliveryMap[day] = {};
+        }
+        let dayList = deliveryMap[day];
+
+
+        if (delivery.time in dayList) {
+          dayList[delivery.time].push(delivery);
+        } else {
+          dayList[delivery.time] = [delivery];
+        }
+      }
+    }
+    // Find current timeslot, day of week and date num
+    const today = new Date();
+    const currentTimeslot = getTimeslot(today.getHours(), Math.floor);
+    const currentDay = WeekDays[today.getDay()]; // Days in JS start with sunday
+    // TODO: Handle February, where day 28 is going to be 30 for montlies
+    // TODO: Not really handling monthlies for now, but basically it is the same logic, just checking 2 indexes at a time
+    const currentDate = today.getDate(); 
+
+    // If any deliveries for current timeslot
+    let start: number = WeekDays[currentDay];
+    let i: number = start;
+    let firstRun = false;
+    // For each timeslot (first iteration run from currenttimeslot but only first!)
+
+    while (true) {
+      if (WeekDays[i] in deliveryMap) {
+        const dayList = deliveryMap[WeekDays[i]];
+        let j = (firstRun)? currentTimeslot : 0;
+        for(; j < TimeslotsSize; j++) {
+          if (TimeOpts[j] in dayList) {
+            return {
+              delivery: dayList[TimeOpts[j]][0],
+              day: WeekDays[i]
+            };
+          }
+          j = ++j % TimeslotsSize;
+        }
+      }
+
+      i = ++i % 7;
+      if (i === start) {
+        break;
+      }
+    }
+    // See if there's any delivery for current day of week or date num
+    // If none, increment timeslot and repeat until cycled all
+    return null;
+  }
+
+  private getDeliveryDays(delivery: Delivery): string[] {
+    let days: string[];
+    if (delivery.days !== undefined && delivery.days.length > 0) {
+      days = delivery.days;
+    } else {
+      days = Object.keys(WeekDays).filter(x => isNaN(Number(x)));
+    }
+    return days;
   }
 }
 

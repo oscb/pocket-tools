@@ -21,7 +21,7 @@ const theme = createMuiTheme({
       root: {
         width: "100%",
         fontFamily: "Alegreya Sans, Helvetica, sans-serif",
-        // color: Theme.secondaryColor // TODO: Read from Theme
+        color: Theme.secondaryColor
       },
       underline: {
         "&:after": {

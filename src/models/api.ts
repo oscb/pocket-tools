@@ -2,6 +2,7 @@ import * as agent from "superagent";
 
 export const publicReq = (method: string, url: string) => 
   agent(method, url)
+    .timeout(5000)
     .use(apiPrefix)
     .use(asJson);
 
@@ -9,6 +10,7 @@ export const authReqGenerator = (token: string) =>(method: string, url: string) 
 
 export const authReq = (method: string, url: string, token: string) => 
   agent(method, url)
+    .timeout(5000)
     .use(apiPrefix)
     .use(asJson)
     .use(addTokenGenerator(token));
@@ -18,6 +20,7 @@ function apiPrefix(req: agent.SuperAgentRequest): void {
     req.url = `${process.env.API_URL}${req.url}`;
   }
 }
+
 function addTokenGenerator(token: string): (req: agent.SuperAgentRequest) => void {
   return (req) => req.set('Authorization', `Bearer ${token}`);
 }

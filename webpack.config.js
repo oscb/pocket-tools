@@ -75,7 +75,7 @@ module.exports = (env) => {
             compact: true,
           },
         },
-        // TODO: Remove Sass dependency eventually, maybe switch to aphrodite? or just css
+        // TODO: Remove All Sass dependency eventually
         {
           test: /\.scss$/,
           use: isDevBuild? [
@@ -175,7 +175,7 @@ module.exports = (env) => {
       splitChunks : {
         chunks: 'all'
       },
-      // TODO: FOr Prod, minimize
+      // TODO: For Prod, minimize
     }
   }]
 }

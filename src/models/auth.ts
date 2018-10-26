@@ -10,7 +10,7 @@ export class AuthAPI {
 
   public async getLoginUrl(): Promise<LoginData> {
     const resp = await publicReq('GET', '/auth').query({
-      redirect_uri: "http://localhost:3001" // TODO: Configurable
+      redirect_uri: process.env.REDIRECT_URL
     });
     if (resp.error) {
       throw new Error('API Error: Retrieving Login URL');

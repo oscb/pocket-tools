@@ -6,7 +6,6 @@ import { css } from "emotion";
 import * as React from "react";
 import posed, { PoseGroup } from "react-pose";
 import { RouteComponentProps } from "react-router";
-import { $enum } from "ts-enum-util";
 import { ApiHelper } from "../../models/apiHelper";
 import { Delivery, DeliveryApi, Query, Article } from '../../models/delivery';
 import { User } from "../../models/user";
@@ -64,7 +63,7 @@ interface DeliveryEditorState {
   excluded?: string;
   domain?: string;
   kindle_email: string;
-  day?: string[];
+  days?: string[];
 
   // Form
   formStatus: FormStatus;
@@ -81,9 +80,6 @@ const AdvancedSection = posed.div({
     maxHeight: 0
   }
 });
-
-// Timeslot values
-
 
 class DeliveryEditor extends React.Component<
   DeliveryEditorProps & RouteComponentProps<any>,
@@ -360,17 +356,17 @@ class DeliveryEditor extends React.Component<
                           return <CheckCircle 
                             key={item}
                             label={item.substring(0, 1)} 
-                            checked={(this.state.day !== undefined && this.state.day.indexOf(item) !== -1)} 
+                            checked={(this.state.days !== undefined && this.state.days.indexOf(item) !== -1)} 
                             onCheck={(prev) => {
                               if (prev) {
                                 this.setState({
                                   ...this.state,
-                                  day: this.state.day.filter(x => x !== item)
+                                  days: this.state.days.filter(x => x !== item)
                                 });
                               } else {
                                 this.setState({
                                   ...this.state,
-                                  day: this.state.day !== undefined ? [...this.state.day, item] : [item]
+                                  days: this.state.days !== undefined ? [...this.state.days, item] : [item]
                                 });
                               }
                             }}/>;
@@ -500,7 +496,7 @@ class DeliveryEditor extends React.Component<
   }
 
   private apiToState(delivery: Delivery): Partial<DeliveryEditorState> {
-    const [time, days] = UtcToLocal(TimeOpts[delivery.time], delivery.day);
+    const [time, days] = UtcToLocal(TimeOpts[delivery.time], delivery.days);
 
     return {
       id: delivery.id,
@@ -536,7 +532,7 @@ class DeliveryEditor extends React.Component<
 
   private stateToApi(state: DeliveryEditorState): Delivery {
     const offset = new Date().getTimezoneOffset();
-    const [time, days] = localToUtc(this.state.time, this.state.day);
+    const [time, days] = localToUtc(this.state.time, this.state.days);
 
     return {
       id: this.state.id,
@@ -556,7 +552,7 @@ class DeliveryEditor extends React.Component<
       time: TimeOpts[time],
       timezone: offset,
       autoArchive: this.state.autoArchive,
-      day: days,
+      days: days,
     } as Delivery;
   }
 
@@ -654,7 +650,6 @@ class DeliveryEditor extends React.Component<
           ...this.state,
           formStatus: FormStatus.Finished,
         });
-        // TODO: Trigger a reload in Dashboard
         setTimeout(() => {
           this.props.history.push('/dashboard', { reload: true } );
         }, doneMessageTime);

@@ -8,7 +8,8 @@ import { Delivery } from '../../models/delivery';
 
 export interface HeaderProps {
   logo: string;
-  delivery?: Delivery;
+  nextDelivery?: Delivery;
+  nextDate?: string; 
 }
 
 interface HeaderState {
@@ -53,11 +54,12 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
             </NavToggle>
           </NavBox>
           <DeliveryBox>
-            {this.props.delivery && 
+            {this.props.nextDelivery && 
             <React.Fragment>
               <DeliveryHeadTitle>Your next Delivery:</DeliveryHeadTitle>
               <DeliveryHead 
-                {...this.props.delivery}
+                {...this.props.nextDelivery}
+                relativeTime={this.props.nextDate}
                 showDetails={false}
                 />
             </React.Fragment>

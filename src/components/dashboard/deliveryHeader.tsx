@@ -57,15 +57,20 @@ const TitleContainer = styled('div')`
 export interface DeliveryHeaderProps {
   showDetails: boolean;
   className?: string;
+  relativeTime?: string;
 }
 
 export default class DeliveryHeader extends React.Component<Delivery & DeliveryHeaderProps, any> {
-
   public render() {
     return (
       <Header className={this.props.className}>
         <TitleContainer>
-          <h1>{this.props.frequency} {this.props.time} <DeliveryTimeIcon time={this.props.time} /></h1>
+          {this.props.relativeTime && 
+            <h1>{this.props.relativeTime} {this.props.time} <DeliveryTimeIcon time={this.props.time} /></h1>
+          }
+          {!this.props.relativeTime &&
+            <h1>{this.props.frequency} {this.props.time} <DeliveryTimeIcon time={this.props.time} /></h1>
+          }
           <h2>{this.props.query.count} {this.props.query.countType === 'time' ? 'min' : 'articles'}, sorted by {this.props.query.orderBy}</h2>
         </TitleContainer>
         {this.props.showDetails &&
