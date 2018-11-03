@@ -53,7 +53,7 @@ module.exports = (env) => {
             name: 'dist/media/[name].[hash:8].[ext]',
           },
         },
-        // TODO: I need to add Babel to make HMR work
+        // TODO: I need to add Babel to make HMR work better
         {
           test: /\.(ts|tsx)$/,
           include: sourcePath,

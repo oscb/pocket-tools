@@ -89,7 +89,6 @@ class Dashboard extends React.Component<
     
     return (
       <div className="dashboard">
-      {/* TODO: this is a hack, needs to figure out which one is actually upcomming */}
         <Header 
           logo="Pocket Tools" 
           nextDelivery={nextDelivery !== null ? nextDelivery.delivery : null}

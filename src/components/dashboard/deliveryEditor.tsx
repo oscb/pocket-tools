@@ -43,7 +43,8 @@ enum FormStatus {
   Saving,
   Preview,
   Activating,
-  Finished
+  Finished,
+  Error
   // [Loading   ->] Enabled   -> Saving   -> Sample   -> Saving   -> Active
   //                          [Error]     <- Cancel (goes to enabled) 
 }
@@ -64,6 +65,7 @@ interface DeliveryEditorState {
   domain?: string;
   kindle_email: string;
   days?: string[];
+  errors: { [field: string]: boolean | string };
 
   // Form
   formStatus: FormStatus;
@@ -106,7 +108,8 @@ class DeliveryEditor extends React.Component<
       showAdvanced: false,
       longformOnly: false,
       kindle_email: this.User.kindle_email,
-      formStatus: FormStatus.Enabled
+      formStatus: FormStatus.Enabled,
+      errors: {}
     }
     
     if (props.match.params.id) {
@@ -469,6 +472,22 @@ class DeliveryEditor extends React.Component<
           </Modal>
         </ModalStyles.ModalWrapper>
       }
+      {this.state.formStatus === FormStatus.Error && 
+        <ModalStyles.ModalWrapper key="error">
+          <Modal
+            key="error"
+            title="" 
+            icon='times'
+            className={css`
+              width: 250px;
+            `}
+          >
+            <ModalStyles.Loader>
+              {this.state.errors['_all'] !== undefined ? this.state.errors['_all'] : 'An error ocurred! Try again later.'}
+            </ModalStyles.Loader>
+          </Modal>
+        </ModalStyles.ModalWrapper>
+      }
       </PoseGroup>
     );
   }
@@ -489,9 +508,19 @@ class DeliveryEditor extends React.Component<
           delivery.query.longformOnly)
       });
     } catch (e) {
-      // TODO: handle errors
-      alert(e);
+      clearTimeout(this.timeout);
       console.error(e);
+      this.setState({
+        ...this.state,
+        formStatus: FormStatus.Error,
+        errors: {['_all'] : 
+          (e.code === 'ECONNABORTED')? 'Loading timed out. Try again later!' :
+          (e.status === 400) ? 'This is not a valid delivery!' : 
+          'Something happened in the server. Try again later!' }
+      });
+      setTimeout(() => {
+        this.props.history.push('/dashboard');
+      }, 5000);
     }
   }
 
