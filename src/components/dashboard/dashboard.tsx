@@ -94,22 +94,7 @@ class Dashboard extends React.Component<
           logo="Pocket Tools" 
           nextDelivery={nextDelivery !== null ? nextDelivery.delivery : null}
           nextDate={nextDelivery !== null ? nextDelivery.day : undefined }
-          >
-          <Link to={{
-              pathname: '/dashboard'
-          }}>
-            Dashboard
-          </Link>
-          <Link to={{
-              pathname: '/user',
-              state: { modal: true }
-          }}>
-            Account
-          </Link>
-          <a href="#" onClick={this.logout}>
-            Logout
-          </a>
-        </Header>
+          />
         <DashboardStyles.Content>
         {/* Loading */}
           {this.state.status === DashboardStatus.loading && 
@@ -159,6 +144,14 @@ class Dashboard extends React.Component<
           <DashboardStyles.Button onClick={this.addDelivery}>
             <FontAwesomeIcon icon="plus" /> Create delivery
           </DashboardStyles.Button>
+
+          <DashboardStyles.SecondaryButton onClick={this.editAccount}>
+            <FontAwesomeIcon icon="user" /> Manage Account
+          </DashboardStyles.SecondaryButton>
+
+          <DashboardStyles.Logout href="#" onClick={this.logout}>
+            Logout
+          </DashboardStyles.Logout>
         </DashboardStyles.Content>
         {/* Confirmation Modals */}
         <PoseGroup>
@@ -234,6 +227,11 @@ class Dashboard extends React.Component<
   private addDelivery = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     this.props.history.push('/delivery', { modal: true });
+  }
+
+  private editAccount = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    this.props.history.push('/user', { modal: true });
   }
 
   private editDelivery = (delivery: Delivery) => {

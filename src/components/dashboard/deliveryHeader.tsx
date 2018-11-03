@@ -66,7 +66,7 @@ export default class DeliveryHeader extends React.Component<Delivery & DeliveryH
       <Header className={this.props.className}>
         <TitleContainer>
           {this.props.relativeTime && 
-            <h1>{this.props.relativeTime} {this.props.time} <DeliveryTimeIcon time={this.props.time} /></h1>
+              <h1>{this.props.relativeTime} {this.props.time} <DeliveryTimeIcon time={this.props.time} /></h1>
           }
           {!this.props.relativeTime &&
             <h1>{this.props.frequency} {this.props.time} <DeliveryTimeIcon time={this.props.time} /></h1>

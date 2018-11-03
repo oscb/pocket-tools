@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Logo from '../header/logo';
 import './header.scss';
 import styled from 'react-emotion';
@@ -12,47 +11,19 @@ export interface HeaderProps {
   nextDate?: string; 
 }
 
-interface HeaderState {
-  isNavOpen: boolean;
-}
-
-export default class Header extends React.Component<HeaderProps, HeaderState> {
-  constructor(props: HeaderProps, state: HeaderState) {
-    super(props, state);
-    this.state = {
-      isNavOpen: false 
-    };
+export default class Header extends React.Component<HeaderProps, null> {
+  constructor(props: HeaderProps) {
+    super(props);
   }
 
   render() {
-    let nav = null;
-    if (this.state.isNavOpen) {
-      const children = React.Children.map(
-        this.props.children,
-        (child) => {
-          return <li>{child}</li>;
-        }
-      );
-      nav = (
-        <nav>
-          <ul>
-            {children}
-          </ul> 
-        </nav>
-      );
-    }
-
     return (
       <React.Fragment>
         <HeaderContainer>
           <LogoBox>
             <StyledLogo text={this.props.logo} />
           </LogoBox>
-          <NavBox>
-            <NavToggle href="#" onClick={(e) => this.toggleNav(e)}>
-              Menu <FontAwesomeIcon icon="angle-double-down" />
-            </NavToggle>
-          </NavBox>
+          
           <DeliveryBox>
             {this.props.nextDelivery && 
             <React.Fragment>
@@ -66,19 +37,8 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
               }
           </DeliveryBox>
         </HeaderContainer>
-        {nav}
       </React.Fragment>
     );
-  }
-
-  private toggleNav(e: React.MouseEvent<HTMLAnchorElement>) {
-    e.preventDefault();
-    this.setState((state: HeaderState) => {
-      return {
-        ...state, 
-        isNavOpen: !state.isNavOpen
-      };
-    });
   }
 }
 
@@ -99,40 +59,12 @@ const LogoBox = styled('div')`
   margin: 0;
 `
 
-const NavBox = styled('div')`
-  grid-column: 2;
-  grid-row: 3;
-  margin: 0;
-  align-self: end;
-  /* justify-self: right; */
-`
-
 const DeliveryBox = styled('div')`
   grid-column: 1;
   grid-row: 1 / 4;
   justify-self: start;
   margin: 0;
   padding: 1em;
-`
-
-const NavToggle = styled('a')`
-  display: block;
-  z-index: 100;
-  color: rgba(1, 1, 1, 0.4);
-  text-align: center;
-  font-size: 1em;
-  padding: 0 0.2em;
-  text-decoration: none;
-  vertical-align: middle;
-
-  &:hover {
-    background-color: $color1;
-  }
-
-  span {
-    font-size: 1.5em;
-    vertical-align: middle;
-  }
 `
 
 const DeliveryHead = styled(DeliveryHeader)`

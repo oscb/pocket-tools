@@ -89,6 +89,28 @@ const NewButton = styled('button')(
   )
 );
 
+const EditButton = styled('button')(
+  {
+    border: 'none',
+    flex: '1 0 auto',
+    fontSize: '1rem',
+    margin: '1rem',
+    padding: '1rem',
+    fontWeight: 'bold',
+    boxSizing: 'border-box',
+    width: '100%',
+    maxWidth: '350px'
+  }, 
+  (props) => ({
+    borderRadius: props.theme.borderRadius,
+    color: props.theme.bgColor,
+    boxShadow: props.theme.boxShadow
+  }), 
+  (props) => (
+    Button({ color: props.theme.secondaryColor })
+  )
+);
+
 const DeliveryListAnimated = posed.div({
   enter: { 
     staggerChildren: 50,
@@ -109,13 +131,22 @@ const DeliveryList = styled(DeliveryListAnimated)`
   align-items: center;
 `
 
+const Logout = styled('a')`
+  text-align: center;
+  text-decoration: underline;
+  color: ${props => props.theme.textColor};
+  margin-top: 2rem;
+`
+
 
 export const DashboardStyles = {
   Content: Content,
   Empty: Empty,
-  EmptyIcon: EmptyIcon,
+    EmptyIcon: EmptyIcon,
   Rumble: RumbleDiv,
   Translate: TranslateTruckDiv,
   Button: NewButton,
-  DeliveryList
+  SecondaryButton: EditButton,
+  DeliveryList,
+  Logout
 }
