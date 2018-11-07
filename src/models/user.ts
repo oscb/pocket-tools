@@ -1,6 +1,5 @@
 import { authReqGenerator, publicReq } from './api';
 import * as agent from "superagent";
-import { ApiHelper } from './apiHelper';
 
 export interface User {
   id: string;
@@ -55,5 +54,3 @@ export class UserAPI {
     } as User;
   }
 }
-
-export const UserApi = new UserAPI(ApiHelper.token);

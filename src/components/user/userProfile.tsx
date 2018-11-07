@@ -2,13 +2,14 @@ import * as React from "react";
 import { RouteComponentProps, Redirect } from "react-router";
 import Modal from "../dashboard/modal";
 import { TextField } from "@material-ui/core";
-import { User, UserApi } from '../../models/user';
+import { User, UserAPI } from '../../models/user';
 import Loader from "../loader/loader";
 import * as _ from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ModalStyles } from "../../styles/modalStyles";
 import { css } from "emotion";
 import posed, { PoseGroup } from "react-pose";
+import { ApiHelper } from "../../models/apiHelper";
 
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -37,6 +38,7 @@ export default class UserProfile extends React.Component<
 > {
   private minWaitTime: number = 500;
   private timeout: NodeJS.Timer;
+  private userApi = new UserAPI(ApiHelper.token);
 
   constructor(
     props: UserProfileProps & RouteComponentProps<any>,
@@ -72,7 +74,7 @@ export default class UserProfile extends React.Component<
   }
 
   async loadUserData() {
-    let user = await UserApi.me();
+    let user = await this.userApi.me();
     clearTimeout(this.timeout);
     this.setState({
       ...this.state,
@@ -158,7 +160,7 @@ export default class UserProfile extends React.Component<
     };
       
 
-    UserApi.update(userData).then(() => {
+    this.userApi.update(userData).then(() => {
       this.setState({
         ...this.state,
         formStatus: FormStatus.Saved,

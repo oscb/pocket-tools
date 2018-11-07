@@ -8,7 +8,7 @@ import { RouteComponentProps } from "react-router";
 import KindleSVG from "../graphics/kindle";
 import PhoneSVG from "../graphics/phone";
 import { ApiHelper } from '../../models/apiHelper';
-import { UserApi, User } from "../../models/user";
+import { UserAPI, User } from "../../models/user";
 // import { Redirect } from 'react-router-dom';
 
 // const image = require('./kindle.svg');
@@ -22,6 +22,8 @@ export interface HomeProps {
 export type RouterHomeProps = HomeProps & RouteComponentProps<null>;
 
 export class Home extends React.Component<RouterHomeProps> {
+  private userApi = new UserAPI(ApiHelper.token);
+
   async handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
     e.preventDefault();
     await ApiHelper.login();
@@ -32,7 +34,7 @@ export class Home extends React.Component<RouterHomeProps> {
     if (ApiHelper.hasCode) {
       user = await ApiHelper.authUser();
     } else {
-      user = await UserApi.me();
+      user = await this.userApi.me();
     }
     if (
       user.email !== null && 

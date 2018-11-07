@@ -7,7 +7,7 @@ import * as React from "react";
 import posed, { PoseGroup } from "react-pose";
 import { RouteComponentProps } from "react-router";
 import { ApiHelper } from "../../models/apiHelper";
-import { Delivery, DeliveryApi, Query, Article } from '../../models/delivery';
+import { Delivery, DeliveryAPI, Query, Article } from '../../models/delivery';
 import { User } from "../../models/user";
 import { EditorStyles, AdvancedStyles } from "../../styles/deliveryEditorStyles";
 import { ModalStyles } from "../../styles/modalStyles";
@@ -91,9 +91,11 @@ class DeliveryEditor extends React.Component<
   private minWaitTime: number = 500;
   private timeout: NodeJS.Timer;
   private isNew: boolean;
+  private deliveryApi: DeliveryAPI;
 
   constructor(props: DeliveryEditorProps & RouteComponentProps<any>, state: DeliveryEditorState) {
     super(props);
+    this.deliveryApi = new DeliveryAPI(ApiHelper.token);
     // Default form options
     this.User = ApiHelper.userData;
     // TODO: Data in localstorage might be bad, need to have a fallback
@@ -494,7 +496,7 @@ class DeliveryEditor extends React.Component<
 
   private async loadData(id: string) {
     try {
-      const delivery = await DeliveryApi.get(id);
+      const delivery = await this.deliveryApi.get(id);
       clearTimeout(this.timeout);
       const stateDelivery = this.apiToState(delivery);
       this.setState({
@@ -613,13 +615,13 @@ class DeliveryEditor extends React.Component<
     let delivery = this.stateToApi(this.state);
     let resp: Promise<Delivery>;
     if (this.state.id !== undefined) {
-      resp = DeliveryApi.update(delivery);
+      resp = this.deliveryApi.update(delivery);
     } else {
-      resp = DeliveryApi.add(delivery);
+      resp = this.deliveryApi.add(delivery);
     }
     try {
       delivery = await resp;
-      const articles = await DeliveryApi.preview(delivery.id);
+      const articles = await this.deliveryApi.preview(delivery.id);
 
       const timeSoFar = new Date().getTime() - startTime;
       const nextStep = () => {
@@ -652,7 +654,7 @@ class DeliveryEditor extends React.Component<
       e.stopPropagation();
     }
     if (this.isNew && this.state.id !== undefined) {
-      DeliveryApi.delete(this.state.id!);
+      this.deliveryApi.delete(this.state.id!);
     }
     this.props.history.push('/dashboard');
   }
@@ -669,7 +671,7 @@ class DeliveryEditor extends React.Component<
     });
 
     try {
-      await DeliveryApi.update({
+      await this.deliveryApi.update({
         id: this.state.id,
         active: true
       });

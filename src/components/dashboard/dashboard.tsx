@@ -4,7 +4,7 @@ import posed, { PoseGroup } from "react-pose";
 import { Route, RouteComponentProps, Switch } from "react-router";
 import { Link } from "react-router-dom";
 import { ApiHelper } from '../../models/apiHelper';
-import { Delivery, DeliveryApi } from "../../models/delivery";
+import { Delivery, DeliveryAPI } from "../../models/delivery";
 import Header from "../header/header";
 import DeliveryEditor from "./deliveryEditor";
 import { css } from "emotion";
@@ -60,9 +60,11 @@ class Dashboard extends React.Component<
   DashboardState
 > {
   private confirmationModal: JSX.Element;
+  private deliveryApi: DeliveryAPI;
 
   constructor(props, state) {
     super(props);
+    this.deliveryApi = new DeliveryAPI(ApiHelper.token);
     this.loadDeliveries();
 
     this.state = {
@@ -180,7 +182,7 @@ class Dashboard extends React.Component<
   public async loadDeliveries(forceReload: boolean = false) {
     const animationTime = 2.5;
     const start = new Date().getTime();
-    const deliveries = await DeliveryApi.getByUser();
+    const deliveries = await this.deliveryApi.getByUser();
     const timeToLoad = new Date().getTime() - start;
 
     // Transform dates to local
@@ -297,14 +299,14 @@ class Dashboard extends React.Component<
   private sendDelivery = (id: string) => {
     return () => {
       this.dismissConfirmation();
-      DeliveryApi.send(id);
+      this.deliveryApi.send(id);
     }
   }
 
   private deleteDelivery = (id: string) => {
     return () => {
       this.dismissConfirmation();
-      DeliveryApi.delete(id).then(() => {
+      this.deliveryApi.delete(id).then(() => {
         this.loadDeliveries(true);
       });
     }

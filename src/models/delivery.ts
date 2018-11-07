@@ -134,5 +134,3 @@ export class DeliveryAPI {
     return { ...other } as SentArticle;
   }
 }
-
-export const DeliveryApi = new DeliveryAPI(ApiHelper.token);

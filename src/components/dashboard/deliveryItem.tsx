@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Delivery, DeliveryApi, Query, Article } from '../../models/delivery';
+import { Delivery } from '../../models/delivery';
 import styled from 'react-emotion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button } from '../../styles/button';
