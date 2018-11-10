@@ -186,6 +186,7 @@ class DeliveryEditor extends React.Component<
                           name: "countType",
                           id: "countType-value"
                         }}
+                        error={'countType' in this.state.errors}
                         // autoWidth={true}
                       >
                         {Object.keys(CountType)
@@ -210,6 +211,7 @@ class DeliveryEditor extends React.Component<
                         name: "orderBy",
                         id: "orderBy-value"
                       }}
+                      error={'orderBy' in this.state.errors}
                       // autoWidth={true}
                     >
                       {Object.keys(OrderBy)
@@ -239,6 +241,7 @@ class DeliveryEditor extends React.Component<
                       onChange={e => this.handleChange(e)}
                       margin="normal"
                       helperText="Leave empty to include all"
+                      error={'domain' in this.state.errors}
                     />
 
                     {/* Included Tags */}
@@ -255,6 +258,7 @@ class DeliveryEditor extends React.Component<
                       onChange={e => this.handleChange(e)}
                       margin="normal"
                       helperText="All tagged and untagged items included by default. Sepparate with commas (,)"
+                      error={'included' in this.state.errors}
                     />
 
                     {/* Excluded Tags */}
@@ -271,6 +275,7 @@ class DeliveryEditor extends React.Component<
                       onChange={e => this.handleChange(e)}
                       margin="normal"
                       helperText="Items with any of these tags will be ignored. Sepparate with commas (,)"
+                      error={'excluded' in this.state.errors}
                     />
 
                     {/* Longform only */}
@@ -302,6 +307,8 @@ class DeliveryEditor extends React.Component<
                         value={this.state.kindle_email}
                         onChange={e => this.handleChange(e)}
                         margin="normal"
+                        error={'kindle_email' in this.state.errors}
+                        helperText={'kindle_email' in this.state.errors ? this.state.errors['kindle_email'] : undefined}
                       />
                       <p className="info">
                         {/* TODO: Add quick copy button to copy the email! */}
@@ -331,6 +338,7 @@ class DeliveryEditor extends React.Component<
                           name: "frequency",
                           id: "frequency-value"
                         }}
+                        error={'frequency' in this.state.errors}
                         // autoWidth={true}
                       >
                         {Object.keys(Frequency)
@@ -345,6 +353,7 @@ class DeliveryEditor extends React.Component<
                           id: "time-value"
                           // autoWidth={true}
                         }}
+                        error={'time' in this.state.errors}
                       >
                         {Object.keys(TimeOpts)
                           .filter(key => isNaN(Number(key)))
@@ -639,11 +648,28 @@ class DeliveryEditor extends React.Component<
       }
     } catch(e) {
       // TODO: Handle errors
-      alert(e);
-      console.error(e);
+      console.error(e.response.body);
+      let errors: { [field: string]: boolean | string } = {};
+
+      if (e.response !== undefined && e.response.body !== undefined) {
+        const resp = e.response.body;
+        if (resp.errors !== undefined) {
+          for (const key in resp.errors) {
+            if (resp.errors.hasOwnProperty(key)) {
+              errors[key] = resp.errors[key];
+            }
+          }
+        } else {
+          errors['_all'] = resp.message !== undefined ? resp.message : 'An error ocurred. Verify your inputs and try again.';
+        }
+      } else {
+        errors['_all'] = e.message !== undefined ? e.message : 'An error ocurred. Verify your inputs and try again.';
+      }
+
       this.setState({
         ...this.state,
-        formStatus: FormStatus.Enabled
+        formStatus: FormStatus.Enabled,
+        errors
       });
     }
   }
