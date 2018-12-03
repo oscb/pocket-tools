@@ -355,7 +355,7 @@ class Dashboard extends React.Component<
       if (WeekDays[i] in deliveryMap) {
         const dayList = deliveryMap[WeekDays[i]];
         let j = (firstRun)? currentTimeslot : 0;
-        for(; j < TimeslotsSize; j++) {
+        while(j < TimeslotsSize) {
           if (TimeOpts[j] in dayList) {
             return {
               delivery: dayList[TimeOpts[j]][0],
