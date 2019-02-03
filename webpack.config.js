@@ -32,7 +32,7 @@ module.exports = (env) => {
       stats: 'minimal',
       clientLogLevel: 'warning'
     },
-    
+
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
     },
@@ -155,7 +155,11 @@ module.exports = (env) => {
 
     plugins: [
       new CleanWebpackPlugin(['dist']),
-      new HtmlWebpackPlugin({ inject: true }),
+      new HtmlWebpackPlugin({ 
+        inject: true,
+        title: '📖 Pocket Tools',
+        template: 'src/index.html'
+       }),
   
       new webpack.NamedModulesPlugin(),
       new Dotenv(),
@@ -176,6 +180,9 @@ module.exports = (env) => {
         chunks: 'all'
       },
       // TODO: For Prod, minimize
+    },
+    node: {
+      fs: 'empty'
     }
   }]
 }

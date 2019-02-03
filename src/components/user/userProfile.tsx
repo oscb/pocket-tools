@@ -10,6 +10,10 @@ import { ModalStyles } from "../../styles/modalStyles";
 import { css } from "emotion";
 import posed, { PoseGroup } from "react-pose";
 import { ApiHelper } from "../../models/apiHelper";
+import Subscriptions from "./subscriptions";
+import {CardElement, injectStripe, ReactStripeElements} from 'react-stripe-elements';
+import { timingSafeEqual } from "crypto";
+import { SubscriptionAPI, SubscriptionPlan } from "../../models/subscriptions";
 
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -30,15 +34,18 @@ interface UserProfileState extends User {
   // TODO: Mix these 2 togheter
   errors: {[field: string]: boolean};
   saveError?: string;
+  selectedPlan?: SubscriptionPlan;
+  plans: SubscriptionPlan[]
 }
 
-export default class UserProfile extends React.Component<
-  UserProfileProps & RouteComponentProps<any>,
+class UserProfile extends React.Component<
+  UserProfileProps & RouteComponentProps<any> & ReactStripeElements.InjectedStripeProps,
   UserProfileState
 > {
   private minWaitTime: number = 500;
   private timeout: NodeJS.Timer;
   private userApi = new UserAPI(ApiHelper.token);
+  private subscriptionApi = new SubscriptionAPI(ApiHelper.token);
 
   constructor(
     props: UserProfileProps & RouteComponentProps<any>,
@@ -69,12 +76,22 @@ export default class UserProfile extends React.Component<
     this.state = {
       formStatus: FormStatus.Preloading,
       errors: {},
+      plans: [],
       ...state
     };
   }
 
   async loadUserData() {
     let user = await this.userApi.me();
+    const plans = await this.subscriptionApi.get();
+    // Make the current selected plan public
+    for (let i of plans) {
+      if (i.public === false && i.name.toLowerCase() === user.subscription.toLowerCase()) {
+        i.overrideShow = true;
+        break;
+      }
+    }
+
     clearTimeout(this.timeout);
     this.setState({
       ...this.state,
@@ -82,7 +99,10 @@ export default class UserProfile extends React.Component<
       id: user.id,
       username: user.username,
       email: user.email,
-      kindle_email: user.kindle_email
+      kindle_email: user.kindle_email,
+      selectedPlan: plans.find(x => x.name.toLowerCase() === user.subscription.toLowerCase()),
+      subscription: user.subscription,
+      plans: plans
     });
   }
 
@@ -129,7 +149,15 @@ export default class UserProfile extends React.Component<
     });
   };
 
-  save = event => {
+  changeSubscriptionMode = (selection: SubscriptionPlan) => {
+    this.setState({
+      ...this.state,
+      selectedPlan: selection,
+      subscription: selection.name
+    })
+  }
+
+  save =  async (event) => {
     event.preventDefault();
     if (!this.validateForm()) {
       this.setState({
@@ -151,14 +179,26 @@ export default class UserProfile extends React.Component<
       // Only these fields are editable
       id, 
       kindle_email, 
-      email, 
+      email,
+      subscription,
       ...other } = this.state;
+
     const userData: Partial<User> = {
-      id: id, 
-      kindle_email: kindle_email,
-      email: email
+      id, 
+      kindle_email,
+      email,
+      subscription,
     };
-      
+    
+    if (
+      this.state.plans && 
+      this.state.plans.length > 0 && 
+      this.state.selectedPlan.name in this.state.plans &&
+      (this.state.selectedPlan.amount > 0)) 
+    {
+      const {token} = await this.props.stripe.createToken({ name: this.state.username });
+      userData.stripe_token = token;
+    }
 
     this.userApi.update(userData).then(() => {
       this.setState({
@@ -216,65 +256,70 @@ export default class UserProfile extends React.Component<
           >
             <ModalStyles.Form>
               <ModalStyles.Section>
-
-                <TextField
-                  name="username"
-                  label="Pocket Username"
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                  style={{marginTop: 0}}
-                  fullWidth
-                  value={this.state.username}
-                  margin="normal"
-                  disabled
-                />
-                <TextField
-                  error={this.checkErrors('email')}
-                  helperText={this.checkErrors('email') ? "Enter a valid email" : undefined}
-                  name="email"
-                  label="Email"
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                  disabled={this.state.formStatus === FormStatus.Saving}
-                  fullWidth
-                  placeholder="your_email@gmail.com"
-                  value={this.state.email}
-                  onChange={e => this.handleChange(e, this.debouncedValidation(this.validateEmail))}
-                  margin="normal"
-                />
-                <TextField
-                  error={this.checkErrors('kindle_email')}
-                  helperText={this.checkErrors('kindle_email') ? "Enter a valid email ending with @kindle.com" : undefined}
-                  name="kindle_email"
-                  label="Kindle Email"
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                  disabled={this.state.formStatus === FormStatus.Saving}
-                  fullWidth
-                  placeholder="your_kindle@kindle.com"
-                  value={this.state.kindle_email}
-                  onChange={e => this.handleChange(e, this.debouncedValidation(this.validateKindleEmail))}
-                  margin="normal"
-                />
-                <p className="info">
-                  {/* TODO: Add quick copy button to copy the email! */}
-                  <i>
-                    Remember to give access to deliveries@pockettools.xyz in to your
-                    approved email list in Amazon!{" "}
-                    <a href="https://www.amazon.com/gp/help/customer/display.html?nodeId=201974240">
-                      Learn more
-                    </a>
-                  </i>
-                </p>
-                {
-                this.checkErrors('save') &&
-                <p className="info error">
-                  {this.state.saveError}
-                </p>
-                }
+                  <TextField
+                    name="username"
+                    label="Pocket Username"
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                    style={{marginTop: 0}}
+                    fullWidth
+                    value={this.state.username}
+                    margin="normal"
+                    disabled
+                  />
+                  <TextField
+                    error={this.checkErrors('email')}
+                    helperText={this.checkErrors('email') ? "Enter a valid email" : undefined}
+                    name="email"
+                    label="Email"
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                    disabled={this.state.formStatus === FormStatus.Saving}
+                    fullWidth
+                    placeholder="your_email@gmail.com"
+                    value={this.state.email}
+                    onChange={e => this.handleChange(e, this.debouncedValidation(this.validateEmail))}
+                    margin="normal"
+                  />
+                  <TextField
+                    error={this.checkErrors('kindle_email')}
+                    helperText={this.checkErrors('kindle_email') ? "Enter a valid email ending with @kindle.com" : undefined}
+                    name="kindle_email"
+                    label="Kindle Email"
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                    disabled={this.state.formStatus === FormStatus.Saving}
+                    fullWidth
+                    placeholder="your_kindle@kindle.com"
+                    value={this.state.kindle_email}
+                    onChange={e => this.handleChange(e, this.debouncedValidation(this.validateKindleEmail))}
+                    margin="normal"
+                  />
+                  <p className="info">
+                    {/* TODO: Add quick copy button to copy the email! */}
+                    <i>
+                      Remember to give access to deliveries@pockettools.xyz in to your
+                      approved email list in Amazon!{" "}
+                      <a href="https://www.amazon.com/gp/help/customer/display.html?nodeId=201974240">
+                        Learn more
+                      </a>
+                    </i>
+                  </p>
+                  <Subscriptions 
+                    plans={this.state.plans}
+                    currentSelection={this.state.selectedPlan}
+                    changeSubscription={this.changeSubscriptionMode}>
+                    <CardElement />
+                  </Subscriptions>
+                  {
+                  this.checkErrors('save') &&
+                  <p className="info error">
+                    {this.state.saveError}
+                  </p>
+                  }
               </ModalStyles.Section>
               <ModalStyles.ButtonBar>
                 {this.state.formStatus === FormStatus.Saving && <ModalStyles.Status>Saving...</ModalStyles.Status>}
@@ -298,3 +343,5 @@ export default class UserProfile extends React.Component<
     );
   }
 }
+
+export const UserProfileForm = injectStripe(UserProfile);

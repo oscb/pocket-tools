@@ -9,13 +9,14 @@ import Header from "../header/header";
 import DeliveryEditor from "./deliveryEditor";
 import { css } from "emotion";
 import { ModalStyles } from "../../styles/modalStyles";
-import UserProfile from "../user/userProfile";
+import { UserProfileForm } from "../user/userProfile";
 import { DashboardStyles } from "../../styles/dashboardStyles";
 import DeliveryItem from "./deliveryItem";
 import { hot } from "react-hot-loader";
 import styled from "react-emotion";
 import Modal from "./modal";
 import { TimeOpts, UtcToLocal, WeekDays, getTimeslot, TimeslotsSize, TimeslotsIterator } from "../../time";
+import { Elements } from "react-stripe-elements";
 
 type TimeMap = { [timeslot: string]: [Delivery] };
 type ScheduleMap = { [day: string]: TimeMap };
@@ -159,22 +160,24 @@ class Dashboard extends React.Component<
           {this.state.showConfirmation && this.confirmationModal}
         </PoseGroup>
         {/* Routes */}
-        <PoseGroup>
-          {isModal && 
-            <RouteContainer key={this.props.location.key} className={css`${ModalStyles.Background}`}>
-              <Switch location={this.props.location}>
-                <Route path="/delivery/:id?" key="delivery" component={DeliveryEditor}/>
-                <Route path="/user" key="user" render={(props) => (
-                  <UserProfile 
-                    {...props}
-                    newUser={this.props.location.state ? !!this.props.location.state.newUser : false} 
-                    />
-                  )}>
-                </Route>
-              </Switch>
-            </RouteContainer>
-          }
-        </PoseGroup>
+          <PoseGroup>
+            {isModal && 
+              <RouteContainer key={this.props.location.key} className={css`${ModalStyles.Background}`}>
+                <Switch location={this.props.location}>
+                  <Route path="/delivery/:id?" key="delivery" component={DeliveryEditor}/>
+                  <Route path="/user" key="user" render={(props) => (
+                    <Elements>
+                      <UserProfileForm 
+                        {...props}
+                        newUser={this.props.location.state ? !!this.props.location.state.newUser : false} 
+                        />
+                    </Elements>
+                    )}>
+                  </Route>
+                </Switch>
+              </RouteContainer>
+            }
+          </PoseGroup>
       </div>
     );
   }

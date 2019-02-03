@@ -8,7 +8,8 @@ export interface User {
   email?: string;
   kindle_email?: string;
   token: string;
-  type: string;
+  subscription: string;
+  stripe_token?: stripe.Token;
 }
 
 export class UserAPI {

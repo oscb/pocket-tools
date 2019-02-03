@@ -12,7 +12,7 @@ const user_sample: User = {
   username: 'oubi',
   active: true,
   token: process.env.TOKEN,
-  type: 'Free'
+  subscription: 'Free'
 }
 
 describe('UserAPI Tests', () => {

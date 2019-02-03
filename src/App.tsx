@@ -8,6 +8,7 @@ import Dashboard from "./components/dashboard/dashboard";
 import { Home, HomeProps, RouterHomeProps } from "./components/home/home";
 import "./icons";
 import { ApiHelper } from './models/apiHelper';
+import {Elements, StripeProvider} from 'react-stripe-elements';
 
 type PrivateRouteProps = { component: React.ComponentType<{}> } & RouteProps;
 
@@ -41,16 +42,18 @@ class App extends React.Component {
 
     return (
       <BrowserRouter>
-        <div>
-          <Route
-            exact={true}
-            path="/"
-            render={e =>
-              new RouterHome({ ...homeProps, ...e } as RouterHomeProps)
-            }
-          />
-          <PrivateRoute component={RouterDashboard} />
-        </div>
+        <StripeProvider apiKey={process.env.STRIPE_KEY}>
+          <div>
+            <Route
+              exact={true}
+              path="/"
+              render={e =>
+                new RouterHome({ ...homeProps, ...e } as RouterHomeProps)
+              }
+              />
+            <PrivateRoute component={RouterDashboard} />
+          </div>
+        </StripeProvider>
       </BrowserRouter>
     );
   }

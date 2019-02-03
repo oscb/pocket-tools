@@ -812,6 +812,13 @@
     "@types/history" "*"
     "@types/react" "*"
 
+"@types/react-stripe-elements@^1.1.9":
+  version "1.1.9"
+  resolved "https://registry.yarnpkg.com/@types/react-stripe-elements/-/react-stripe-elements-1.1.9.tgz#21f951b0c3885584381ad7f87c4b502ecc554765"
+  dependencies:
+    "@types/react" "*"
+    "@types/stripe-v3" "*"
+
 "@types/react-transition-group@^2.0.8":
   version "2.0.13"
   resolved "https://registry.yarnpkg.com/@types/react-transition-group/-/react-transition-group-2.0.13.tgz#7769fb61eb71d64d087a713956f086a42c3ee171"
@@ -824,6 +831,16 @@
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
+
+"@types/stripe-v3@*":
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/@types/stripe-v3/-/stripe-v3-3.0.8.tgz#9c2816acf34dcf0948236fc81ce99442344ebfb4"
+
+"@types/stripe@^6.0.4":
+  version "6.0.4"
+  resolved "https://registry.yarnpkg.com/@types/stripe/-/stripe-6.0.4.tgz#7afbf06415f594c8b314ff342ba2ad6a8fdb271f"
+  dependencies:
+    "@types/node" "*"
 
 "@types/superagent@^3.8.3":
   version "3.8.3"
@@ -5877,6 +5894,12 @@ react-router@^4.2.0, react-router@^4.3.1:
     path-to-regexp "^1.7.0"
     prop-types "^15.6.1"
     warning "^4.0.1"
+
+react-stripe-elements@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/react-stripe-elements/-/react-stripe-elements-2.0.1.tgz#197db4762c57bf73a07d852564ebdbac52954094"
+  dependencies:
+    prop-types "^15.5.10"
 
 react-transition-group@^2.2.1:
   version "2.4.0"
