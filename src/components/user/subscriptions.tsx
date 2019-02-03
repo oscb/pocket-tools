@@ -25,29 +25,39 @@ export default class Subscriptions extends React.Component<SubscriptionsProps, n
   }
 
   public render() {
-    let plans = [];
+    let publicPlans = [];
+    let specialPlans = [];
+    
     for (const p of this.props.plans) {
       if (p.public === true || p.overrideShow) {
-        plans.push(
-          <SubscriptionItem 
-            key={p.name} 
-            selected={this.props.currentSelection !== undefined && this.props.currentSelection.name.toLowerCase() === p.name.toLowerCase()} 
-            primary={p.amount > 0 || p.overrideShow}
-            special={p.overrideShow}
-            onClick={this.changeSelection(p)}>
-            <h1>{p.name}{p.overrideShow ? '*' : null}</h1>
-            <h2>{p.overrideShow ? "* This is a special plan only visible to you! If you select a different plan you won't be able to select it back." : null}</h2>
-            <p>{p.description}</p>
-            {p.amount > 0 ? <h2>${p.amount}/{p.interval}</h2> : null}
-          </SubscriptionItem>
-        )
+        let plan = (
+        <SubscriptionItem 
+          key={p.name} 
+          selected={this.props.currentSelection !== undefined && this.props.currentSelection.name.toLowerCase() === p.name.toLowerCase()} 
+          primary={p.amount > 0 || p.overrideShow}
+          special={p.overrideShow}
+          onClick={this.changeSelection(p)}>
+          <h1>{p.name}{p.overrideShow ? '*' : null}</h1>
+          <h2>{p.overrideShow ? "* This is a special plan only visible to you! If you select a different plan you won't be able to select it back." : null}</h2>
+          <p>{p.description}</p>
+          {p.amount > 0 ? <h2>${p.amount}/{p.interval}</h2> : null}
+        </SubscriptionItem>)
+
+        if (p.public) {
+          publicPlans.push(plan);
+        } else if (p.overrideShow) {
+          specialPlans.push(plan);
+        }
       }
     }
 
     return (
       <React.Fragment>
         <SubscriptionSelector>
-          {plans}
+          {specialPlans}
+        </SubscriptionSelector>
+        <SubscriptionSelector>
+          {publicPlans}
         </SubscriptionSelector>
         {this.props.currentSelection.amount > 0 && 
           <StripeForms>
@@ -68,9 +78,8 @@ export default class Subscriptions extends React.Component<SubscriptionsProps, n
 
 const SubscriptionSelector = styled('div')`
   position: relative;
-  display: grid;
+  display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
   justify-content: space-around;
   align-self: flex-start;
   box-sizing: border-box;
@@ -86,7 +95,7 @@ interface SubscriptionItemProps {
 const SubscriptionItem = styled('div')<SubscriptionItemProps>(
   {
     textAlign: 'center',
-    flexGrow: 0,
+    flexGrow: 1,
     flexShrink: 1,
     margin: '0.5rem',
     padding: '0.5rem',
