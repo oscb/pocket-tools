@@ -11,7 +11,7 @@ import { css } from "emotion";
 import posed, { PoseGroup } from "react-pose";
 import { ApiHelper } from "../../models/apiHelper";
 import Subscriptions from "./subscriptions";
-import {CardElement, injectStripe, ReactStripeElements} from 'react-stripe-elements';
+import {CardElement, injectStripe, ReactStripeElements, PaymentRequestButtonElement} from 'react-stripe-elements';
 import { timingSafeEqual } from "crypto";
 import { SubscriptionAPI, SubscriptionPlan } from "../../models/subscriptions";
 
@@ -190,11 +190,8 @@ class UserProfile extends React.Component<
       subscription,
     };
     
-    if (
-      this.state.plans && 
-      this.state.plans.length > 0 && 
-      this.state.selectedPlan.name in this.state.plans &&
-      (this.state.selectedPlan.amount > 0)) 
+    if (this.state.selectedPlan !== null &&
+      this.state.selectedPlan.amount > 0) 
     {
       const {token} = await this.props.stripe.createToken({ name: this.state.username });
       userData.stripe_token = token;
@@ -210,11 +207,11 @@ class UserProfile extends React.Component<
         this.props.history.push("/dashboard");
       }, 2000);
     }).catch((e) => {
-      let detail = e.response.body.error !== undefined ? e.response.body.error : '';
+      let detail = (e.response !== undefined && e.response.body !== undefined && e.response.body.error !== undefined) ? e.response.body.error : (e.message !== undefined)? e.message : e;
       this.setState({
         ...this.state,
         formStatus: FormStatus.Enabled,
-        saveError: `There was an error saving your data. Status:${e.status} Message: ${e.message} ${detail}. Try again later. If you keep seeing this error send an email to support@pockettoolkit.com` ,
+        saveError: `There was an error saving your data. Message: ${e.message} ${detail}. Try again later. If you keep seeing this error send an email to support@pockettoolkit.com` ,
         errors: {
           ...this.state.errors,
           'save': true
@@ -313,6 +310,7 @@ class UserProfile extends React.Component<
                     currentSelection={this.state.selectedPlan}
                     changeSubscription={this.changeSubscriptionMode}>
                     <CardElement />
+                    {/* <PaymentRequestButtonElement /> TODO */}
                   </Subscriptions>
                   {
                   this.checkErrors('save') &&
