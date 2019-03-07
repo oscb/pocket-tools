@@ -30,13 +30,10 @@ export class Home extends React.Component<RouterHomeProps> {
   }
 
   async componentWillMount() {
-    let user: User;
-    if (ApiHelper.hasCode) {
-      user = await ApiHelper.authUser();
-    } else {
-      user = await this.userApi.me();
-    }
+    let user = await ApiHelper.getUserData();
     if (
+      user !== undefined && 
+      user !== null &&
       user.email !== null && 
       user.email !== undefined && 
       user.kindle_email !== null && 

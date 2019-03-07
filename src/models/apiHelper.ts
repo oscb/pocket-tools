@@ -1,10 +1,10 @@
 import { AuthAPI } from './auth';
-import { User } from './user';
+import { User, UserAPI } from './user';
 
 class APIHelper {
+  public user?: User;
   public token?: string;
   private code?: string;
-  private user?: User;
 
   get isAuthenticated(): boolean {
     return this.token !== null;
@@ -14,14 +14,9 @@ class APIHelper {
     return this.code !== null;
   }
 
-  get userData(): User {
-    return this.user;
-  }
-
   constructor() {
     this.token = localStorage.getItem('token');
     this.code = localStorage.getItem('code');
-    this.user = JSON.parse(localStorage.getItem('user')) as User;
   }
 
   async login() {
@@ -37,6 +32,19 @@ class APIHelper {
     localStorage.removeItem('user');
   }
 
+  async getUserData(): Promise<User> {
+    if (this.user !== undefined && this.user !== null) {
+      return this.user;
+    } else if (this.token !== undefined && this.token !== null) {
+      console.log("Reauth the user");
+      const userApi = new UserAPI(this.token);
+      this.user = await userApi.me()
+    } else if (this.token !== null) {
+      this.user = await this.authUser();
+    }
+    return this.user;
+  }
+
   async authUser(): Promise<User> {
     if (!this.hasCode) {
       throw new Error('Auth Error: No code in localStorage. Did you call .login() before?');
@@ -48,7 +56,6 @@ class APIHelper {
     this.user = user;
     localStorage.removeItem('code');
     localStorage.setItem('token', this.token);
-    localStorage.setItem('user', JSON.stringify(user));
     return user;
   }
 }

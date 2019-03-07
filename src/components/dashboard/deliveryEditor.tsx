@@ -97,8 +97,6 @@ class DeliveryEditor extends React.Component<
     super(props);
     this.deliveryApi = new DeliveryAPI(ApiHelper.token);
     // Default form options
-    this.User = ApiHelper.userData;
-    // TODO: Data in localstorage might be bad, need to have a fallback
 
     const defaultState: DeliveryEditorState = {
       countType: CountType.Time,
@@ -109,7 +107,7 @@ class DeliveryEditor extends React.Component<
       autoArchive: true,
       showAdvanced: false,
       longformOnly: false,
-      kindle_email: this.User.kindle_email,
+      kindle_email: (ApiHelper.user && ApiHelper.user.kindle_email) ? ApiHelper.user.kindle_email :  "",
       formStatus: FormStatus.Enabled,
       errors: {}
     }
@@ -135,6 +133,7 @@ class DeliveryEditor extends React.Component<
     } else {
       this.isNew = true;
       this.state = defaultState;
+      this.loadUserData();
     }
   }
 
@@ -501,6 +500,16 @@ class DeliveryEditor extends React.Component<
       }
       </PoseGroup>
     );
+  }
+
+  private async loadUserData() {
+    this.User = await ApiHelper.getUserData();
+    if (this.state.kindle_email === undefined || this.state.kindle_email === "") {
+      this.setState({
+        ...this.state,
+        kindle_email: this.User.kindle_email
+      });
+    }
   }
 
   private async loadData(id: string) {
