@@ -251,16 +251,16 @@ class Dashboard extends React.Component<
             icon='question'
             close={this.dismissConfirmation}
           >
-            <ModalStyles.Loader>
-              Are you sure you want to delete your delivery? <br/>
-              (Deliveries cannot be recovered, but your articles will always be in your pocket)
-            </ModalStyles.Loader>
+            <ModalStyles.Message>
+              <h3>Are you sure you want to delete your delivery?</h3>
+              <p>Deliveries cannot be recovered, but your articles will always be in your pocket</p>
+            </ModalStyles.Message>
             <ModalStyles.ButtonBar>
-              <ModalStyles.Button primary={false} onClick={this.dismissConfirmation}>
-                <FontAwesomeIcon icon="times" /> Cancel
-              </ModalStyles.Button>
-              <ModalStyles.Button onClick={this.deleteDelivery(delivery.id)}>
+              <ModalStyles.Button onClick={this.deleteDelivery(delivery.id)} type="button">
                 Delete <FontAwesomeIcon icon="trash-alt" />
+              </ModalStyles.Button>
+              <ModalStyles.Button primary={false} onClick={this.dismissConfirmation} type="submit">
+                <FontAwesomeIcon icon="times" /> Cancel
               </ModalStyles.Button>
             </ModalStyles.ButtonBar>
           </Modal>
@@ -280,16 +280,16 @@ class Dashboard extends React.Component<
             icon='envelope'
             close={this.dismissConfirmation}
           >
-            <ModalStyles.Loader>
-              Send a delivery now?<br/>
-              Delivery will still be sent on schedule.
-            </ModalStyles.Loader>
+            <ModalStyles.Message>
+              <h3>Send a delivery now?</h3>
+              <p>Delivery will still be sent on schedule.</p>
+            </ModalStyles.Message>
             <ModalStyles.ButtonBar>
-              <ModalStyles.Button primary={false} onClick={this.dismissConfirmation}>
-                <FontAwesomeIcon icon="times" /> Cancel
-              </ModalStyles.Button>
-              <ModalStyles.Button onClick={this.sendDelivery(delivery.id)}>
+              <ModalStyles.Button onClick={this.sendDelivery(delivery.id)} type="submit">
                 Send Now <FontAwesomeIcon icon="envelope" />
+              </ModalStyles.Button>
+              <ModalStyles.Button primary={false} onClick={this.dismissConfirmation} type="button">
+                <FontAwesomeIcon icon="times" /> Cancel
               </ModalStyles.Button>
             </ModalStyles.ButtonBar>
           </Modal>

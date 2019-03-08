@@ -112,7 +112,12 @@ class DeliveryEditor extends React.Component<
       errors: {}
     }
     
-    if (props.match.params.id) {
+    this.isNew = !(!!props.match.params.id);
+    this.loadUserData(this.isNew);
+
+    if (this.isNew) {
+      this.state = defaultState;
+    } else {
       this.state = {
         ...defaultState,
         formStatus: FormStatus.Preloading  
@@ -127,13 +132,7 @@ class DeliveryEditor extends React.Component<
         },
         this.minWaitTime
       );
-
       this.loadData(props.match.params.id);
-      this.isNew = false;
-    } else {
-      this.isNew = true;
-      this.state = defaultState;
-      this.loadUserData();
     }
   }
 
@@ -169,7 +168,7 @@ class DeliveryEditor extends React.Component<
       {this.state.formStatus === FormStatus.Enabled &&
         <ModalStyles.ModalWrapper key="form">
           <Modal title={this.state.id !== undefined ? "Your Delivery" : "New Delivery!"}>
-            <ModalStyles.Form>
+            <ModalStyles.Form onSubmit={this.save}>
               <EditorStyles.Editor>
                 <ModalStyles.Section className={css`margin-bottom: 0;`}>
                   <EditorStyles.SectionTitle>
@@ -409,11 +408,11 @@ class DeliveryEditor extends React.Component<
                 </ModalStyles.Section>
               </EditorStyles.Editor>
               <ModalStyles.ButtonBar>
-                <ModalStyles.Button primary={false} onClick={this.cancel}>
-                  <FontAwesomeIcon icon="times" /> Cancel
-                </ModalStyles.Button>
-                <ModalStyles.Button onClick={this.save}>
+                <ModalStyles.Button type="submit">
                   Show Sample <FontAwesomeIcon icon="arrow-right" />
+                </ModalStyles.Button>
+                <ModalStyles.Button primary={false} onClick={this.cancel} type="button">
+                  <FontAwesomeIcon icon="times" /> Cancel
                 </ModalStyles.Button>
               </ModalStyles.ButtonBar>
             </ModalStyles.Form>
@@ -450,10 +449,10 @@ class DeliveryEditor extends React.Component<
               </React.Fragment>
             }
             <EditorStyles.PreviewBar>
-              <ModalStyles.Button primary={false} onClick={this.goBackToEditor}>
+              <ModalStyles.Button primary={false} onClick={this.goBackToEditor} type="button">
                 <FontAwesomeIcon icon="edit" /> Edit again
               </ModalStyles.Button>
-              <ModalStyles.Button onClick={this.activate}>
+              <ModalStyles.Button onClick={this.activate} type="button">
                 Complete! <FontAwesomeIcon icon="check" />
               </ModalStyles.Button>
             </EditorStyles.PreviewBar>
@@ -476,9 +475,9 @@ class DeliveryEditor extends React.Component<
               width: 250px;
             `}
           >
-            <ModalStyles.Loader>
-              Delivery Ready! 😄
-            </ModalStyles.Loader>
+            <ModalStyles.Message>
+              <h3>Delivery Ready! 😄</h3>
+            </ModalStyles.Message>
           </Modal>
         </ModalStyles.ModalWrapper>
       }
@@ -492,9 +491,9 @@ class DeliveryEditor extends React.Component<
               width: 250px;
             `}
           >
-            <ModalStyles.Loader>
-              {this.state.errors['_all'] !== undefined ? this.state.errors['_all'] : 'An error ocurred! Try again later.'}
-            </ModalStyles.Loader>
+            <ModalStyles.Message>
+              <h3>{this.state.errors['_all'] !== undefined ? this.state.errors['_all'] : 'An error ocurred! Try again later.'}</h3>
+            </ModalStyles.Message>
           </Modal>
         </ModalStyles.ModalWrapper>
       }
@@ -502,9 +501,9 @@ class DeliveryEditor extends React.Component<
     );
   }
 
-  private async loadUserData() {
+  private async loadUserData(fillEmailForm=true) {
     this.User = await ApiHelper.getUserData();
-    if (this.state.kindle_email === undefined || this.state.kindle_email === "") {
+    if (fillEmailForm && this.state.kindle_email === undefined || this.state.kindle_email === "") {
       this.setState({
         ...this.state,
         kindle_email: this.User.kindle_email
@@ -622,7 +621,7 @@ class DeliveryEditor extends React.Component<
     });
   }
 
-  private save = async (e: React.MouseEvent<HTMLButtonElement>): Promise<any> => {
+private save = async (e: React.MouseEvent | React.FormEvent): Promise<any> => {
     const minTime = 1500;
     const startTime = new Date().getTime();
     e.preventDefault();

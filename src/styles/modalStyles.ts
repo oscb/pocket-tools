@@ -157,7 +157,7 @@ const Section = styled('div')`
   /* margin: 0 0 1rem 0; */
 `
 
-const Loader = styled('h1')`
+const Message = styled('div')`
   font-size: 1rem;
   padding: 1rem;
 `
@@ -165,6 +165,7 @@ const Loader = styled('h1')`
 const ButtonBar = styled('div')`
   display: flex;
   width: 100%;
+  flex-direction: row-reverse; 
 `
 
 const ModalWrapperAnimated = posed.div({
@@ -227,7 +228,7 @@ export const ModalStyles = {
   Content,
   Form,
   Icon,
-  Loader,
+  Message,
   Modal,
   Section,
   Status,

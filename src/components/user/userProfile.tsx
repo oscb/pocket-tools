@@ -251,7 +251,7 @@ class UserProfile extends React.Component<
             iconStyle={this.state.formStatus === FormStatus.Saved ? { background: 'rgba(39, 94, 132, 1)'} : {}}
             close={() => this.cancel()}
           >
-            <ModalStyles.Form>
+            <ModalStyles.Form onSubmit={this.save}>
               <ModalStyles.Section>
                   <TextField
                     name="username"
@@ -320,17 +320,17 @@ class UserProfile extends React.Component<
                   }
               </ModalStyles.Section>
               <ModalStyles.ButtonBar>
+                {this.state.formStatus === FormStatus.Enabled && 
+                <ModalStyles.Button disabled={!this.validateForm()} type="submit">
+                  Save
+                </ModalStyles.Button>
+                }
                 {this.state.formStatus === FormStatus.Saving && <ModalStyles.Status>Saving...</ModalStyles.Status>}
                 {this.state.formStatus === FormStatus.Saved && <ModalStyles.Status>Saved!</ModalStyles.Status>}
                 {this.state.formStatus === FormStatus.Enabled && !this.props.newUser && 
-                  <ModalStyles.Button primary={false} onClick={e => this.cancel(e)}>
+                  <ModalStyles.Button primary={false} onClick={e => this.cancel(e)} type="button">
                     <FontAwesomeIcon icon="times" /> Cancel
                   </ModalStyles.Button>
-                }
-                {this.state.formStatus === FormStatus.Enabled && 
-                <ModalStyles.Button disabled={!this.validateForm()} onClick={e => this.save(e)}>
-                  Save
-                </ModalStyles.Button>
                 }
               </ModalStyles.ButtonBar>
             </ModalStyles.Form>

@@ -36,7 +36,6 @@ class APIHelper {
     if (this.user !== undefined && this.user !== null) {
       return this.user;
     } else if (this.token !== undefined && this.token !== null) {
-      console.log("Reauth the user");
       const userApi = new UserAPI(this.token);
       this.user = await userApi.me()
     } else if (this.token !== null) {

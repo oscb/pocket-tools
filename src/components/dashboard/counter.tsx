@@ -115,11 +115,11 @@ export default class Counter extends React.Component<
   render() {
     return (
       <StyledCounter>
-        <button onClick={e => this.handleChange(e, false)}>-</button>
+        <button onClick={e => this.handleChange(e, false)} type="button">-</button>
         <span>
           {this.state.count} {this.props.units}
         </span>
-        <button onClick={e => this.handleChange(e, true)}>+</button>
+        <button onClick={e => this.handleChange(e, true)} type="button">+</button>
       </StyledCounter>
     );
   }

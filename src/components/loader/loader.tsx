@@ -19,9 +19,9 @@ export default class Loader extends React.Component<LoaderProps, any> {
           width: 250px;
         `}
       >
-        <ModalStyles.Loader>
-          {this.props.message}
-        </ModalStyles.Loader>
+        <ModalStyles.Message>
+          <h4>{this.props.message}</h4>
+        </ModalStyles.Message>
       </Modal>
     );
   }
