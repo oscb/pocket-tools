@@ -29,26 +29,30 @@ export class Home extends React.Component<RouterHomeProps> {
     await ApiHelper.login();
   }
 
-  async componentWillMount() {
+  async redirectUser() {
     let user = await ApiHelper.getUserData();
     if (
       user !== undefined && 
-      user !== null &&
-      user.email !== null && 
-      user.email !== undefined && 
-      user.kindle_email !== null && 
-      user.kindle_email !== undefined) 
+      user !== null)
     {
-      this.props.history.push("/dashboard");
-    } else {
-      this.props.history.push(`/user/`, {
-        ...user,
-        newUser: true
-      });
+      if (
+        user.email !== null && 
+        user.email !== undefined && 
+        user.kindle_email !== null && 
+        user.kindle_email !== undefined) 
+      {
+        this.props.history.push("/dashboard");
+      } else {
+        this.props.history.push(`/user/`, {
+          ...user,
+          newUser: true
+        });
+      }
     }
   }
 
   render() {
+    this.redirectUser();
     return (
       <div className="home">
         <div className="home-header">

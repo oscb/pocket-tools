@@ -154,7 +154,7 @@ module.exports = (env) => {
     },
 
     plugins: [
-      new CleanWebpackPlugin(['dist']),
+      new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({ 
         inject: true,
         title: '📖 Pocket Tools',

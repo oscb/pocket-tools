@@ -2,6 +2,9 @@ import { createMuiTheme } from "@material-ui/core/styles";
 import { Theme } from "./theme";
 
 const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true,
+  },
   palette: {
     text: {
       primary: Theme.textColor

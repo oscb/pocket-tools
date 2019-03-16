@@ -1,9 +1,10 @@
-import { css } from 'emotion';
+/** @jsx jsx */
+import { jsx } from '@emotion/core'
 import { darken, desaturate, lighten } from 'polished';
+import css from '@emotion/css';
 
 export const Button = props => css`
   background: ${props.color};
-  border: none;
 
   &:hover {
     background: ${lighten(0.05, props.color)};

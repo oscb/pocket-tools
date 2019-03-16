@@ -1,4 +1,5 @@
-import styled, { css, keyframes } from 'react-emotion';
+import styled from '@emotion/styled';
+import { css, keyframes } from "@emotion/core";
 import { Select } from '@material-ui/core';
 import posed from 'react-pose';
 
@@ -117,9 +118,10 @@ const StyledEditorCounter = styled('div')`
   vertical-align: top;
 `
 
-const StyledSelect = styled(Select)`
-  flex: 1 1 100%;
-`
+// const StyledSelect = styled(Select)`
+//   flex: 1 1 100%;
+// `
+const StyledSelect = Select;
 
 const StyledLabel = styled('label')`
   font-size: 12px; /* 16px * 0.75 of scaling in a normal component */

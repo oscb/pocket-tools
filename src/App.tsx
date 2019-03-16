@@ -1,14 +1,15 @@
 // import * as path from 'path';
 import * as React from "react";
 import { hot } from "react-hot-loader";
-import { withRouter } from "react-router";
+import { withRouter, Switch } from "react-router";
 import { BrowserRouter, Redirect, Route, RouteProps } from "react-router-dom";
-import "./App.scss";
 import Dashboard from "./components/dashboard/dashboard";
 import { Home, HomeProps, RouterHomeProps } from "./components/home/home";
 import "./icons";
 import { ApiHelper } from './models/apiHelper';
 import {Elements, StripeProvider} from 'react-stripe-elements';
+import styled from "@emotion/styled-base";
+import { darken } from "polished";
 
 type PrivateRouteProps = { component: React.ComponentType<{}> } & RouteProps;
 
@@ -31,6 +32,24 @@ const PrivateRoute = (props: PrivateRouteProps) => {
   );
 };
 
+const AppStyles = styled('div')`
+  * {
+    font-family: ${props => props.theme.bodyFont};
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: ${props => props.theme.titleFont};
+  }
+
+  a {
+    color: ${props => props.theme.secondaryColor};
+
+    &:hover {
+      color: ${props => darken(0.05, props.theme.secondaryColor)}
+    }
+  }
+`
+
 class App extends React.Component {
   render() {
     const homeProps: HomeProps = {
@@ -41,20 +60,22 @@ class App extends React.Component {
     };
 
     return (
-      <BrowserRouter>
-        <StripeProvider apiKey={process.env.STRIPE_KEY}>
-          <div>
-            <Route
-              exact={true}
-              path="/"
-              render={e =>
-                new RouterHome({ ...homeProps, ...e } as RouterHomeProps)
-              }
-              />
-            <PrivateRoute component={RouterDashboard} />
-          </div>
-        </StripeProvider>
-      </BrowserRouter>
+      <AppStyles>
+        <BrowserRouter>
+          <StripeProvider apiKey={process.env.STRIPE_KEY}>
+            <Switch>
+              <Route
+                exact={true}
+                path="/"
+                render={e =>
+                  new RouterHome({ ...homeProps, ...e } as RouterHomeProps)
+                }
+                />
+              <PrivateRoute component={RouterDashboard} />
+            </Switch>
+          </StripeProvider>
+        </BrowserRouter>
+      </AppStyles>
     );
   }
 }

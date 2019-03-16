@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Logo from '../header/logo';
 import './header.scss';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';;
 import DeliveryHeader from '../dashboard/deliveryHeader';
 import { Delivery } from '../../models/delivery';
 

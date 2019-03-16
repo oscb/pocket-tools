@@ -1,27 +1,44 @@
 import * as React from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';;
 import { darken } from 'polished';
 import { Elements } from 'react-stripe-elements';
 import { SubscriptionAPI, SubscriptionPlan } from 'src/models/subscriptions';
+import { ModalStyles } from "../../styles/modalStyles";
 
 export interface SubscriptionsProps {
   plans: SubscriptionPlan[];
-  changeSubscription: (selection: SubscriptionPlan) => void; 
+  changeSubscription: (selection: SubscriptionPlan) => void;
+  originalSelection?: SubscriptionPlan;
   currentSelection?: SubscriptionPlan;
 }
 
-export default class Subscriptions extends React.Component<SubscriptionsProps, null> {
+export interface SubscriptionsState {
+  showCardInput: boolean;
+}
 
-
+export default class Subscriptions extends React.Component<SubscriptionsProps, SubscriptionsState> {
   constructor(props: SubscriptionsProps) {
     super(props);
+    this.state = {
+      showCardInput: false
+    };
   }
 
   changeSelection = (selection: SubscriptionPlan) => {
     return (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
       this.props.changeSubscription(selection);
+      this.setState({
+        showCardInput: (selection.amount > 0 && this.props.originalSelection !== selection)
+      })
     }
+  }
+
+  showCardForm = (e: React.MouseEvent) => {
+    e.preventDefault(); 
+    this.setState({
+      showCardInput: true
+    });
   }
 
   public render() {
@@ -62,12 +79,22 @@ export default class Subscriptions extends React.Component<SubscriptionsProps, n
         {this.props.currentSelection.amount > 0 && 
           <StripeForms>
             <p>Thanks for your support! 🎉</p>
-            {this.props.children}
-            <p className="info">
-              <i>
-                Payments are processed through Stripe
-              </i>
-            </p>
+            {this.state.showCardInput ? 
+            (<React.Fragment>
+              {this.props.children}
+              <p className="info">
+                <i>
+                  Payments are processed through Stripe
+                </i>
+              </p>
+            </React.Fragment>)
+            :
+            (<React.Fragment>
+              <p><b>You don't need to input your card details again, unless you want to change them.</b></p>
+              <a type="button" onClick={this.showCardForm}>
+                Change payment method
+              </a>
+            </React.Fragment>)}
           </StripeForms>
         }
       </React.Fragment>

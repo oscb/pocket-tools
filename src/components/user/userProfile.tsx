@@ -7,7 +7,6 @@ import Loader from "../loader/loader";
 import * as _ from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ModalStyles } from "../../styles/modalStyles";
-import { css } from "emotion";
 import posed, { PoseGroup } from "react-pose";
 import { ApiHelper } from "../../models/apiHelper";
 import Subscriptions from "./subscriptions";
@@ -34,6 +33,7 @@ interface UserProfileState extends User {
   // TODO: Mix these 2 togheter
   errors: {[field: string]: boolean};
   saveError?: string;
+  originalPlan?: SubscriptionPlan;
   selectedPlan?: SubscriptionPlan;
   plans: SubscriptionPlan[]
 }
@@ -93,6 +93,7 @@ class UserProfile extends React.Component<
     }
 
     clearTimeout(this.timeout);
+    let plan = plans.find(x => x.name.toLowerCase() === user.subscription.toLowerCase());
     this.setState({
       ...this.state,
       formStatus: FormStatus.Enabled,
@@ -100,7 +101,8 @@ class UserProfile extends React.Component<
       username: user.username,
       email: user.email,
       kindle_email: user.kindle_email,
-      selectedPlan: plans.find(x => x.name.toLowerCase() === user.subscription.toLowerCase()),
+      originalPlan: plan,
+      selectedPlan: plan,
       subscription: user.subscription,
       plans: plans
     });
@@ -251,7 +253,7 @@ class UserProfile extends React.Component<
             iconStyle={this.state.formStatus === FormStatus.Saved ? { background: 'rgba(39, 94, 132, 1)'} : {}}
             close={() => this.cancel()}
           >
-            <ModalStyles.Form>
+            <ModalStyles.Form onSubmit={this.save}>
               <ModalStyles.Section>
                   <TextField
                     name="username"
@@ -308,6 +310,7 @@ class UserProfile extends React.Component<
                   <Subscriptions 
                     plans={this.state.plans}
                     currentSelection={this.state.selectedPlan}
+                    originalSelection={this.state.originalPlan}
                     changeSubscription={this.changeSubscriptionMode}>
                     <CardElement />
                     {/* <PaymentRequestButtonElement /> TODO */}
@@ -320,17 +323,17 @@ class UserProfile extends React.Component<
                   }
               </ModalStyles.Section>
               <ModalStyles.ButtonBar>
+                {this.state.formStatus === FormStatus.Enabled && 
+                <ModalStyles.Button disabled={!this.validateForm()} type="submit">
+                  Save
+                </ModalStyles.Button>
+                }
                 {this.state.formStatus === FormStatus.Saving && <ModalStyles.Status>Saving...</ModalStyles.Status>}
                 {this.state.formStatus === FormStatus.Saved && <ModalStyles.Status>Saved!</ModalStyles.Status>}
                 {this.state.formStatus === FormStatus.Enabled && !this.props.newUser && 
-                  <ModalStyles.Button primary={false} onClick={e => this.cancel(e)}>
+                  <ModalStyles.Button primary={false} onClick={e => this.cancel(e)} type="button">
                     <FontAwesomeIcon icon="times" /> Cancel
                   </ModalStyles.Button>
-                }
-                {this.state.formStatus === FormStatus.Enabled && 
-                <ModalStyles.Button disabled={!this.validateForm()} onClick={e => this.save(e)}>
-                  Save
-                </ModalStyles.Button>
                 }
               </ModalStyles.ButtonBar>
             </ModalStyles.Form>

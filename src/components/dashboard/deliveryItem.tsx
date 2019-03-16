@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Delivery } from '../../models/delivery';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';;
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button } from '../../styles/button';
 import DeliveryHeader from './deliveryHeader';

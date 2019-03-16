@@ -1,3 +1,5 @@
+/** @jsx jsx */
+import { jsx } from '@emotion/core'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import posed, { PoseGroup } from "react-pose";
@@ -7,16 +9,16 @@ import { ApiHelper } from '../../models/apiHelper';
 import { Delivery, DeliveryAPI } from "../../models/delivery";
 import Header from "../header/header";
 import DeliveryEditor from "./deliveryEditor";
-import { css } from "emotion";
 import { ModalStyles } from "../../styles/modalStyles";
 import { UserProfileForm } from "../user/userProfile";
 import { DashboardStyles } from "../../styles/dashboardStyles";
 import DeliveryItem from "./deliveryItem";
 import { hot } from "react-hot-loader";
-import styled from "react-emotion";
+import styled from "@emotion/styled";;
 import Modal from "./modal";
 import { TimeOpts, UtcToLocal, WeekDays, getTimeslot, TimeslotsSize, TimeslotsIterator } from "../../time";
 import { Elements } from "react-stripe-elements";
+import css from "@emotion/css";
 
 type TimeMap = { [timeslot: string]: [Delivery] };
 type ScheduleMap = { [day: string]: TimeMap };
@@ -91,7 +93,7 @@ class Dashboard extends React.Component<
     const nextDelivery = this.findNextDelivery(this.state.deliveries);
     
     return (
-      <div className="dashboard">
+      <React.Fragment>
         <Header 
           logo="Pocket Tools" 
           nextDelivery={nextDelivery !== null ? nextDelivery.delivery : null}
@@ -101,7 +103,7 @@ class Dashboard extends React.Component<
         {/* Loading */}
           {this.state.status === DashboardStatus.loading && 
             <DashboardStyles.Empty>
-              <DashboardStyles.EmptyIcon className={css`height: 64px;`}>
+              <DashboardStyles.EmptyIcon css={css`height: 64px;`}>
                 <DashboardStyles.Translate>
                   <DashboardStyles.Rumble>
                     <FontAwesomeIcon icon="truck"/>
@@ -160,25 +162,25 @@ class Dashboard extends React.Component<
           {this.state.showConfirmation && this.confirmationModal}
         </PoseGroup>
         {/* Routes */}
-          <PoseGroup>
-            {isModal && 
-              <RouteContainer key={this.props.location.key} className={css`${ModalStyles.Background}`}>
-                <Switch location={this.props.location}>
-                  <Route path="/delivery/:id?" key="delivery" component={DeliveryEditor}/>
-                  <Route path="/user" key="user" render={(props) => (
-                    <Elements>
-                      <UserProfileForm 
-                        {...props}
-                        newUser={this.props.location.state ? !!this.props.location.state.newUser : false} 
-                        />
-                    </Elements>
-                    )}>
-                  </Route>
-                </Switch>
-              </RouteContainer>
-            }
-          </PoseGroup>
-      </div>
+        {isModal && 
+        <PoseGroup>
+            <RouteContainer key={this.props.location.pathname} css={ModalStyles.Background}>
+              <Switch location={this.props.location}>
+                <Route path="/delivery/:id?" key="delivery" component={DeliveryEditor}/>
+                <Route path="/user" key="user" render={(props) => (
+                  <Elements>
+                    <UserProfileForm 
+                      {...props}
+                      newUser={this.props.location.state ? !!this.props.location.state.newUser : false} 
+                      />
+                  </Elements>
+                  )}>
+                </Route>
+              </Switch>
+            </RouteContainer>
+        </PoseGroup>
+        }
+      </React.Fragment>
     );
   }
 
@@ -244,23 +246,23 @@ class Dashboard extends React.Component<
 
   private deleteDeliveryConfirmation = (delivery: Delivery) => {
     this.confirmationModal = ( 
-      <RouteContainer key="deleteConfirm" className={css`${ModalStyles.Background}`}>
+      <RouteContainer key="deleteConfirm" css={ModalStyles.Background}>
         <ModalStyles.ModalWrapper>
           <Modal 
             title=""
             icon='question'
             close={this.dismissConfirmation}
           >
-            <ModalStyles.Loader>
-              Are you sure you want to delete your delivery? <br/>
-              (Deliveries cannot be recovered, but your articles will always be in your pocket)
-            </ModalStyles.Loader>
+            <ModalStyles.Message>
+              <h3>Are you sure you want to delete your delivery?</h3>
+              <p>Deliveries cannot be recovered, but your articles will always be in your pocket</p>
+            </ModalStyles.Message>
             <ModalStyles.ButtonBar>
-              <ModalStyles.Button primary={false} onClick={this.dismissConfirmation}>
-                <FontAwesomeIcon icon="times" /> Cancel
-              </ModalStyles.Button>
-              <ModalStyles.Button onClick={this.deleteDelivery(delivery.id)}>
+              <ModalStyles.Button onClick={this.deleteDelivery(delivery.id)} type="button">
                 Delete <FontAwesomeIcon icon="trash-alt" />
+              </ModalStyles.Button>
+              <ModalStyles.Button primary={false} onClick={this.dismissConfirmation} type="submit">
+                <FontAwesomeIcon icon="times" /> Cancel
               </ModalStyles.Button>
             </ModalStyles.ButtonBar>
           </Modal>
@@ -273,23 +275,23 @@ class Dashboard extends React.Component<
   private sendDeliveryConfirmation = (delivery: Delivery) => {
     // TODO Refactor confirmation modal into component
     this.confirmationModal = ( 
-      <RouteContainer key="sendConfirm" className={css`${ModalStyles.Background}`}>
+      <RouteContainer key="sendConfirm" css={ModalStyles.Background}>
         <ModalStyles.ModalWrapper>
           <Modal 
             title=""
             icon='envelope'
             close={this.dismissConfirmation}
           >
-            <ModalStyles.Loader>
-              Send a delivery now?<br/>
-              Delivery will still be sent on schedule.
-            </ModalStyles.Loader>
+            <ModalStyles.Message>
+              <h3>Send a delivery now?</h3>
+              <p>Delivery will still be sent on schedule.</p>
+            </ModalStyles.Message>
             <ModalStyles.ButtonBar>
-              <ModalStyles.Button primary={false} onClick={this.dismissConfirmation}>
-                <FontAwesomeIcon icon="times" /> Cancel
-              </ModalStyles.Button>
-              <ModalStyles.Button onClick={this.sendDelivery(delivery.id)}>
+              <ModalStyles.Button onClick={this.sendDelivery(delivery.id)} type="submit">
                 Send Now <FontAwesomeIcon icon="envelope" />
+              </ModalStyles.Button>
+              <ModalStyles.Button primary={false} onClick={this.dismissConfirmation} type="button">
+                <FontAwesomeIcon icon="times" /> Cancel
               </ModalStyles.Button>
             </ModalStyles.ButtonBar>
           </Modal>

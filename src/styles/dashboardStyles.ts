@@ -1,4 +1,5 @@
-import styled, { keyframes } from "react-emotion";
+import styled from "@emotion/styled";
+import { keyframes } from "@emotion/core";
 import { Button } from "./button";
 import posed from "react-pose";
 
@@ -82,7 +83,8 @@ const NewButton = styled('button')(
   (props) => ({
     borderRadius: props.theme.borderRadius,
     color: props.theme.bgColor,
-    boxShadow: props.theme.boxShadow
+    boxShadow: props.theme.boxShadow,
+    background: props.theme.mainColor, // Default
   }), 
   (props) => (
     Button({ color: props.theme.mainColor })
