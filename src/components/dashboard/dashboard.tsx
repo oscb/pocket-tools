@@ -166,7 +166,7 @@ class Dashboard extends React.Component<
         {/* Routes */}
         <PoseGroup>
           {isModal && 
-            <RouteContainer key={this.props.location.key} css={ModalStyles.Background}>
+            <RouteContainer key={this.props.location.pathname} css={ModalStyles.Background}>
               <Switch location={this.props.location}>
                 <Route path="/delivery/:id?" exact={true} key="delivery" component={DeliveryEditor}/>
                 <Route path="/user" exact={true} key="user" render={(props) => (
