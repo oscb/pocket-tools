@@ -302,7 +302,7 @@ class UserProfile extends React.Component<
                     <i>
                       Remember to give access to deliveries@pockettools.xyz in to your
                       approved email list in Amazon!{" "}
-                      <a href="https://www.amazon.com/gp/help/customer/display.html?nodeId=201974240">
+                      <a href="https://www.amazon.com/gp/help/customer/display.html?nodeId=201974240" target="blank">
                         Learn more
                       </a>
                     </i>

@@ -82,16 +82,19 @@ const StyledFieldSet = styled('div')`
   flex-flow: row wrap;
 `
 
-const StyledSectionTitle = styled('h3')`
+const StyledSectionTitle = styled('h6')`
   color: ${props => props.theme.mainColor};
   margin: 0;
   text-align: center;
+  margin-bottom: 1rem;
 
   span {
+    font-family: ${props => props.theme.titleFont};
     background: ${props => props.theme.bgColor};
     z-index: 15;
     position: relative;
-    width: 200%;
+    width: 30%;
+    display: inline-block;
   }
 
   &:before {
@@ -99,7 +102,7 @@ const StyledSectionTitle = styled('h3')`
     border-bottom: 1px ${props => props.theme.mainColor} solid;
     display: block;
     position: relative;
-    top: 0.75em;
+    top: 0.6rem;
     width: 100%;
   }
 `

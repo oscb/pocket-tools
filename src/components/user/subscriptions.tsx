@@ -54,10 +54,10 @@ export default class Subscriptions extends React.Component<SubscriptionsProps, S
           primary={p.amount > 0 || p.overrideShow}
           special={p.overrideShow}
           onClick={this.changeSelection(p)}>
-          <h1>{p.name}{p.overrideShow ? '*' : null}</h1>
-          <h2>{p.overrideShow ? "* This is a special plan only visible to you! If you select a different plan you won't be able to select it back." : null}</h2>
+          <h4>{p.name}{p.overrideShow ? '*' : null}</h4>
+          <h6>{p.overrideShow ? "* This is a special plan only visible to you! If you select a different plan you won't be able to select it back." : null}</h6>
           <p>{p.description}</p>
-          {p.amount > 0 ? <h2>${p.amount}/{p.interval}</h2> : null}
+          {p.amount > 0 ? <p><b>${p.amount}/{p.interval}</b></p> : null}
         </SubscriptionItem>)
 
         if (p.public) {
@@ -69,7 +69,7 @@ export default class Subscriptions extends React.Component<SubscriptionsProps, S
     }
 
     return (
-      <React.Fragment>
+      <SubscriptionsContainer>
         <SubscriptionSelector>
           {specialPlans}
         </SubscriptionSelector>
@@ -77,31 +77,42 @@ export default class Subscriptions extends React.Component<SubscriptionsProps, S
           {publicPlans}
         </SubscriptionSelector>
         {this.props.currentSelection.amount > 0 && 
-          <StripeForms>
-            <p>Thanks for your support! 🎉</p>
-            {this.state.showCardInput ? 
-            (<React.Fragment>
-              {this.props.children}
-              <p className="info">
-                <i>
-                  Payments are processed through Stripe
-                </i>
-              </p>
-            </React.Fragment>)
-            :
-            (<React.Fragment>
-              <p><b>You don't need to input your card details again, unless you want to change them.</b></p>
-              <a type="button" onClick={this.showCardForm}>
-                Change payment method
-              </a>
-            </React.Fragment>)}
-          </StripeForms>
+          <PaymentForm>
+            <StripeForms>
+              <p>Thanks for your support! 🎉</p>
+              {this.state.showCardInput ? 
+              (<React.Fragment>
+                {this.props.children}
+                <p className="info">
+                  <i>
+                    Payments are processed through Stripe
+                  </i>
+                </p>
+              </React.Fragment>)
+              :
+              (<React.Fragment>
+                <p><b>You don't need to input your card details again, unless you want to change them.</b></p>
+                <a href="#" onClick={this.showCardForm}>
+                  Change my payment method
+                </a>
+              </React.Fragment>)}
+            </StripeForms>
+          </PaymentForm>
         }
-      </React.Fragment>
+      </SubscriptionsContainer>
     );
   }
 }
 
+const SubscriptionsContainer = styled('div')`
+  /* padding: 0.5rem; */
+  margin: 1rem 0;
+  /* min-height: 200px; */
+`
+
+const PaymentForm = styled('div')`
+  margin: 1rem 0;
+`
 
 const SubscriptionSelector = styled('div')`
   position: relative;
@@ -110,7 +121,7 @@ const SubscriptionSelector = styled('div')`
   justify-content: space-around;
   align-self: flex-start;
   box-sizing: border-box;
-  /* width: 100%; */
+  width: 100%;
 `
 
 interface SubscriptionItemProps {
@@ -122,22 +133,21 @@ interface SubscriptionItemProps {
 const SubscriptionItem = styled('div')<SubscriptionItemProps>(
   {
     textAlign: 'center',
-    flexGrow: 1,
+    flexGrow: 0,
     flexShrink: 1,
+    flexBasis: '50%',
     margin: '0.5rem',
     padding: '0.5rem',
     cursor: 'pointer',
     boxSizing: 'border-box',
 
-    h1: {
-      fontSize: '1.2rem',
-      margin: 0,
+    p: {
+      marginBottom: 0,
     },
 
-    h2: {
-      fontSize: '0.7rem',
-      margin: 0,
-    },
+    h4: {
+      marginTop: 0,
+    }
   },
   (props) => ({
     background: props.theme.bgColor,
@@ -146,16 +156,16 @@ const SubscriptionItem = styled('div')<SubscriptionItemProps>(
     border: `4px solid ${props.theme.secondaryBg}`,
     color: props.theme.textColor,
 
-    h1: {
+    h4: {
       color: props.theme.mainColor,
     },
-    h2: {
+    h6: {
       // color: props.theme.secondaryColor,
     },
   }),
   (props) => ({
     // flexBasis: props.special ? '100%' : '50%',
-    h1: 
+    h4: 
     {
       color: props.primary ? 
         props.theme.mainColor : 
@@ -169,12 +179,6 @@ const SubscriptionItem = styled('div')<SubscriptionItemProps>(
         // background: props.primary ? props.theme.mainColor : props.theme.secondaryColor,
         // borderColor: darken(0.05, props.primary ? props.theme.mainColor : props.theme.secondaryColor),
         borderColor: props.primary ? props.theme.mainColor : props.theme.secondaryColor,
-        h1: {
-          // color: props.theme.bgColor,
-        },
-        h2: {
-          // color: props.theme.bgColor,
-        }
       }
     } 
     return {};

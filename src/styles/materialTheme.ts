@@ -4,6 +4,8 @@ import { Theme } from "./theme";
 const theme = createMuiTheme({
   typography: {
     useNextVariants: true,
+    fontFamily: Theme.bodyFont,
+    fontSize: 14, 
   },
   palette: {
     text: {
@@ -23,7 +25,7 @@ const theme = createMuiTheme({
     MuiInput: {
       root: {
         width: "100%",
-        fontFamily: "Alegreya Sans, Helvetica, sans-serif",
+        fontFamily: Theme.bodyFont,
         color: Theme.secondaryColor
       },
       underline: {
@@ -40,7 +42,7 @@ const theme = createMuiTheme({
     },
     MuiFormHelperText: {
       root: {
-        fontFamily: "Alegreya Sans, Helvetica, sans-serif",
+        fontFamily: Theme.bodyFont,
       }
     },
     MuiSelect: {
@@ -55,15 +57,19 @@ const theme = createMuiTheme({
     MuiFormLabel: {
       root: {
         marginTop: 0,
-        fontSize: '16px',
         fontWeight: 'normal',
         color: Theme.textColor,
-        fontFamily: "Alegreya Sans, Helvetica, sans-serif",
+        fontFamily: Theme.bodyFont,
       }
     },
     MuiInputLabel: {
       shrink: {
         textTransform: 'uppercase',
+      },
+    },
+    MuiFormControlLabel: {
+      label: {
+        // textTransform: 'uppercase',
       }
     }
   }

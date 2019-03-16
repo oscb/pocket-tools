@@ -5,6 +5,7 @@ import css from '@emotion/css';
 
 export const Button = props => css`
   background: ${props.color};
+  border: 0;
 
   &:hover {
     background: ${lighten(0.05, props.color)};

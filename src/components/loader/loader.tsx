@@ -22,7 +22,7 @@ export default class Loader extends React.Component<LoaderProps, any> {
         `}
       >
         <ModalStyles.Message>
-          <h4>{this.props.message}</h4>
+          <h6>{this.props.message}</h6>
         </ModalStyles.Message>
       </Modal>
     );

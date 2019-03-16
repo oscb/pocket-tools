@@ -49,6 +49,7 @@ const Content = styled('div')`
   background: ${props => props.theme.bgColor};
   color: ${props => props.theme.secondaryColor};
   text-align: center;
+  min-width: 300px;
   max-width: 500px;
   position: relative;
   border-radius: ${props => props.theme.borderRadius};
@@ -83,8 +84,8 @@ const Icon = styled('div')`
   position: relative;
   background: ${props => props.theme.mainColor};
   color: ${props => props.theme.bgColor};
-  top: 1.5rem;
-  // padding: 1rem;
+  top: 1.2rem;
+  /* padding: 1rem; */
   border-radius: 10rem;
   z-index: 10;
   transition: all 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
@@ -159,8 +160,17 @@ const Section = styled('div')`
 `
 
 const Message = styled('div')`
-  font-size: 1rem;
   padding: 1rem;
+  padding-top: 1.2rem;
+
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+  }
+
+  p:last-of-type {
+    margin-bottom: 0;
+  }
 `
 
 const ButtonBar = styled('div')`

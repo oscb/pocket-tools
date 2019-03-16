@@ -31,6 +31,8 @@ const RouteContainer = posed.div({
   },
   exit: { 
     opacity: 0,
+    duration: 10000,
+    delay: 300,
   }
 });
 
@@ -146,11 +148,11 @@ class Dashboard extends React.Component<
           </PoseGroup>
           
           <DashboardStyles.Button onClick={this.addDelivery}>
-            <FontAwesomeIcon icon="plus" /> Create delivery
+            <FontAwesomeIcon icon="plus" />  Create delivery
           </DashboardStyles.Button>
 
           <DashboardStyles.SecondaryButton onClick={this.editAccount}>
-            <FontAwesomeIcon icon="user" /> Manage Account
+            <FontAwesomeIcon icon="user" />  Manage Account
           </DashboardStyles.SecondaryButton>
 
           <DashboardStyles.Logout href="#" onClick={this.logout}>
@@ -162,12 +164,12 @@ class Dashboard extends React.Component<
           {this.state.showConfirmation && this.confirmationModal}
         </PoseGroup>
         {/* Routes */}
-        {isModal && 
         <PoseGroup>
-            <RouteContainer key={this.props.location.pathname} css={ModalStyles.Background}>
+          {isModal && 
+            <RouteContainer key={this.props.location.key} css={ModalStyles.Background}>
               <Switch location={this.props.location}>
-                <Route path="/delivery/:id?" key="delivery" component={DeliveryEditor}/>
-                <Route path="/user" key="user" render={(props) => (
+                <Route path="/delivery/:id?" exact={true} key="delivery" component={DeliveryEditor}/>
+                <Route path="/user" exact={true} key="user" render={(props) => (
                   <Elements>
                     <UserProfileForm 
                       {...props}
@@ -178,8 +180,8 @@ class Dashboard extends React.Component<
                 </Route>
               </Switch>
             </RouteContainer>
+          }
         </PoseGroup>
-        }
       </React.Fragment>
     );
   }
@@ -254,7 +256,7 @@ class Dashboard extends React.Component<
             close={this.dismissConfirmation}
           >
             <ModalStyles.Message>
-              <h3>Are you sure you want to delete your delivery?</h3>
+              <h6>Are you sure you want to delete your delivery?</h6>
               <p>Deliveries cannot be recovered, but your articles will always be in your pocket</p>
             </ModalStyles.Message>
             <ModalStyles.ButtonBar>
@@ -283,7 +285,7 @@ class Dashboard extends React.Component<
             close={this.dismissConfirmation}
           >
             <ModalStyles.Message>
-              <h3>Send a delivery now?</h3>
+              <h6>Send a delivery now?</h6>
               <p>Delivery will still be sent on schedule.</p>
             </ModalStyles.Message>
             <ModalStyles.ButtonBar>
