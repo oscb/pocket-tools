@@ -28,8 +28,9 @@ class APIHelper {
 
   logout() {
     this.token = null;
+    this.code = null;
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem('code');
   }
 
   async getUserData(): Promise<User> {
