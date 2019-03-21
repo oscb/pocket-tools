@@ -193,7 +193,8 @@ class UserProfile extends React.Component<
     };
     
     if (this.state.selectedPlan !== null &&
-      this.state.selectedPlan.amount > 0) 
+      this.state.selectedPlan.amount > 0 &&
+      this.state.selectedPlan.name !== this.state.originalPlan.name) 
     {
       const {token} = await this.props.stripe.createToken({ name: this.state.username });
       userData.stripe_token = token;
