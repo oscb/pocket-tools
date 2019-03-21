@@ -71,13 +71,11 @@ const DeliveryHead = styled(DeliveryHeader)`
   padding: 0;
   line-height: 1rem;
 
-  h1 {
-    margin-top: 0.25rem;
+  h5 {
     color: ${props => props.theme.bgColor};
   }
   
-  h2 {
-    margin-bottom: 0.25rem;
+  h6 {
     color: ${props => props.theme.contrastColor};
   }
 `
