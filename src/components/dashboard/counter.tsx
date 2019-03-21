@@ -10,10 +10,6 @@ export interface CounterProps {
   onChange: (number) => void;
 }
 
-export interface CounterState {
-  count: number;
-}
-
 const StyledCounter = styled('div')`
   display: flex;
   vertical-align: top;
@@ -55,17 +51,7 @@ const StyledCounter = styled('div')`
   }
 `
 
-export default class Counter extends React.Component<
-  CounterProps,
-  CounterState
-> {
-  constructor(props: CounterProps) {
-    super(props);
-
-    this.state = {
-      count: this.props.count
-    };
-  }
+export default class Counter extends React.Component<CounterProps> {
 
   handleChange(e: React.MouseEvent<HTMLElement>, add: boolean) {
     e.preventDefault();
@@ -73,7 +59,7 @@ export default class Counter extends React.Component<
       ? (a, b) => a + b
       : (a, b) => a - b;
     let changeWrapper = (a, b) => {
-      let result = func(a, b);
+      let result = this.limit(func(a, b));
       this.props.onChange(result);
       return result;
     };
@@ -82,27 +68,15 @@ export default class Counter extends React.Component<
 
   op(func: (a: number, b: number) => number) {
     if (typeof this.props.steps === "number") {
-      this.setState(state => {
-        return {
-          ...state,
-          count: this.limit(func(state.count, this.props.steps as number))
-        };
-      });
+      func(this.props.count, this.props.steps as number)
     } else {
-      this.setState(state => {
-        let stepArray = this.props.steps as [number];
-        let i = stepArray.indexOf(state.count);
-        if (i < 0) {
-          i = 0;
-        } else {
-          i = func(i, 1) % stepArray.length;
-        }
-
-        return {
-          ...state,
-          count: this.limit((this.props.steps as [number])[i])
-        };
-      });
+      let stepArray = this.props.steps as [number];
+      let i = stepArray.indexOf(this.props.count);
+      if (i < 0) {
+        i = 0;
+      } else {
+        i = func(i, 1) % stepArray.length;
+      }
     }
   }
 
@@ -117,7 +91,7 @@ export default class Counter extends React.Component<
       <StyledCounter>
         <button onClick={e => this.handleChange(e, false)} type="button">-</button>
         <span>
-          {this.state.count} {this.props.units}
+          {this.props.count} {this.props.units}
         </span>
         <button onClick={e => this.handleChange(e, true)} type="button">+</button>
       </StyledCounter>

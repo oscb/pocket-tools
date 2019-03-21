@@ -181,7 +181,7 @@ class DeliveryEditor extends React.Component<
                     <EditorStyles.Row>
                       <EditorStyles.Select
                         value={this.state.countType}
-                        onChange={this.handleChange}
+                        onChange={this.handleCountTypeChange}
                         inputProps={{
                           name: "countType",
                           id: "countType-value"
@@ -604,6 +604,25 @@ class DeliveryEditor extends React.Component<
       autoArchive: this.state.autoArchive,
       days: days,
     } as Delivery;
+  }
+
+  private handleCountTypeChange = event => {
+    if (event.target.value === this.state.countType) {
+      return;
+    }
+    
+    let newCount = 5;
+    if (event.target.value === CountType.Count) {
+      newCount = 5;
+    } else {
+      newCount = 15;
+    }
+
+    this.setState({
+      ...this.state,
+      count: newCount,
+      countType: event.target.value,
+    });
   }
 
   private handleChange = event => {
