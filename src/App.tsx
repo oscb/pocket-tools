@@ -54,7 +54,7 @@ class App extends React.Component {
       logo: "Pocket Tools",
       description: "From your Pocket to your Kindle",
       heading:
-        "Schedule article deliveries to your kindle with your articles saved in Pocket."
+        "Deliver your articles saved in Pocket to your kindle on a schedule!"
     };
 
     return (
