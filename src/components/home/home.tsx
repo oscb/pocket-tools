@@ -27,19 +27,11 @@ export class Home extends React.Component<RouterHomeProps> {
 
   async redirectUser() {
     let user = await ApiHelper.getUserData();
-    if (
-      user !== undefined && 
-      user !== null)
-    {
-      if (
-        user.email !== null && 
-        user.email !== undefined && 
-        user.kindle_email !== null && 
-        user.kindle_email !== undefined) 
-      {
+    if (!!user) {
+      if (!!user.email && !!user.kindle_email) {
         this.props.history.push("/dashboard");
       } else {
-        this.props.history.push(`/user/`, {
+        this.props.history.push(`/user`, {
           ...user,
           newUser: true
         });

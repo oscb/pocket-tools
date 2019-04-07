@@ -34,15 +34,15 @@ class APIHelper {
   }
 
   async getUserData(): Promise<User> {
-    if (this.user !== undefined && this.user !== null) {
+    if (!!this.user) {
       return this.user;
-    } else if (this.code !== null) {
+    } else if (!!this.code) {
       this.user = await this.authUser();
-    } else if (this.token !== undefined && this.token !== null) {
+    } else if (!!this.token) {
       const userApi = new UserAPI(this.token);
       this.user = await userApi.me()
     }
-    return this.user;
+    return null;
   }
 
   async authUser(): Promise<User> {

@@ -240,7 +240,7 @@ class UserProfile extends React.Component<
       <PoseGroup>
         {this.state.formStatus === FormStatus.Loading && 
         <ModalStyles.ModalWrapper key="loader">
-          <Loader key="loader" message="Loading your user data" />
+          <Loader key="loader" message="Loading your account data" />
         </ModalStyles.ModalWrapper>
         }
         {this.state.formStatus !== FormStatus.Preloading && 
@@ -248,7 +248,7 @@ class UserProfile extends React.Component<
         <ModalStyles.ModalWrapper key="form">
           <Modal 
             key="userForm"
-            title={this.props.newUser ? "Setup your account!" : "Account"} 
+            title={this.props.newUser ? "Finish setting up your account!" : "Account"} 
             icon={this.state.formStatus === FormStatus.Saving ? 'sync' : this.state.formStatus === FormStatus.Saved ? 'check' : 'user'} 
             spin={this.state.formStatus === FormStatus.Saving}
             iconStyle={this.state.formStatus === FormStatus.Saved ? { background: 'rgba(39, 94, 132, 1)'} : {}}
@@ -314,7 +314,7 @@ class UserProfile extends React.Component<
                     originalSelection={this.state.originalPlan}
                     changeSubscription={this.changeSubscriptionMode}>
                     <CardElement />
-                    {/* <PaymentRequestButtonElement /> TODO */}
+                    {/* <PaymentRequestButtonElement /> TODO Apple Pay*/}
                   </Subscriptions>
                   {
                   this.checkErrors('save') &&

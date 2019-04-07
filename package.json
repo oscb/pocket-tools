@@ -64,13 +64,11 @@
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "react-hot-loader": "^4.3.4",
-    "react-mt-svg-lines": "^0.9.1",
     "react-pose": "^4.0.8",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-stripe-elements": "^2.0.1",
-    "superagent": "^4.1.0",
-    "ts-enum-util": "^3.1.0"
+    "superagent": "^4.1.0"
   },
   "scripts": {
     "build": "webpack",

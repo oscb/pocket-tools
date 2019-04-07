@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -53,7 +52,6 @@ module.exports = (env) => {
             name: 'dist/media/[name].[hash:8].[ext]',
           },
         },
-        // TODO: I need to add Babel to make HMR work better
         {
           test: /\.(ts|tsx)$/,
           include: sourcePath,
@@ -97,14 +95,13 @@ module.exports = (env) => {
     ].concat(isDevBuild ? [
       new webpack.HotModuleReplacementPlugin(),
     ] : [
-      new MiniCssExtractPlugin(),
+      
     ]),
 
     optimization: {
       splitChunks : {
         chunks: 'all'
       },
-      // TODO: For Prod, minimize
     },
     node: {
       fs: 'empty'

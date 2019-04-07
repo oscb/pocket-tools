@@ -49,6 +49,7 @@ const AppStyles = styled('div')`
 `
 
 class App extends React.Component {
+
   render() {
     const homeProps: HomeProps = {
       logo: "Pocket Tools",

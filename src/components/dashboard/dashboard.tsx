@@ -3,7 +3,7 @@ import { jsx } from '@emotion/core'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import posed, { PoseGroup } from "react-pose";
-import { Route, RouteComponentProps, Switch } from "react-router";
+import { Route, RouteComponentProps, Switch, matchPath } from "react-router";
 import { Link } from "react-router-dom";
 import { ApiHelper } from '../../models/apiHelper';
 import { Delivery, DeliveryAPI } from "../../models/delivery";
@@ -91,7 +91,8 @@ class Dashboard extends React.Component<
   }
 
   public render() {
-    const isModal = this.props.location.pathname !== '/dashboard';
+    this.forceUserProfileComplete();
+    const isModal = !!!matchPath(this.props.location.pathname, '/dashboard');
     const nextDelivery = this.findNextDelivery(this.state.deliveries);
     
     return (
@@ -391,6 +392,20 @@ class Dashboard extends React.Component<
       days = Object.keys(WeekDays).filter(x => isNaN(Number(x)));
     }
     return days;
+  }
+
+  private async forceUserProfileComplete() {
+    const user = await ApiHelper.getUserData();
+    if (
+      !!!matchPath(this.props.location.pathname, '/user') &&
+      !!user && 
+      (!!!user.email || !!!user.kindle_email))
+    {
+      this.props.history.push(`/user`, {
+        ...user,
+        newUser: true
+      });
+    }
   }
 }
 
