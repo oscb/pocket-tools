@@ -7,10 +7,7 @@ const PhoneSVG: React.SFC<PhoneSVGProps> = (props) => {
   return (
     <svg id="phone" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="1.414" clipRule="evenodd" viewBox="0 0 30 52">
     <path fill="none" d="M0 0h29.378v51.995H0z"/>
-    <clipPath id="_clip1">
-        <path d="M0 0h29.378v51.995H0z"/>
-    </clipPath>
-    <g fill="none" clipPath="url(#_clip1)">
+    <g fill="none">
         <path id="Screen" stroke="#b8eeea" d="M26.626 45.409H2.752c-.427 0-.773-.492-.773-1.099V7.68c0-.607.346-1.099.773-1.099h23.874c.427 0 .773.492.773 1.099v36.63c0 .607-.346 1.099-.773 1.099"/>
         <path id="Border" stroke="#b8eeea" strokeMiterlimit="1.5" d="M28.878 5.028a4.533 4.533 0 0 0-4.53-4.531H5.03C2.53.497.5 2.527.5 5.028v41.934a4.533 4.533 0 0 0 4.53 4.531h19.318c2.5 0 4.53-2.03 4.53-4.531V5.028z"/>
         <g id="Apps" strokeMiterlimit="1.5">

@@ -23,8 +23,6 @@ const ActionBar = styled('div')`
     flex: 1 1 auto;
     font-size: 1.2rem;
     color: ${props => props.theme.bgColor};
-    border-right: 1px solid rgba(255, 255, 255, 0.5);
-    border-left: 1px solid rgba(0, 0, 0, 0.1);
     padding: 0.5rem;
     text-align: center;
   }

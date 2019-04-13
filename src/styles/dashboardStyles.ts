@@ -69,6 +69,15 @@ const RumbleDiv = styled('div')`
 `
 
 const NewButton = styled('button')(
+  (props) => (
+    Button({ color: props.theme.mainColor })
+  ),
+  (props) => ({
+    borderRadius: props.theme.borderRadius,
+    color: props.theme.bgColor,
+    boxShadow: props.theme.boxShadow,
+    background: props.theme.mainColor, // Default
+  }),
   {
     border: 'none',
     flex: '1 0 auto',
@@ -79,16 +88,7 @@ const NewButton = styled('button')(
     boxSizing: 'border-box',
     width: '100%',
     maxWidth: '350px'
-  }, 
-  (props) => ({
-    borderRadius: props.theme.borderRadius,
-    color: props.theme.bgColor,
-    boxShadow: props.theme.boxShadow,
-    background: props.theme.mainColor, // Default
-  }), 
-  (props) => (
-    Button({ color: props.theme.mainColor })
-  )
+  },
 );
 
 const EditButton = styled('button')(
