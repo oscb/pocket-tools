@@ -90,7 +90,10 @@ export default class ArticleItem extends React.Component<ArticleItemProps, any> 
     const url = new URL(this.props.url);
     const domain = url.host;
     return (
-      <Container theme>
+      // There seems to be a bug with styling Posed components with emotion 
+      // where it complains about not providing a theme property
+      // Note! It has to be set as null or it won't read the theme from context!
+      <Container  theme={null}>
         <Image src={this.props.image} />
         <Title>{this.props.title}</Title>
         <Content>

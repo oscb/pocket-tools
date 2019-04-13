@@ -21,4 +21,5 @@ ReactDOM.render(
   </MuiThemeProvider>,
   root
 );
-registerServiceWorker();
+// Disabling the Service Worker for now until I fix the build/deploy to serve service-worker.js as a separate file
+//registerServiceWorker();

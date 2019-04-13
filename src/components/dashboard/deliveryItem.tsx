@@ -46,7 +46,8 @@ export default class DeliveryItem extends React.Component<Delivery & DeliveryIte
     return (
       // There seems to be a bug with styling Posed components with emotion 
       // where it complains about not providing a theme property
-      <Container theme>
+      // Note! It has to be set as null or it won't read the theme from context!
+      <Container theme={null}>
         <DeliveryHeader {...this.props} showDetails={true} />
         {/* Show List */}
         <ActionBar>
