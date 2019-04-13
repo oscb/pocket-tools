@@ -1,20 +1,9 @@
 import * as React from 'react';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import posed from 'react-pose';
+import { AnimatedListItem } from '../AnimatedListItem';
 
-const ArticleAnimated = posed.div({
-  enter: { 
-    x: 0, 
-    opacity: 1,
-  },
-  exit: { 
-    x: 200, 
-    opacity: 0,
-  }
-});
-
-const Container = styled(ArticleAnimated)`
+const Container = styled(AnimatedListItem)`
   background: ${props => props.theme.bgColor};
   color: ${props => props.theme.textColor};
   width: 100%;
@@ -101,7 +90,7 @@ export default class ArticleItem extends React.Component<ArticleItemProps, any> 
     const url = new URL(this.props.url);
     const domain = url.host;
     return (
-      <Container>
+      <Container theme>
         <Image src={this.props.image} />
         <Title>{this.props.title}</Title>
         <Content>

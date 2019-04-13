@@ -4,20 +4,9 @@ import styled from '@emotion/styled';;
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button } from '../../styles/button';
 import DeliveryHeader from './deliveryHeader';
-import posed from 'react-pose';
+import { AnimatedListItem } from '../AnimatedListItem';
 
-const ArticleAnimated = posed.div({
-  enter: { 
-    x: 0, 
-    opacity: 1,
-  },
-  exit: { 
-    x: 200, 
-    opacity: 0,
-  }
-});
-
-const Container = styled(ArticleAnimated)`
+const Container = styled(AnimatedListItem)`
   width: 350px;
   margin: 1rem;
   overflow: hidden;
@@ -55,7 +44,9 @@ export default class DeliveryItem extends React.Component<Delivery & DeliveryIte
 
   public render() {
     return (
-      <Container>
+      // There seems to be a bug with styling Posed components with emotion 
+      // where it complains about not providing a theme property
+      <Container theme>
         <DeliveryHeader {...this.props} showDetails={true} />
         {/* Show List */}
         <ActionBar>

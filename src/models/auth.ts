@@ -25,12 +25,4 @@ export class AuthAPI {
     }
     return resp.body.user as User;
   }
-
-  public async verify(token: string): Promise<boolean> {
-    const resp = await authReq('GET', '/auth/verify', token).send();
-    if (resp.error) {
-      return false;
-    }
-    return true;
-  }
 }
