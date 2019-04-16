@@ -187,7 +187,7 @@ class Dashboard extends React.Component<
     );
   }
 
-  public async loadDeliveries(forceReload: boolean = false) {
+  public async loadDeliveries(skipAnimation: boolean = false) {
     const animationTime = 2.5;
     const start = new Date().getTime();
     const deliveries = await this.deliveryApi.getByUser();
@@ -200,10 +200,14 @@ class Dashboard extends React.Component<
       delivery.days = day;
     }
 
+    // If we have deliveries to populate we can skip the animation, if not we have to wait for the truck to come back to prevent snappiness
+    if (deliveries.length > 0) {
+      skipAnimation = true;
+    }
     // Animation takes 2.5s to get to the middle, so we want to stop it at the next middle point 
     // TODO: this doesn't work perfectly fine since React is not instantaneous, but I'll leave it for now.
     const progress = ((timeToLoad /1000) % (animationTime * 2));
-    if (!forceReload && progress !== animationTime) {
+    if (!skipAnimation && progress !== animationTime) {
       let next =  2.5 - progress;
       if (progress > animationTime) {
         next += 2.5;

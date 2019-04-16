@@ -54,6 +54,7 @@ enum FormStatus {
 interface DeliveryEditorState {
   // Delivery
   id?: string;
+  active: boolean;
   countType: CountType;
   orderBy: OrderBy;
   frequency: Frequency;
@@ -103,6 +104,7 @@ class DeliveryEditor extends React.Component<
     const defaultState: DeliveryEditorState = {
       countType: CountType.Time,
       orderBy: OrderBy.Newest,
+      active: false,
       frequency: Frequency.Weekly,
       time: TimeOpts.Morning,
       count: 30,
@@ -455,7 +457,7 @@ class DeliveryEditor extends React.Component<
                 <FontAwesomeIcon icon="edit" /> Edit again
               </ModalStyles.Button>
               <ModalStyles.Button onClick={this.activate} type="button">
-                Complete! <FontAwesomeIcon icon="check" />
+                Enable! <FontAwesomeIcon icon="check" />
               </ModalStyles.Button>
             </EditorStyles.PreviewBar>
           </ModalStyles.ModalBox>
@@ -550,6 +552,7 @@ class DeliveryEditor extends React.Component<
 
     return {
       id: delivery.id,
+      active: delivery.active,
       
       // Query
       count: delivery.query.count,
@@ -588,7 +591,7 @@ class DeliveryEditor extends React.Component<
       id: this.state.id,
       user: this.User.id,
       kindle_email: this.state.kindle_email,
-      active: false,
+      active: this.state.active,
       query: {
         count: this.state.count,
         countType: CountType[this.state.countType],

@@ -73,7 +73,7 @@
   "scripts": {
     "build": "webpack",
     "watch": "webpack --watch",
-    "start": "webpack-dev-server --mode development --hot --progress --color --port 3001",
+    "start": "webpack-dev-server --mode development --hot --progress --color --port 3000",
     "test": "jest"
   }
 }

@@ -73,7 +73,7 @@ export default class DeliveryHeader extends React.Component<Delivery & DeliveryH
               </p> }
             {this.props.query.excludedTags && this.props.query.excludedTags.length > 0 && 
               <p>
-                <FontAwesomeIcon icon="times" /> {this.props.query.excludedTags.join(', ')}
+                <FontAwesomeIcon icon="ban" /> {this.props.query.excludedTags.join(', ')}
               </p> }
             {this.props.query.domain && 
               <p>
@@ -82,6 +82,10 @@ export default class DeliveryHeader extends React.Component<Delivery & DeliveryH
             {this.props.query.longformOnly && 
               <p>
                 <FontAwesomeIcon icon="newspaper" /> Longform only
+              </p> }
+            {this.props.active === false && 
+              <p>
+                <FontAwesomeIcon icon="exclamation-triangle" /> Disabled
               </p> }
           </QueryInfo>
         }
