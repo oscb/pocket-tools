@@ -54,7 +54,7 @@ const Content = styled('div')`
   position: relative;
   border-radius: ${props => props.theme.borderRadius};
   box-shadow: ${props => props.theme.boxShadow};
-  overflow: scroll;
+  overflow: hidden;
   transition: all 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
   margin: 1rem;
   margin-top: 0;

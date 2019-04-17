@@ -107,4 +107,8 @@ export const globalStyles = css`
     line-height: 1.2500em; /* 20px */
     margin-top: 1.2500em;  margin-bottom: 0.0000em;
   }
+
+  .modalOpen {
+    overflow: hidden;
+  }
 `

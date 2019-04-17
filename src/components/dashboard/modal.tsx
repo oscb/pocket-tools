@@ -20,6 +20,14 @@ export default class Modal extends React.Component<ModalProps, any> {
     this.props.close ? this.props.close() : null;
   }
 
+  componentDidMount() {
+    document.body.classList.add('modalOpen');
+  }
+
+  componentWillUnmount() {
+    document.body.classList.remove('modalOpen');
+  }
+
   public render() {
     return (
       <ModalStyles.Modal className={this.props.className}>
