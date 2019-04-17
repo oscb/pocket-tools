@@ -133,7 +133,7 @@ interface SubscriptionItemProps {
 const SubscriptionItem = styled('div')<SubscriptionItemProps>(
   {
     textAlign: 'center',
-    flexGrow: 0,
+    flexGrow: 1,
     flexShrink: 1,
     flexBasis: '50%',
     margin: '0.5rem',
