@@ -20,6 +20,7 @@ export interface Mailing {
 export interface SentArticle {
   pocketId: string;
   url: string;
+  title: string;
 }
 
 export interface Delivery {

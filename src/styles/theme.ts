@@ -5,6 +5,7 @@ export const Theme = {
   
   bgColor: 'rgba(255, 252, 249, 1)',
   secondaryBg: 'rgba(247, 247, 243, 1)',
+  subtleBg: '#f0f5fb',
   
   textColor: '#44475a',
   textColorSubtle: '#9f9f9f',

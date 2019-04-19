@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { Delivery } from '../../models/delivery';
+import { Delivery, Mailing } from '../../models/delivery';
 import styled from '@emotion/styled';;
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button } from '../../styles/button';
 import DeliveryHeader from './deliveryHeader';
 import { AnimatedListItem } from '../AnimatedListItem';
+import MailingItem from './mailing';
 
 const Container = styled(AnimatedListItem)`
   width: 350px;
@@ -41,13 +42,18 @@ export default class DeliveryItem extends React.Component<Delivery & DeliveryIte
   private wrappedDelete = this.generateButtonCallback(this.props.deleteFunc);
 
   public render() {
+    let lastDelivery : Mailing;
+    if (!!this.props.mailings && this.props.mailings.length > 0) {
+      lastDelivery = this.props.mailings[this.props.mailings.length-1];
+    }
+
     return (
       // There seems to be a bug with styling Posed components with emotion 
       // where it complains about not providing a theme property
       // Note! It has to be set as null or it won't read the theme from context!
       <Container theme={null}>
         <DeliveryHeader {...this.props} showDetails={true} />
-        {/* Show List */}
+        {lastDelivery !== undefined && <MailingItem articles={lastDelivery.articles} date={lastDelivery.datetime} />}
         <ActionBar>
           <button onClick={this.wrappedEdit}>
             <FontAwesomeIcon icon="edit" />
