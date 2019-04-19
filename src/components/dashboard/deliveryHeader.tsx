@@ -3,6 +3,7 @@ import { Delivery } from '../../models/delivery';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DeliveryTimeIcon from './deliveryTimeIcon';
+import { CountType } from './deliveryEditor';
 
 const Header = styled('div')`
   padding: 1rem;
@@ -63,7 +64,7 @@ export default class DeliveryHeader extends React.Component<Delivery & DeliveryH
           {!this.props.relativeTime &&
             <h5>{this.props.frequency} {this.props.time} <DeliveryTimeIcon time={this.props.time} /></h5>
           }
-          <h6>{this.props.query.count} {this.props.query.countType === 'time' ? 'min' : 'articles'}, sorted by {this.props.query.orderBy}</h6>
+          <h6>{this.props.query.count} {this.props.query.countType === CountType[CountType.Time] ? 'min' : 'articles'}, sorted by {this.props.query.orderBy}</h6>
         </TitleContainer>
         {this.props.showDetails &&
           <QueryInfo>

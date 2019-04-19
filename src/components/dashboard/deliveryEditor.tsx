@@ -23,7 +23,7 @@ import css from "@emotion/css";
 
 export interface DeliveryEditorProps {}
 
-enum CountType {
+export enum CountType {
   Time,
   Count
 }
