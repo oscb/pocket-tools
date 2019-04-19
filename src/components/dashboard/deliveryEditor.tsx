@@ -60,6 +60,7 @@ interface DeliveryEditorState {
   frequency: Frequency;
   time: TimeOpts;
   autoArchive: boolean;
+  noDuplicates: boolean;
   count: number;
   showAdvanced: boolean;
   longformOnly: boolean;
@@ -109,6 +110,7 @@ class DeliveryEditor extends React.Component<
       time: TimeOpts.Morning,
       count: 30,
       autoArchive: true,
+      noDuplicates: true,
       showAdvanced: false,
       longformOnly: false,
       kindle_email: (ApiHelper.user && ApiHelper.user.kindle_email) ? ApiHelper.user.kindle_email :  "",
@@ -400,11 +402,28 @@ class DeliveryEditor extends React.Component<
                                 ...this.state,
                                 autoArchive: !this.state.autoArchive
                               })}
-                            value="longformOnly"
+                            value="autoArchive"
                             color="primary"
                           />
                         }
                         label="Archive after delivery?"
+                      />
+                    </FormGroup>
+                    <FormGroup row>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={this.state.noDuplicates}
+                            onChange={x =>
+                              this.setState({
+                                ...this.state,
+                                noDuplicates: !this.state.noDuplicates
+                              })}
+                            value="noDuplicates"
+                            color="primary"
+                          />
+                        }
+                        label="Only send if I'm done with the last delivery"
                       />
                     </FormGroup>
 
@@ -567,6 +586,7 @@ class DeliveryEditor extends React.Component<
       time: time,
       days: days,
       autoArchive: delivery.autoArchive,
+      noDuplicates: delivery.noDuplicates,
       longformOnly: delivery.query.longformOnly,
       kindle_email: delivery.kindle_email,
     } as Partial<DeliveryEditorState>
@@ -605,6 +625,7 @@ class DeliveryEditor extends React.Component<
       time: TimeOpts[time],
       timezone: offset,
       autoArchive: this.state.autoArchive,
+      noDuplicates: this.state.noDuplicates,
       days: days,
     } as Delivery;
   }
