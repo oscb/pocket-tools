@@ -406,7 +406,7 @@ class DeliveryEditor extends React.Component<
                             color="primary"
                           />
                         }
-                        label="Archive after delivery?"
+                        label="Archive articles after delivery?"
                       />
                     </FormGroup>
                     <FormGroup row>
@@ -423,7 +423,7 @@ class DeliveryEditor extends React.Component<
                             color="primary"
                           />
                         }
-                        label="Only send if I'm done with the last delivery"
+                        label="Only send if there are new articles"
                       />
                     </FormGroup>
 
@@ -476,7 +476,7 @@ class DeliveryEditor extends React.Component<
                 <FontAwesomeIcon icon="edit" /> Edit again
               </ModalStyles.Button>
               <ModalStyles.Button onClick={this.activate} type="button">
-                Enable! <FontAwesomeIcon icon="check" />
+                Complete! <FontAwesomeIcon icon="check" />
               </ModalStyles.Button>
             </EditorStyles.PreviewBar>
           </ModalStyles.ModalBox>
